@@ -19,5 +19,6 @@ func main() {
 	r.GET("/categories", controllers.GetCategories)
 	r.GET("/splitTags", controllers.GetSplitTags)
 	r.POST("/createUser", controllers.CreateUser)
+	r.POST("/createCategory", controllers.CreateCategory)
 	r.Run()
 }

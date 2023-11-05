@@ -6,16 +6,36 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+func CreateCategory(ctx *gin.Context) {
+	var user models.User
+	ctx.Bind(&user)
+	code, msg := user.AuthenticateUser()
+	if code == "AUTHENTICATED" {
+		var category models.Category
+		ctx.Bind(&category)
+		createCode, createMsg := category.CreateCategory(&user)
+		if createCode == "SUCCESS" {
+			ctx.JSON(200, createSuccessResponse(createCode, createMsg))
+		} else if createCode == "CATEGORY_EXISTS" {
+			ctx.JSON(401, createErrorResponse(createCode, createMsg))
+		} else { //CreateCode is "DB_CONNECTIVITY_ISSUE" or "DB_INSERT_ERROR"  or anything
+			ctx.JSON(500, createErrorResponse(createCode, createMsg))
+		}
+	} else if code == "INVALID_USERID_PASSWORD" {
+		ctx.JSON(401, createErrorResponse(code, msg))
+	} else { //DB_CONNECTIVITY_ISSUE or anything
+		ctx.JSON(500, createErrorResponse(code, msg))
+	}
+}
+
 func CreateUser(ctx *gin.Context) {
 	var user models.User
 	ctx.Bind(&user)
 	code, msg := user.CreateUser()
 	if code == "SUCCESS" {
 		ctx.JSON(200, createSuccessResponse(code, msg))
-	} else if code == "INVALID_USER_DETAILS" {
-		ctx.JSON(400, createErrorResponse(code, msg))
-	} else if code == "EMAIL_ALREADY_EXISTS" {
-		ctx.JSON(409, createErrorResponse(code, msg))
+	} else if code == "INVALID_USERID_PASSWORD" {
+		ctx.JSON(401, createErrorResponse(code, msg))
 	} else { //code is "DB_CONNECTIVITY_ISSUE" or "DB_INSERT_ERROR"  or anything {
 		ctx.JSON(500, createErrorResponse(code, msg))
 	}

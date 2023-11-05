@@ -71,6 +71,19 @@ func (user *User) alreadyExists() (bool, error) {
 
 }
 
+func (user *User) AuthenticateUser() (string, string) {
+	err := initializers.DB.First(&user, "name = ?", user.Name).Error
+	if err != nil {
+		if err == gorm.ErrRecordNotFound {
+			return "INVALID_USERID_PASSWORD", "username, password doesn't exists"
+		} else {
+			return "DB_CONNECTIVITY_ISSUE", err.Error()
+		}
+	} else {
+		return "AUTHENTICATED", ""
+	}
+}
+
 func (user *User) CreateUser() (string, string) {
 	user.lowerUserName()
 	if err := user.validate(); err != nil {
