@@ -7,20 +7,25 @@ import (
 )
 
 func CreateCategory(ctx *gin.Context) {
-	var user models.User
-	ctx.Bind(&user)
+	var categoryEntry struct {
+		Email        string
+		Password     string
+		CategoryName string
+	}
+	ctx.Bind(&categoryEntry)
+	user := models.User{Email: categoryEntry.Email, Password: categoryEntry.Password}
+	category := models.Category{CategoryName: categoryEntry.CategoryName}
 	code, msg := user.AuthenticateUser()
 	if code == "AUTHENTICATED" {
-		var category models.Category
-		ctx.Bind(&category)
 		createCode, createMsg := category.CreateCategory(&user)
 		if createCode == "SUCCESS" {
 			ctx.JSON(200, createSuccessResponse(createCode, createMsg))
-		} else if createCode == "CATEGORY_EXISTS" {
+		} else if createCode == "CATEGORY_EXISTS" || createCode == "INVALID_CATEGORY" {
 			ctx.JSON(401, createErrorResponse(createCode, createMsg))
 		} else { //CreateCode is "DB_CONNECTIVITY_ISSUE" or "DB_INSERT_ERROR"  or anything
 			ctx.JSON(500, createErrorResponse(createCode, createMsg))
 		}
+		return
 	} else if code == "INVALID_USERID_PASSWORD" {
 		ctx.JSON(401, createErrorResponse(code, msg))
 	} else { //DB_CONNECTIVITY_ISSUE or anything

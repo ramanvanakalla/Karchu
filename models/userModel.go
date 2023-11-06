@@ -72,7 +72,8 @@ func (user *User) alreadyExists() (bool, error) {
 }
 
 func (user *User) AuthenticateUser() (string, string) {
-	err := initializers.DB.First(&user, "name = ?", user.Name).Error
+	err := initializers.DB.Where("email = ? AND password = ?", user.Email, user.Password).First(&user).Error
+	fmt.Println("user Id is ", user.ID)
 	if err != nil {
 		if err == gorm.ErrRecordNotFound {
 			return "INVALID_USERID_PASSWORD", "username, password doesn't exists"
@@ -102,5 +103,4 @@ func (user *User) CreateUser() (string, string) {
 			}
 		}
 	}
-
 }

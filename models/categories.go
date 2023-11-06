@@ -27,25 +27,24 @@ func (category Category) validCategory() (bool, error) {
 	}
 }
 
-func (category Category) CreateCategory(user *User) (string, string) {
+func (category *Category) CreateCategory(user *User) (string, string) {
 	category.UserId = user.ID
 	category.lowerCategoryName()
 	if isValid, validErr := category.validCategory(); isValid {
-		if queryErr := initializers.DB.First(&category).Error; queryErr != nil {
+		if queryErr := initializers.DB.Where("user_id = ? and category_name = ?", category.UserId, category.CategoryName).First(&category).Error; queryErr != nil {
 			if queryErr == gorm.ErrRecordNotFound {
-				return "CATEGORY_EXISTS", fmt.Sprintf("Category %s already exists", category.CategoryName)
+				if createErr := initializers.DB.Create(&category).Error; createErr != nil {
+					return "DB_INSERT_ERROR", createErr.Error()
+				} else {
+					return "SUCCESS", fmt.Sprintf("category Id %d is created", category.ID)
+				}
 			} else {
 				return "DB_CONNECTIVITY_ISSUE", queryErr.Error()
 			}
 		} else {
-			if err := initializers.DB.Create(category); err != nil {
-				return "DB_INSERT_ERROR", validErr.Error()
-			} else {
-				return "SUCCESS", fmt.Sprintf("category Id %d is created", category.ID)
-			}
+			return "CATEGORY_EXISTS", fmt.Sprintf("Category %s already exists", category.CategoryName)
 		}
 	} else {
-		return "INVALID_USER_DETAILS", validErr.Error()
+		return "INVALID_CATEGORY", validErr.Error()
 	}
-
 }
