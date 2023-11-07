@@ -65,6 +65,28 @@ func GetCategories(ctx *gin.Context) {
 
 }
 
+func NewTransaction(ctx *gin.Context) {
+	var transactionEntry struct {
+		models.User
+		models.Transaction
+	}
+	ctx.Bind(&transactionEntry)
+	user := models.User{Email: transactionEntry.Email, Password: transactionEntry.Password}
+	authCode, authMsg := user.AuthenticateUser()
+	if authCode == "AUTHENTICATED" {
+		transaction := models.Transaction{UserId: user.ID, Time: transactionEntry.Time, Amount: transactionEntry.Amount, Category: transactionEntry.Category, Description: transactionEntry.Description, SplitTag: transactionEntry.SplitTag, MapUrl: transactionEntry.MapUrl}
+		if msg, err := transaction.NewTransaction(); err != nil {
+			ctx.JSON(500, createErrorResponse("INSERT", err.Error()))
+		} else {
+			ctx.JSON(200, createSuccessResponse("SUCCESS", msg))
+		}
+	} else if authCode == "INVALID_USERID_PASSWORD" {
+		ctx.JSON(401, createErrorResponse(authCode, authMsg))
+	} else { //DB_CONNECTIVITY_ISSUE or anything
+		ctx.JSON(500, createErrorResponse(authCode, authMsg))
+	}
+}
+
 func GetSplitTags(ctx *gin.Context) {
 	ctx.JSON(200, []string{"No", "will split", "done splitting"})
 }

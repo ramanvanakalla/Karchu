@@ -20,5 +20,5 @@ func main() {
 	r.GET("/splitTags", controllers.GetSplitTags)
 	r.POST("/createUser", controllers.CreateUser)
 	r.POST("/createCategory", controllers.CreateCategory)
-	r.Run()
+	r.POST("/newTransaction", controllers.NewTransaction)
 }
