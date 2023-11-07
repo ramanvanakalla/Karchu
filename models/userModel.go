@@ -72,6 +72,7 @@ func (user *User) alreadyExists() (bool, error) {
 }
 
 func (user *User) AuthenticateUser() (string, string) {
+	fmt.Println("checking for user ", user.Email, "and password ", user.Password)
 	err := initializers.DB.Where("email = ? AND password = ?", user.Email, user.Password).First(&user).Error
 	fmt.Println("user Id is ", user.ID)
 	if err != nil {
@@ -103,4 +104,22 @@ func (user *User) CreateUser() (string, string) {
 			}
 		}
 	}
+}
+
+func (user *User) GetCategories() ([]string, error) {
+	var categories []Category
+	categoriesArr := make([]string, 0)
+	if queryErr := initializers.DB.Where("user_id = ?", user.ID).Find(&categories).Error; queryErr != nil {
+		if queryErr == gorm.ErrRecordNotFound {
+			return categoriesArr, nil
+		} else {
+			return categoriesArr, queryErr
+		}
+	} else {
+		for _, category := range categories {
+			categoriesArr = append(categoriesArr, category.CategoryName)
+		}
+		return categoriesArr, nil
+	}
+
 }

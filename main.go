@@ -16,7 +16,7 @@ func init() {
 func main() {
 	log.Println("Everything is setup")
 	r := gin.Default()
-	r.GET("/categories", controllers.GetCategories)
+	r.POST("/getCategories", controllers.GetCategories)
 	r.GET("/splitTags", controllers.GetSplitTags)
 	r.POST("/createUser", controllers.CreateUser)
 	r.POST("/createCategory", controllers.CreateCategory)

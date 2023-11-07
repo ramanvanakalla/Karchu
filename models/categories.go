@@ -28,10 +28,10 @@ func (category Category) validCategory() (bool, error) {
 }
 
 func (category *Category) CreateCategory(user *User) (string, string) {
-	category.UserId = user.ID
 	category.lowerCategoryName()
+	category.UserId = user.ID
 	if isValid, validErr := category.validCategory(); isValid {
-		if queryErr := initializers.DB.Where("user_id = ? and category_name = ?", category.UserId, category.CategoryName).First(&category).Error; queryErr != nil {
+		if queryErr := initializers.DB.Where("user_id = ? and category_name = ?", user.ID, category.CategoryName).First(&category).Error; queryErr != nil {
 			if queryErr == gorm.ErrRecordNotFound {
 				if createErr := initializers.DB.Create(&category).Error; createErr != nil {
 					return "DB_INSERT_ERROR", createErr.Error()

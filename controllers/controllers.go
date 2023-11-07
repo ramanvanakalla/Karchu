@@ -47,12 +47,22 @@ func CreateUser(ctx *gin.Context) {
 }
 
 func GetCategories(ctx *gin.Context) {
-	ctx.JSON(200, gin.H{
-		"Food":         "",
-		"Travel":       "",
-		"healthy food": "",
-		"Office food":  "",
-	})
+	var user models.User
+	ctx.Bind(&user)
+	authCode, authMsg := user.AuthenticateUser()
+	if authCode == "AUTHENTICATED" {
+		if categoriesArr, err := user.GetCategories(); err != nil {
+			ctx.JSON(500, createErrorResponse("DB_CONNECTIVITY_ISSUE", err.Error()))
+		} else {
+			ctx.JSON(200, categoriesArr)
+		}
+
+	} else if authCode == "INVALID_USERID_PASSWORD" {
+		ctx.JSON(401, createErrorResponse(authCode, authMsg))
+	} else { //DB_CONNECTIVITY_ISSUE or anything
+		ctx.JSON(500, createErrorResponse(authCode, authMsg))
+	}
+
 }
 
 func GetSplitTags(ctx *gin.Context) {
