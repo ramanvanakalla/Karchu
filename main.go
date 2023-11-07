@@ -14,11 +14,13 @@ func init() {
 }
 
 func main() {
-	log.Println("Everything is setup")
+	//gin.SetMode(gin.ReleaseMode)
 	r := gin.Default()
 	r.POST("/getCategories", controllers.GetCategories)
 	r.GET("/splitTags", controllers.GetSplitTags)
 	r.POST("/createUser", controllers.CreateUser)
 	r.POST("/createCategory", controllers.CreateCategory)
 	r.POST("/newTransaction", controllers.NewTransaction)
+	r.Run(":3000")
+	log.Println("Everything is setup")
 }

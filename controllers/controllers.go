@@ -2,6 +2,8 @@ package controllers
 
 import (
 	"Karchu/models"
+	"fmt"
+	"time"
 
 	"github.com/gin-gonic/gin"
 )
@@ -12,7 +14,10 @@ func CreateCategory(ctx *gin.Context) {
 		Password     string
 		CategoryName string
 	}
-	ctx.Bind(&categoryEntry)
+	if err := ctx.Bind(&categoryEntry); err != nil {
+		ctx.JSON(400, createErrorResponse("BAD_REQUEST", err.Error()))
+		return
+	}
 	user := models.User{Email: categoryEntry.Email, Password: categoryEntry.Password}
 	category := models.Category{CategoryName: categoryEntry.CategoryName}
 	code, msg := user.AuthenticateUser()
@@ -35,7 +40,10 @@ func CreateCategory(ctx *gin.Context) {
 
 func CreateUser(ctx *gin.Context) {
 	var user models.User
-	ctx.Bind(&user)
+	if err := ctx.Bind(&user); err != nil {
+		ctx.JSON(400, createErrorResponse("BAD_REQUEST", err.Error()))
+		return
+	}
 	code, msg := user.CreateUser()
 	if code == "SUCCESS" {
 		ctx.JSON(200, createSuccessResponse(code, msg))
@@ -48,7 +56,10 @@ func CreateUser(ctx *gin.Context) {
 
 func GetCategories(ctx *gin.Context) {
 	var user models.User
-	ctx.Bind(&user)
+	if err := ctx.Bind(&user); err != nil {
+		ctx.JSON(400, createErrorResponse("BAD_REQUEST", err.Error()))
+		return
+	}
 	authCode, authMsg := user.AuthenticateUser()
 	if authCode == "AUTHENTICATED" {
 		if categoriesArr, err := user.GetCategories(); err != nil {
@@ -67,10 +78,21 @@ func GetCategories(ctx *gin.Context) {
 
 func NewTransaction(ctx *gin.Context) {
 	var transactionEntry struct {
-		models.User
-		models.Transaction
+		Email       string
+		Password    string
+		Time        time.Time
+		Amount      int
+		Category    string
+		Description string
+		SplitTag    string
+		MapUrl      string
 	}
-	ctx.Bind(&transactionEntry)
+	if err := ctx.Bind(&transactionEntry); err != nil {
+		ctx.JSON(400, createErrorResponse("BAD_REQUEST", err.Error()))
+		return
+	}
+
+	fmt.Println(transactionEntry)
 	user := models.User{Email: transactionEntry.Email, Password: transactionEntry.Password}
 	authCode, authMsg := user.AuthenticateUser()
 	if authCode == "AUTHENTICATED" {
