@@ -21,6 +21,7 @@ func main() {
 	r.POST("/createUser", controllers.CreateUser)
 	r.POST("/createCategory", controllers.CreateCategory)
 	r.POST("/newTransaction", controllers.NewTransaction)
+	r.GET("/", controllers.Home)
 	r.Run(":3000")
 	log.Println("Everything is setup")
 }
