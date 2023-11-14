@@ -19,9 +19,8 @@ func main() {
 	// User
 	r.POST("/v1/user", controllers.CreateUser)
 	// Categories
-	r.POST("/v1/categories", controllers.CreateCategory)
-	r.POST("/v1/categories/all", controllers.GetCategories)
-
+	//r.POST("/v1/categories", controllers.CreateCategory)
+	r.POST("/v1/:route/categories/all", controllers.GetCategories)
 	// Transactions
 	r.POST("/v1/transactions", controllers.NewTransaction)
 
