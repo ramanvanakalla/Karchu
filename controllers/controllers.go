@@ -77,7 +77,34 @@ func GetCategories(ctx *gin.Context) {
 	} else { //DB_CONNECTIVITY_ISSUE or anything
 		ctx.JSON(500, createErrorResponse(authCode, authMsg))
 	}
+}
 
+func deleteCategory(ctx *gin.Context) {
+	var categoryEntry struct {
+		Email        string
+		Password     string
+		CategoryName string
+	}
+	if err := ctx.Bind(&categoryEntry); err != nil {
+		ctx.JSON(400, createErrorResponse("BAD_REQUEST", err.Error()))
+		return
+	}
+	user := models.User{Email: categoryEntry.Email, Password: categoryEntry.Password}
+	category := models.Category{CategoryName: categoryEntry.CategoryName}
+
+	authCode, authMsg := user.AuthenticateUser()
+	if authCode == "AUTHENTICATED" {
+		if deleteCode, err := category.DeleteCategory(&user); err != nil {
+			ctx.JSON(500, createErrorResponse(deleteCode, err.Error()))
+		} else {
+			ctx.JSON(200, createSuccessResponse(deleteCode, err.Error()))
+		}
+
+	} else if authCode == "INVALID_USERID_PASSWORD" {
+		ctx.JSON(401, createErrorResponse(authCode, authMsg))
+	} else { //DB_CONNECTIVITY_ISSUE or anything
+		ctx.JSON(500, createErrorResponse(authCode, authMsg))
+	}
 }
 
 func NewTransaction(ctx *gin.Context) {

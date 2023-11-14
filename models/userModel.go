@@ -121,5 +121,22 @@ func (user *User) GetCategories() ([]string, error) {
 		}
 		return categoriesArr, nil
 	}
+}
+
+func (user *User) DeleteCategory(categoryName string) (string, error) {
+	newCategory := Category{UserId: user.ID, CategoryName: categoryName}
+	if queryErr := initializers.DB.Find(&newCategory).Error; queryErr != nil {
+		if queryErr == gorm.ErrRecordNotFound {
+			return "CATEGORY_DOESNT_EXIST", queryErr
+		} else {
+			return "DB_ERROR", queryErr
+		}
+	} else {
+		if deleteErr := initializers.DB.Delete(newCategory).Error; deleteErr != nil {
+			return "DB_DELETE_ERROR", deleteErr
+		} else {
+			return "SUCCESS", deleteErr
+		}
+	}
 
 }

@@ -48,3 +48,22 @@ func (category *Category) CreateCategory(user *User) (string, string) {
 		return "INVALID_CATEGORY", validErr.Error()
 	}
 }
+
+func (category *Category) DeleteCategory(user *User) (string, error) {
+	category.lowerCategoryName()
+	category.UserId = user.ID
+	if queryErr := initializers.DB.Find(&category).Error; queryErr != nil {
+		if queryErr == gorm.ErrRecordNotFound {
+			return "CATEGORY_DOESNT_EXIST", queryErr
+		} else {
+			return "DB_ERROR", queryErr
+		}
+	} else {
+		if deleteErr := initializers.DB.Delete(category).Error; deleteErr != nil {
+			return "DB_DELETE_ERROR", deleteErr
+		} else {
+			return "SUCCESS", deleteErr
+		}
+	}
+
+}
