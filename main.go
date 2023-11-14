@@ -21,7 +21,7 @@ func main() {
 	// Categories
 	r.POST("/v1/:route/categories/all", controllers.GetCategories)
 	r.POST("/v1/categories", controllers.CreateCategory)
-
+	r.DELETE("/v1/categories", controllers.DeleteCategory)
 	// Transactions
 	r.POST("/v1/transactions", controllers.NewTransaction)
 

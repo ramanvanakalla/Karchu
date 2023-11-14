@@ -79,7 +79,7 @@ func GetCategories(ctx *gin.Context) {
 	}
 }
 
-func deleteCategory(ctx *gin.Context) {
+func DeleteCategory(ctx *gin.Context) {
 	var categoryEntry struct {
 		Email        string
 		Password     string
