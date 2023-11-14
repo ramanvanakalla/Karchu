@@ -126,7 +126,7 @@ func (user *User) GetCategories() ([]string, error) {
 func (user *User) GetLastNTransactions(lastNDays int) ([]string, error) {
 	var transactions []Transaction
 	arr := make([]string, 0)
-	err := initializers.DB.Where("user_id = ?", user.ID).Order("timestamp DESC").Limit(5).Find(&transactions).Error
+	err := initializers.DB.Where("user_id = ?", user.ID).Order("created_at DESC").Limit(5).Find(&transactions).Error
 	for _, transaction := range transactions {
 		fmt.Println(transaction.Category)
 		arr = append(arr, transaction.Category)
