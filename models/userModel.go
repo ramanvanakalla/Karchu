@@ -124,7 +124,7 @@ func (user *User) GetCategories() ([]string, error) {
 }
 
 func (transaction *Transaction) toString() string {
-	return transaction.Category + fmt.Sprintf("%d", transaction.Amount) + transaction.SplitTag + transaction.Description
+	return fmt.Sprintf("cat: %s|Amnt: %d|sptTag: %s|Desc: %s", transaction.Category, transaction.Amount, transaction.SplitTag, transaction.Description)
 }
 
 func (user *User) GetLastNTransactions(lastNDays int) ([]string, error) {
