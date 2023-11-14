@@ -128,6 +128,7 @@ func (user *User) GetLastNTransactions(lastNDays int) ([]string, error) {
 	arr := make([]string, 0)
 	err := initializers.DB.Where("user_id = ?", user.ID).Order("timestamp DESC").Limit(5).Find(&transactions).Error
 	for _, transaction := range transactions {
+		fmt.Println(transaction.Category)
 		arr = append(arr, transaction.Category)
 	}
 	return arr, err
