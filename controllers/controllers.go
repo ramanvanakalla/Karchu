@@ -154,6 +154,7 @@ func GetLastNTransactions(ctx *gin.Context) {
 	authCode, authMsg := user.AuthenticateUser()
 	if authCode == "AUTHENTICATED" {
 		transactions, err := user.GetLastNTransactions(transactionFilter.LastNDays)
+		fmt.Println(transactions)
 		if err != nil {
 			ctx.JSON(200, transactions)
 		} else {
