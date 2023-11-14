@@ -156,9 +156,9 @@ func GetLastNTransactions(ctx *gin.Context) {
 		transactions, err := user.GetLastNTransactions(transactionFilter.LastNDays)
 		fmt.Println(transactions)
 		if err != nil {
-			ctx.JSON(200, transactions)
+			ctx.JSON(200, err.Error())
 		} else {
-			ctx.JSON(500, err.Error())
+			ctx.JSON(500, transactions)
 		}
 	} else if authCode == "INVALID_USERID_PASSWORD" {
 		ctx.JSON(401, createErrorResponse(authCode, authMsg))
