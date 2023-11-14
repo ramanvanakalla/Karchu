@@ -97,7 +97,7 @@ func DeleteCategory(ctx *gin.Context) {
 		if deleteCode, err := category.DeleteCategory(&user); err != nil {
 			ctx.JSON(500, createErrorResponse(deleteCode, err.Error()))
 		} else {
-			ctx.JSON(200, createSuccessResponse(deleteCode, err.Error()))
+			ctx.JSON(200, createSuccessResponse(deleteCode, "Delete successful"))
 		}
 
 	} else if authCode == "INVALID_USERID_PASSWORD" {

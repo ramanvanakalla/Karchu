@@ -62,7 +62,7 @@ func (category *Category) DeleteCategory(user *User) (string, error) {
 		if deleteErr := initializers.DB.Delete(&category).Error; deleteErr != nil {
 			return "DB_DELETE_ERROR", deleteErr
 		} else {
-			return "SUCCESS", deleteErr
+			return "SUCCESS", nil
 		}
 	}
 
