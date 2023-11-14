@@ -56,6 +56,7 @@ func CreateUser(ctx *gin.Context) {
 
 func GetCategories(ctx *gin.Context) {
 	var user models.User
+
 	if err := ctx.Bind(&user); err != nil {
 		ctx.JSON(400, createErrorResponse("BAD_REQUEST", err.Error()))
 		return
@@ -65,6 +66,9 @@ func GetCategories(ctx *gin.Context) {
 		if categoriesArr, err := user.GetCategories(); err != nil {
 			ctx.JSON(500, createErrorResponse("DB_CONNECTIVITY_ISSUE", err.Error()))
 		} else {
+			if ctx.Param("route") == "i" {
+				categoriesArr = append(categoriesArr, "New-Category")
+			}
 			ctx.JSON(200, categoriesArr)
 		}
 
