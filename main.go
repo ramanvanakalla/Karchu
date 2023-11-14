@@ -29,5 +29,7 @@ func main() {
 	r.GET("/v1/split-tags", controllers.GetSplitTags)
 	//Home
 	r.GET("/", controllers.Home)
+
+	r.Run(":3000")
 	log.Println("Everything is setup")
 }
