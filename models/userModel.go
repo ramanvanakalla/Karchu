@@ -123,20 +123,8 @@ func (user *User) GetCategories() ([]string, error) {
 	}
 }
 
-func (user *User) DeleteCategory(categoryName string) (string, error) {
-	newCategory := Category{UserId: user.ID, CategoryName: categoryName}
-	if queryErr := initializers.DB.Find(&newCategory).Error; queryErr != nil {
-		if queryErr == gorm.ErrRecordNotFound {
-			return "CATEGORY_DOESNT_EXIST", queryErr
-		} else {
-			return "DB_ERROR", queryErr
-		}
-	} else {
-		if deleteErr := initializers.DB.Delete(newCategory).Error; deleteErr != nil {
-			return "DB_DELETE_ERROR", deleteErr
-		} else {
-			return "SUCCESS", deleteErr
-		}
-	}
-
+func (user *User) GetLastNTransactions(lastNDays int) ([]Transaction, error) {
+	var transactions []Transaction
+	err := initializers.DB.Where("user_id = ?", user.ID).Order("timestamp DESC").Limit(5).Find(&transactions).Error
+	return transactions, err
 }

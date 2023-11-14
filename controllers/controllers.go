@@ -140,6 +140,32 @@ func NewTransaction(ctx *gin.Context) {
 	}
 }
 
+func GetLastNTransactions(ctx *gin.Context) {
+	var transactionFilter struct {
+		Email     string
+		Password  string
+		LastNDays int
+	}
+	if err := ctx.Bind(&transactionFilter); err != nil {
+		ctx.JSON(400, createErrorResponse("BAD_REQUEST", err.Error()))
+		return
+	}
+	user := models.User{Email: transactionFilter.Email, Password: transactionFilter.Password}
+	authCode, authMsg := user.AuthenticateUser()
+	if authCode == "AUTHENTICATED" {
+		transactions, err := user.GetLastNTransactions(transactionFilter.LastNDays)
+		if err != nil {
+			ctx.JSON(200, transactions)
+		} else {
+			ctx.JSON(500, err.Error())
+		}
+	} else if authCode == "INVALID_USERID_PASSWORD" {
+		ctx.JSON(401, createErrorResponse(authCode, authMsg))
+	} else { //DB_CONNECTIVITY_ISSUE or anything
+		ctx.JSON(500, createErrorResponse(authCode, authMsg))
+	}
+}
+
 func GetSplitTags(ctx *gin.Context) {
 	ctx.JSON(200, []string{"No", "will split", "done splitting"})
 }

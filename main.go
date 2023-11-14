@@ -24,7 +24,7 @@ func main() {
 	r.DELETE("/v1/categories", controllers.DeleteCategory)
 	// Transactions
 	r.POST("/v1/transactions", controllers.NewTransaction)
-
+	r.POST("/v1/transactions/last-n", controllers.GetLastNTransactions)
 	// SplitTags
 	r.GET("/v1/split-tags", controllers.GetSplitTags)
 	//Home

@@ -65,5 +65,4 @@ func (category *Category) DeleteCategory(user *User) (string, error) {
 			return "SUCCESS", nil
 		}
 	}
-
 }
