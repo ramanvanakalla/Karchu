@@ -142,9 +142,9 @@ func NewTransaction(ctx *gin.Context) {
 
 func GetLastNTransactions(ctx *gin.Context) {
 	var transactionFilter struct {
-		Email     string
-		Password  string
-		LastNDays int
+		Email    string
+		Password string
+		LastN    int
 	}
 	if err := ctx.Bind(&transactionFilter); err != nil {
 		ctx.JSON(400, createErrorResponse("BAD_REQUEST", err.Error()))
@@ -153,7 +153,7 @@ func GetLastNTransactions(ctx *gin.Context) {
 	user := models.User{Email: transactionFilter.Email, Password: transactionFilter.Password}
 	authCode, authMsg := user.AuthenticateUser()
 	if authCode == "AUTHENTICATED" {
-		transactions, err := user.GetLastNTransactions(transactionFilter.LastNDays)
+		transactions, err := user.GetLastNTransactions(transactionFilter.LastN)
 		fmt.Println(transactions)
 		if err != nil {
 			ctx.JSON(200, err.Error())
