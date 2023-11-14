@@ -123,8 +123,16 @@ func (user *User) GetCategories() ([]string, error) {
 	}
 }
 
-func (user *User) GetLastNTransactions(lastNDays int) ([]Transaction, error) {
+func (transaction *Transaction) toString() string {
+	return transaction.Category + string(transaction.Amount) + transaction.SplitTag + transaction.Description
+}
+
+func (user *User) GetLastNTransactions(lastNDays int) ([]string, error) {
 	var transactions []Transaction
+	transactionArr := make([]string, 0)
 	err := initializers.DB.Where("user_id = ?", user.ID).Order("created_at DESC").Limit(5).Find(&transactions).Error
-	return transactions, err
+	for _, transaction := range transactions {
+		transactionArr = append(transactionArr, transaction.toString())
+	}
+	return transactionArr, err
 }
