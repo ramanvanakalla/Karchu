@@ -52,14 +52,14 @@ func (category *Category) CreateCategory(user *User) (string, string) {
 func (category *Category) DeleteCategory(user *User) (string, error) {
 	category.lowerCategoryName()
 	category.UserId = user.ID
-	if queryErr := initializers.DB.Find(&category).Error; queryErr != nil {
+	if queryErr := initializers.DB.Where("user_id ? and category_name ?", user.ID, category.CategoryName).First(&category).Error; queryErr != nil {
 		if queryErr == gorm.ErrRecordNotFound {
 			return "CATEGORY_DOESNT_EXIST", queryErr
 		} else {
 			return "DB_ERROR", queryErr
 		}
 	} else {
-		if deleteErr := initializers.DB.Delete(category).Error; deleteErr != nil {
+		if deleteErr := initializers.DB.Delete(&category).Error; deleteErr != nil {
 			return "DB_DELETE_ERROR", deleteErr
 		} else {
 			return "SUCCESS", deleteErr
