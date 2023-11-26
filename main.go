@@ -15,21 +15,23 @@ func init() {
 
 func main() {
 	//gin.SetMode(gin.ReleaseMode)
-	r := gin.Default()
+	router := gin.Default()
+	router.Use(controllers.AuthMiddleware)
 	// User
-	r.POST("/v1/user", controllers.CreateUser)
+	router.POST("/v1/user", controllers.CreateUser)
 	// Categories
-	r.POST("/v1/:route/categories/all", controllers.GetCategories)
-	r.POST("/v1/categories", controllers.CreateCategory)
-	r.DELETE("/v1/categories", controllers.DeleteCategory)
+	router.POST("/v1/categories/all", controllers.GetCategories)
+	router.POST("/v1/categories/n", controllers.GetCategories)
+	router.POST("/v1/categories", controllers.CreateCategory)
+	router.DELETE("/v1/categories", controllers.DeleteCategory)
 	// Transactions
-	r.POST("/v1/transactions", controllers.NewTransaction)
-	r.POST("/v1/transactions/last-n", controllers.GetLastNTransactions)
+	router.POST("/v1/transactions", controllers.NewTransaction)
+	router.POST("/v1/transactions/last-n", controllers.GetLastNTransactions)
 	// SplitTags
-	r.GET("/v1/split-tags", controllers.GetSplitTags)
+	router.GET("/v1/split-tags", controllers.GetSplitTags)
 	//Home
-	r.GET("/", controllers.Home)
+	router.GET("/", controllers.Home)
 
-	r.Run(":3000")
+	router.Run(":3000")
 	log.Println("Everything is setup")
 }

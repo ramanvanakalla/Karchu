@@ -1,11 +1,13 @@
 package controllers
 
 import (
+	"Karchu/helpers"
 	"Karchu/models"
 	"fmt"
 	"time"
 
 	"github.com/gin-gonic/gin"
+	"github.com/gin-gonic/gin/binding"
 )
 
 func CreateCategory(ctx *gin.Context) {
@@ -14,8 +16,8 @@ func CreateCategory(ctx *gin.Context) {
 		Password     string
 		CategoryName string
 	}
-	if err := ctx.Bind(&categoryEntry); err != nil {
-		ctx.JSON(400, createErrorResponse("BAD_REQUEST", err.Error()))
+	if err := ctx.ShouldBindBodyWith(&categoryEntry, binding.JSON); err != nil {
+		ctx.JSON(400, helpers.CreateErrorResponse("BADi_REQUEST", err.Error()))
 		return
 	}
 	user := models.User{Email: categoryEntry.Email, Password: categoryEntry.Password}
@@ -24,58 +26,17 @@ func CreateCategory(ctx *gin.Context) {
 	if code == "AUTHENTICATED" {
 		createCode, createMsg := category.CreateCategory(&user)
 		if createCode == "SUCCESS" {
-			ctx.JSON(200, createSuccessResponse(createCode, createMsg))
+			ctx.JSON(200, helpers.CreateSuccessResponse(createCode, createMsg))
 		} else if createCode == "CATEGORY_EXISTS" || createCode == "INVALID_CATEGORY" {
-			ctx.JSON(401, createErrorResponse(createCode, createMsg))
+			ctx.JSON(401, helpers.CreateErrorResponse(createCode, createMsg))
 		} else { //CreateCode is "DB_CONNECTIVITY_ISSUE" or "DB_INSERT_ERROR"  or anything
-			ctx.JSON(500, createErrorResponse(createCode, createMsg))
+			ctx.JSON(500, helpers.CreateErrorResponse(createCode, createMsg))
 		}
 		return
 	} else if code == "INVALID_USERID_PASSWORD" {
-		ctx.JSON(401, createErrorResponse(code, msg))
+		ctx.JSON(401, helpers.CreateErrorResponse(code, msg))
 	} else { //DB_CONNECTIVITY_ISSUE or anything
-		ctx.JSON(500, createErrorResponse(code, msg))
-	}
-}
-
-func CreateUser(ctx *gin.Context) {
-	var user models.User
-	if err := ctx.Bind(&user); err != nil {
-		ctx.JSON(400, createErrorResponse("BAD_REQUEST", err.Error()))
-		return
-	}
-	code, msg := user.CreateUser()
-	if code == "SUCCESS" {
-		ctx.JSON(200, createSuccessResponse(code, msg))
-	} else if code == "INVALID_USERID_PASSWORD" {
-		ctx.JSON(401, createErrorResponse(code, msg))
-	} else { //code is "DB_CONNECTIVITY_ISSUE" or "DB_INSERT_ERROR"  or anything {
-		ctx.JSON(500, createErrorResponse(code, msg))
-	}
-}
-
-func GetCategories(ctx *gin.Context) {
-	var user models.User
-
-	if err := ctx.Bind(&user); err != nil {
-		ctx.JSON(400, createErrorResponse("BAD_REQUEST", err.Error()))
-		return
-	}
-	authCode, authMsg := user.AuthenticateUser()
-	if authCode == "AUTHENTICATED" {
-		if categoriesArr, err := user.GetCategories(); err != nil {
-			ctx.JSON(500, createErrorResponse("DB_CONNECTIVITY_ISSUE", err.Error()))
-		} else {
-			if ctx.Param("route") == "i" {
-				categoriesArr = append(categoriesArr, "New-Category")
-			}
-			ctx.JSON(200, categoriesArr)
-		}
-
-	} else if authCode == "INVALID_USERID_PASSWORD" {
-		ctx.JSON(401, createErrorResponse(authCode, authMsg))
-	} else { //DB_CONNECTIVITY_ISSUE or anything
-		ctx.JSON(500, createErrorResponse(authCode, authMsg))
+		ctx.JSON(500, helpers.CreateErrorResponse(code, msg))
 	}
 }
 
@@ -85,8 +46,8 @@ func DeleteCategory(ctx *gin.Context) {
 		Password     string
 		CategoryName string
 	}
-	if err := ctx.Bind(&categoryEntry); err != nil {
-		ctx.JSON(400, createErrorResponse("BAD_REQUEST", err.Error()))
+	if err := ctx.ShouldBindBodyWith(&categoryEntry, binding.JSON); err != nil {
+		ctx.JSON(400, helpers.CreateErrorResponse("BAD_REQUEST", err.Error()))
 		return
 	}
 	user := models.User{Email: categoryEntry.Email, Password: categoryEntry.Password}
@@ -95,15 +56,15 @@ func DeleteCategory(ctx *gin.Context) {
 	authCode, authMsg := user.AuthenticateUser()
 	if authCode == "AUTHENTICATED" {
 		if deleteCode, err := category.DeleteCategory(&user); err != nil {
-			ctx.JSON(500, createErrorResponse(deleteCode, err.Error()))
+			ctx.JSON(500, helpers.CreateErrorResponse(deleteCode, err.Error()))
 		} else {
-			ctx.JSON(200, createSuccessResponse(deleteCode, "Delete successful"))
+			ctx.JSON(200, helpers.CreateSuccessResponse(deleteCode, "Delete successful"))
 		}
 
 	} else if authCode == "INVALID_USERID_PASSWORD" {
-		ctx.JSON(401, createErrorResponse(authCode, authMsg))
+		ctx.JSON(401, helpers.CreateErrorResponse(authCode, authMsg))
 	} else { //DB_CONNECTIVITY_ISSUE or anything
-		ctx.JSON(500, createErrorResponse(authCode, authMsg))
+		ctx.JSON(500, helpers.CreateErrorResponse(authCode, authMsg))
 	}
 }
 
@@ -118,8 +79,8 @@ func NewTransaction(ctx *gin.Context) {
 		SplitTag    string
 		MapUrl      string
 	}
-	if err := ctx.Bind(&transactionEntry); err != nil {
-		ctx.JSON(400, createErrorResponse("BAD_REQUEST", err.Error()))
+	if err := ctx.ShouldBindBodyWith(&transactionEntry, binding.JSON); err != nil {
+		ctx.JSON(400, helpers.CreateErrorResponse("BAD_REQUEST", err.Error()))
 		return
 	}
 
@@ -129,14 +90,14 @@ func NewTransaction(ctx *gin.Context) {
 	if authCode == "AUTHENTICATED" {
 		transaction := models.Transaction{UserId: user.ID, Time: transactionEntry.Time, Amount: transactionEntry.Amount, Category: transactionEntry.Category, Description: transactionEntry.Description, SplitTag: transactionEntry.SplitTag, MapUrl: transactionEntry.MapUrl}
 		if msg, err := transaction.NewTransaction(); err != nil {
-			ctx.JSON(500, createErrorResponse("INSERT", err.Error()))
+			ctx.JSON(500, helpers.CreateErrorResponse("INSERT", err.Error()))
 		} else {
-			ctx.JSON(200, createSuccessResponse("SUCCESS", msg))
+			ctx.JSON(200, helpers.CreateSuccessResponse("SUCCESS", msg))
 		}
 	} else if authCode == "INVALID_USERID_PASSWORD" {
-		ctx.JSON(401, createErrorResponse(authCode, authMsg))
+		ctx.JSON(401, helpers.CreateErrorResponse(authCode, authMsg))
 	} else { //DB_CONNECTIVITY_ISSUE or anything
-		ctx.JSON(500, createErrorResponse(authCode, authMsg))
+		ctx.JSON(500, helpers.CreateErrorResponse(authCode, authMsg))
 	}
 }
 
@@ -146,8 +107,8 @@ func GetLastNTransactions(ctx *gin.Context) {
 		Password string
 		LastN    int
 	}
-	if err := ctx.Bind(&transactionFilter); err != nil {
-		ctx.JSON(400, createErrorResponse("BAD_REQUEST", err.Error()))
+	if err := ctx.ShouldBindBodyWith(&transactionFilter, binding.JSON); err != nil {
+		ctx.JSON(400, helpers.CreateErrorResponse("BAD_REQUEST", err.Error()))
 		return
 	}
 	user := models.User{Email: transactionFilter.Email, Password: transactionFilter.Password}
@@ -161,9 +122,9 @@ func GetLastNTransactions(ctx *gin.Context) {
 			ctx.JSON(500, transactions)
 		}
 	} else if authCode == "INVALID_USERID_PASSWORD" {
-		ctx.JSON(401, createErrorResponse(authCode, authMsg))
+		ctx.JSON(401, helpers.CreateErrorResponse(authCode, authMsg))
 	} else { //DB_CONNECTIVITY_ISSUE or anything
-		ctx.JSON(500, createErrorResponse(authCode, authMsg))
+		ctx.JSON(500, helpers.CreateErrorResponse(authCode, authMsg))
 	}
 }
 
