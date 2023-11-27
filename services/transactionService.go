@@ -29,7 +29,7 @@ func DeleteTransaction(transactionId uint, userId uint) (uint, *exceptions.Gener
 }
 
 func transactionToString(transaction *models.Transaction) string {
-	return fmt.Sprintf("Amount: %d|category: %s|splitTag: %s|Desc: %s", transaction.Amount, transaction.Category, transaction.SplitTag, transaction.Description)
+	return fmt.Sprintf("Id: %d|Amount: %d|category: %s|splitTag: %s|Desc: %s", transaction.ID, transaction.Amount, transaction.Category, transaction.SplitTag, transaction.Description)
 }
 
 func GetLastNTransactionsList(userId uint, lastN int) ([]string, *exceptions.GeneralException) {
