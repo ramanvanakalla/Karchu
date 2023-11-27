@@ -6,8 +6,8 @@ import (
 	"time"
 )
 
-func CreateTransaction(userId uint, time time.Time, amount int, category string, categoryId uint, description string, splitTag string, mapUrl string) (uint, error) {
-	transaction := models.Transaction{UserId: userId, Time: time, Amount: amount, Category: category, CategoryId: categoryId, Description: description, SplitTag: splitTag, MapUrl: mapUrl}
+func CreateTransaction(userId uint, time time.Time, amount int, category string, categoryId uint, description string, splitTag string) (uint, error) {
+	transaction := models.Transaction{UserId: userId, Time: time, Amount: amount, Category: category, CategoryId: categoryId, Description: description, SplitTag: splitTag}
 	err := initializers.DB.Create(&transaction).Error
 	return transaction.ID, err
 }

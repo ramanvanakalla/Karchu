@@ -23,7 +23,7 @@ func NewTransaction(ctx *gin.Context) {
 		ctx.Abort()
 		return
 	}
-	transactionId, ex := services.CreateTransaction(userIDUint, req.Time, req.Amount, req.Category, req.Description, req.SplitTag, req.MapUrl)
+	transactionId, ex := services.CreateTransaction(userIDUint, req.Time, req.Amount, req.Category, req.Description, req.SplitTag)
 	if ex != nil {
 		ctx.JSON(ex.StatusCode, helpers.CreateErrorResponse(ex.Status, ex.Message))
 		return

@@ -15,5 +15,4 @@ type Transaction struct {
 	Category    string
 	Description string
 	SplitTag    string
-	MapUrl      string
 }

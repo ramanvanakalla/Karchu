@@ -32,7 +32,6 @@ type CreateTransactionReq struct {
 	Category    string
 	Description string
 	SplitTag    string
-	MapUrl      string
 }
 
 type GetLastNTransactionsReq struct {

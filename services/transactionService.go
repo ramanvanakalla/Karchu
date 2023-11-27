@@ -8,12 +8,12 @@ import (
 	"time"
 )
 
-func CreateTransaction(userId uint, time time.Time, amount int, category string, description string, splitTag string, mapUrl string) (uint, *exceptions.GeneralException) {
+func CreateTransaction(userId uint, time time.Time, amount int, category string, description string, splitTag string) (uint, *exceptions.GeneralException) {
 	categoryId, err := dao.GetCategoryIdByUserIdAndCategoryName(userId, category)
 	if err != nil {
 		return 0, exceptions.BadRequestError(err.Error(), "CANT_GET_CATEGORY")
 	}
-	transactionId, err := dao.CreateTransaction(userId, time, amount, category, categoryId, description, splitTag, mapUrl)
+	transactionId, err := dao.CreateTransaction(userId, time, amount, category, categoryId, description, splitTag)
 	if err != nil {
 		return 0, exceptions.InternalServerError(err.Error(), "DB_INSERTION_FAIL")
 	}
