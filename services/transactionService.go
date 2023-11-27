@@ -20,6 +20,14 @@ func CreateTransaction(userId uint, time time.Time, amount int, category string,
 	return transactionId, nil
 }
 
+func DeleteTransaction(transactionId uint, userId uint) (uint, *exceptions.GeneralException) {
+	delTransactionId, err := dao.DeleteTransactionbyTransactionIdAndUserId(transactionId, userId)
+	if err != nil {
+		return 0, exceptions.InternalServerError(err.Error(), "DELETE_TRANS_FAIL")
+	}
+	return delTransactionId, nil
+}
+
 func transactionToString(transaction *models.Transaction) string {
 	return fmt.Sprintf("Amount: %d|category: %s|splitTag: %s|Desc: %s", transaction.Amount, transaction.Category, transaction.SplitTag, transaction.Description)
 }

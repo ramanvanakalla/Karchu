@@ -27,6 +27,7 @@ func main() {
 	// Transactions
 	router.POST("/v1/transactions", controllers.NewTransaction)
 	router.POST("/v1/transactions/last-n", controllers.GetLastNTransactions)
+	router.DELETE("/v1/transactions", controllers.DeleteTransaction)
 	// SplitTags
 	router.GET("/v1/split-tags", controllers.GetSplitTags)
 	//Home

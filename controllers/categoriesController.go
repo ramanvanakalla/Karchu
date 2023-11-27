@@ -43,7 +43,7 @@ func CreateCategory(ctx *gin.Context) {
 	}
 	var req requests.CreateCategoryReq
 	if err := ctx.ShouldBindBodyWith(&req, binding.JSON); err != nil {
-		ctx.JSON(http.StatusBadRequest, helpers.CreateErrorResponse("AUTH_BAD_REQUEST", err.Error()))
+		ctx.JSON(http.StatusBadRequest, helpers.CreateErrorResponse("CANT_PARSE_REQ", err.Error()))
 		ctx.Abort()
 		return
 	}
@@ -63,7 +63,7 @@ func DeleteCategory(ctx *gin.Context) {
 	}
 	var req requests.DeleteCategoryReq
 	if err := ctx.ShouldBindBodyWith(&req, binding.JSON); err != nil {
-		ctx.JSON(http.StatusBadRequest, helpers.CreateErrorResponse("AUTH_BAD_REQUEST", err.Error()))
+		ctx.JSON(http.StatusBadRequest, helpers.CreateErrorResponse("CANT_PARSE_REQ", err.Error()))
 		ctx.Abort()
 		return
 	}

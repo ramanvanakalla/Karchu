@@ -12,6 +12,20 @@ func CreateTransaction(userId uint, time time.Time, amount int, category string,
 	return transaction.ID, err
 }
 
+func DeleteTransactionbyTransactionIdAndUserId(transactionId uint, userId uint) (uint, error) {
+	var transaction models.Transaction
+	err := initializers.DB.
+		Model(&models.Transaction{}).
+		Where("id = ? and user_id = ?", transactionId, userId).
+		First(&transactionId).
+		Error
+	if err != nil {
+		return 0, err
+	}
+	deletionErr := initializers.DB.Delete(&transactionId).Error
+	return transaction.ID, deletionErr
+}
+
 func GetLastNTransactionsByUserId(userId uint, lastN int) ([]models.Transaction, error) {
 	var transactions []models.Transaction
 	err := initializers.DB.

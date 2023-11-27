@@ -13,6 +13,8 @@ import (
 func skipAuth(ctx *gin.Context) bool {
 	if ctx.Request.URL.Path == "/v1/user" && ctx.Request.Method == http.MethodPost {
 		return true
+	} else if ctx.Request.URL.Path == "/v1/split-tags" && ctx.Request.Method == http.MethodGet {
+		return true
 	} else {
 		return false
 	}
@@ -25,7 +27,7 @@ func AuthMiddleware(ctx *gin.Context) {
 	}
 	var userReq requests.UserReq
 	if err := ctx.ShouldBindBodyWith(&userReq, binding.JSON); err != nil {
-		ctx.JSON(http.StatusBadRequest, helpers.CreateErrorResponse("AUTH_BAD_REQUEST", err.Error()))
+		ctx.JSON(http.StatusBadRequest, helpers.CreateErrorResponse("CANT_PARSE_REQ", err.Error()))
 		ctx.Abort()
 		return
 	}
