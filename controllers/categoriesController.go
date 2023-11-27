@@ -55,7 +55,7 @@ func CreateCategory(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, helpers.CreateSuccessResponse("CATEGORY_CREATED", fmt.Sprintf("category Id %d created", categoryId)))
 }
 
-func DeleteCategoryV2(ctx *gin.Context) {
+func DeleteCategory(ctx *gin.Context) {
 	userIDUint, ok := getUserID(ctx)
 	if !ok {
 		ctx.JSON(http.StatusInternalServerError, helpers.CreateErrorResponse("Error while getting userId", "USERID_NOT_SET_CTX"))
