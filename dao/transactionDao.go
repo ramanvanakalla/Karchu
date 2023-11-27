@@ -22,7 +22,7 @@ func DeleteTransactionbyTransactionIdAndUserId(transactionId uint, userId uint) 
 	if err != nil {
 		return 0, err
 	}
-	deletionErr := initializers.DB.Delete(&transactionId).Error
+	deletionErr := initializers.DB.Delete(&transaction).Error
 	return transaction.ID, deletionErr
 }
 
