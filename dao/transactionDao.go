@@ -17,7 +17,7 @@ func DeleteTransactionbyTransactionIdAndUserId(transactionId uint, userId uint) 
 	err := initializers.DB.
 		Model(&models.Transaction{}).
 		Where("id = ? and user_id = ?", transactionId, userId).
-		First(&transactionId).
+		First(&transaction).
 		Error
 	if err != nil {
 		return 0, err
