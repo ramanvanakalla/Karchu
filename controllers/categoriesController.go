@@ -16,16 +16,9 @@ func addExtraCategoriesForUI(categoriesArr *[]string) {
 }
 
 func GetCategories(ctx *gin.Context) {
-	userID, exists := ctx.Get("USER_ID")
-	if !exists {
-		errorMessage := "USER ID doesn't exist on gin context"
-		ctx.JSON(http.StatusInternalServerError, helpers.CreateErrorResponse(errorMessage, "USERID_NOT_SET_CTX"))
-		return
-	}
-	userIDUint, ok := userID.(uint)
+	userIDUint, ok := getUserID(ctx)
 	if !ok {
-		errorMessage := "UserId is not typecastable"
-		ctx.JSON(http.StatusInternalServerError, helpers.CreateErrorResponse(errorMessage, "USERID_TYPECAST_FAILED"))
+		ctx.JSON(http.StatusInternalServerError, helpers.CreateErrorResponse("Error while getting userId", "USERID_NOT_SET_CTX"))
 		return
 	}
 	categoriesArr, ex := services.GetCategoriesByUserID(userIDUint)
@@ -43,16 +36,9 @@ func GetCategories(ctx *gin.Context) {
 }
 
 func CreateCategory(ctx *gin.Context) {
-	userID, exists := ctx.Get("USER_ID")
-	if !exists {
-		errorMessage := "USER ID doesn't exist on gin context"
-		ctx.JSON(http.StatusInternalServerError, helpers.CreateErrorResponse(errorMessage, "USERID_NOT_SET_CTX"))
-		return
-	}
-	userIDUint, ok := userID.(uint)
+	userIDUint, ok := getUserID(ctx)
 	if !ok {
-		errorMessage := "UserId is not typecastable"
-		ctx.JSON(http.StatusInternalServerError, helpers.CreateErrorResponse(errorMessage, "USERID_TYPECAST_FAILED"))
+		ctx.JSON(http.StatusInternalServerError, helpers.CreateErrorResponse("Error while getting userId", "USERID_NOT_SET_CTX"))
 		return
 	}
 	var req requests.CreateCategoryReq
@@ -70,16 +56,9 @@ func CreateCategory(ctx *gin.Context) {
 }
 
 func DeleteCategoryV2(ctx *gin.Context) {
-	userID, exists := ctx.Get("USER_ID")
-	if !exists {
-		errorMessage := "USER ID doesn't exist on gin context"
-		ctx.JSON(http.StatusInternalServerError, helpers.CreateErrorResponse(errorMessage, "USERID_NOT_SET_CTX"))
-		return
-	}
-	userIDUint, ok := userID.(uint)
+	userIDUint, ok := getUserID(ctx)
 	if !ok {
-		errorMessage := "UserId is not typecastable"
-		ctx.JSON(http.StatusInternalServerError, helpers.CreateErrorResponse(errorMessage, "USERID_TYPECAST_FAILED"))
+		ctx.JSON(http.StatusInternalServerError, helpers.CreateErrorResponse("Error while getting userId", "USERID_NOT_SET_CTX"))
 		return
 	}
 	var req requests.DeleteCategoryReq
