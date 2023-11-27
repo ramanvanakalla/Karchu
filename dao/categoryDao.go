@@ -14,3 +14,33 @@ func GetCategoriesByUserID(userID uint) ([]models.Category, error) {
 		Error
 	return categories, err
 }
+
+func GetCategoryIdByUserIdAndCategoryName(userId uint, categoryName string) (uint, error) {
+	var category models.Category
+	err := initializers.DB.
+		Model(&models.Category{}).
+		Where("user_id = ? and category_name = ?", userId, categoryName).
+		First(&category).
+		Error
+	return category.ID, err
+}
+
+func CreateCategory(userID uint, categoryName string) (uint, error) {
+	newCategory := models.Category{UserId: userID, CategoryName: categoryName}
+	err := initializers.DB.Create(&newCategory).Error
+	return newCategory.ID, err
+}
+
+func DeleteCategory(userID uint, categoryName string) (uint, error) {
+	var category models.Category
+	err := initializers.DB.
+		Model(&models.Category{}).
+		Where("user_id = ? AND category_name = ?", userID, categoryName).
+		First(&category).
+		Error
+	if err != nil {
+		return 0, err
+	}
+	deletionErr := initializers.DB.Delete(&category).Error
+	return category.ID, deletionErr
+}

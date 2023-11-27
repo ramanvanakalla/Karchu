@@ -41,20 +41,20 @@ func validateAndNormalizePassword(password *string) bool {
 
 func validateAndNormalizeName(name *string) bool {
 	*name = strings.TrimSpace(*name)
-	nameRegex := `^[a-z0-9_ ]{3,20}$`
+	nameRegex := `^[A-Za-z0-9_ ]{3,20}$`
 	nameRe := regexp.MustCompile(nameRegex)
 	return nameRe.MatchString(*name)
 }
 
 func CreateUser(email string, password string, name string) (uint, *exceptions.GeneralException) {
 	if !validateAndNormalizeEmail(&email) {
-		return 0, exceptions.BadRequestError("invalid email format", "INVALID_EMAIL_FORMAT")
+		return 0, exceptions.BadRequestError(fmt.Sprintf("invalid email %s format", email), "INVALID_EMAIL_FORMAT")
 	}
 	if !validateAndNormalizePassword(&password) {
-		return 0, exceptions.BadRequestError("invalid password format", "INVALID_PASSWORD_FORMAT")
+		return 0, exceptions.BadRequestError(fmt.Sprintf("invalid password %s format", password), "INVALID_PASSWORD_FORMAT")
 	}
 	if !validateAndNormalizeName(&name) {
-		return 0, exceptions.BadRequestError("invalid name format", "INVALID_NAME_FORMAT")
+		return 0, exceptions.BadRequestError(fmt.Sprintf("invalid name %s format", name), "INVALID_NAME_FORMAT")
 	}
 	userId, err := dao.CreateUser(email, password, name)
 	if err != nil {

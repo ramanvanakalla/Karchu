@@ -23,10 +23,10 @@ func main() {
 	router.POST("/v1/categories/all", controllers.GetCategories)
 	router.POST("/v1/categories/n", controllers.GetCategories)
 	router.POST("/v1/categories", controllers.CreateCategory)
-	router.DELETE("/v1/categories", controllers.DeleteCategory)
+	router.DELETE("/v1/categories", controllers.DeleteCategoryV2)
 	// Transactions
-	router.POST("/v1/transactions", controllers.NewTransaction)
-	router.POST("/v1/transactions/last-n", controllers.GetLastNTransactions)
+	router.POST("/v1/transactions", controllers.NewTransactionV2)
+	router.POST("/v1/transactions/last-n", controllers.GetLastNTransactionsV2)
 	// SplitTags
 	router.GET("/v1/split-tags", controllers.GetSplitTags)
 	//Home

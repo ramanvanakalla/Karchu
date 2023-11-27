@@ -6,14 +6,14 @@ import (
 )
 
 func GetUserId(email string, password string) (uint, error) {
-	var userID uint
+	var user models.User
 	err := initializers.DB.
 		Model(&models.User{}).
 		Where("email = ? AND password = ?", email, password).
-		Pluck("id", &userID).
+		First(&user).
 		Error
 
-	return userID, err
+	return user.ID, err
 }
 
 func CreateUser(email string, password string, name string) (uint, error) {
