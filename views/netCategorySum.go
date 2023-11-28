@@ -11,7 +11,7 @@ type NetCategorySum struct {
 }
 
 func (NetCategorySumObject *NetCategorySum) ToString() string {
-	categorySumString := fmt.Sprintf("%-30s%-1d\n", NetCategorySumObject.Category, NetCategorySumObject.NetAmount)
+	categorySumString := fmt.Sprintf("%-50s%-1d\n", NetCategorySumObject.Category, NetCategorySumObject.NetAmount)
 	categorySumString = strings.ReplaceAll(categorySumString, "\n", "")
 	return categorySumString
 }
