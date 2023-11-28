@@ -8,5 +8,5 @@ type NetCategorySum struct {
 }
 
 func (NetCategorySumObject *NetCategorySum) ToString() string {
-	return fmt.Sprintf("%-10s%-10d\n", NetCategorySumObject.Category, NetCategorySumObject.NetAmount)
+	return fmt.Sprintf("%-20s%-1d\n", NetCategorySumObject.Category, NetCategorySumObject.NetAmount)
 }
