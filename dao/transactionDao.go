@@ -45,6 +45,7 @@ func GetNetMoneySpentByCategory(userID uint) ([]views.NetCategorySum, error) {
 		Select("category, sum(amount) as net_amount").
 		Where("user_id = ?", userID).
 		Group("category").
+		Order("net_amount desc").
 		Scan(&amountByCategory).
 		Error
 	return amountByCategory, err
