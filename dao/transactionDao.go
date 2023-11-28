@@ -3,6 +3,7 @@ package dao
 import (
 	"Karchu/initializers"
 	"Karchu/models"
+	"Karchu/views"
 	"time"
 )
 
@@ -29,10 +30,22 @@ func DeleteTransactionbyTransactionIdAndUserId(transactionId uint, userId uint) 
 func GetLastNTransactionsByUserId(userId uint, lastN int) ([]models.Transaction, error) {
 	var transactions []models.Transaction
 	err := initializers.DB.
-		Model(models.Transaction{}).
+		Model(&models.Transaction{}).
 		Where("user_id = ?", userId).
 		Limit(lastN).
 		Find(&transactions).
 		Error
 	return transactions, err
+}
+
+func GetNetMoneySpentByCategory(userID uint) ([]views.NetCategorySum, error) {
+	var amountByCategory []views.NetCategorySum
+	err := initializers.DB.
+		Model(&models.Transaction{}).
+		Select("category, sum(amount) as net_amount").
+		Where("user_id = ?", userID).
+		Group("category").
+		Scan(&amountByCategory).
+		Error
+	return amountByCategory, err
 }

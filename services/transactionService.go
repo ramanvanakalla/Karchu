@@ -43,3 +43,15 @@ func GetLastNTransactionsList(userId uint, lastN int) ([]string, *exceptions.Gen
 	}
 	return transactionsList, nil
 }
+
+func GetNetMoneySpentByCategory(userId uint) ([]string, *exceptions.GeneralException) {
+	categoriesAndSum, err := dao.GetNetMoneySpentByCategory(userId)
+	netByCategoriesList := make([]string, 0)
+	if err != nil {
+		return netByCategoriesList, exceptions.InternalServerError(err.Error(), "NET_CATEGORY_SUM_GET_FAIL")
+	}
+	for _, categorySum := range categoriesAndSum {
+		netByCategoriesList = append(netByCategoriesList, categorySum.ToString())
+	}
+	return netByCategoriesList, nil
+}
