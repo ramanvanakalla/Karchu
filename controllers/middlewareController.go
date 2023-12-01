@@ -4,6 +4,8 @@ import (
 	"Karchu/helpers"
 	"Karchu/requests"
 	"Karchu/services"
+	"fmt"
+	"io/ioutil"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -21,6 +23,12 @@ func skipAuth(ctx *gin.Context) bool {
 }
 
 func AuthMiddleware(ctx *gin.Context) {
+	body, err := ioutil.ReadAll(ctx.Request.Body)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Error reading request body"})
+		return
+	}
+	fmt.Println("Received request: ", string(body))
 	if skipAuth(ctx) {
 		ctx.Next()
 		return
