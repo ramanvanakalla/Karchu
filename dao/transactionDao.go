@@ -32,6 +32,7 @@ func GetLastNTransactionsByUserId(userId uint, lastN int) ([]models.Transaction,
 	err := initializers.DB.
 		Model(&models.Transaction{}).
 		Where("user_id = ?", userId).
+		Order("created_at desc").
 		Limit(lastN).
 		Find(&transactions).
 		Error
