@@ -39,7 +39,7 @@ func DeleteTransactionFromTransString(TransString string, userId uint) (uint, *e
 func StringToTransaction(input string) (*models.Transaction, error) {
 	var transaction models.Transaction
 	fmt.Println(input)
-	_, err := fmt.Sscanf(input, "Id: %d|Amount: %d|category: %s|splitTag: %s|Desc: %s",
+	_, err := fmt.Sscanf(input, "Id: %d|Amount: %d|category: %[^\n]|splitTag: %[^\n]|Desc: %[^\n]",
 		&transaction.ID, &transaction.Amount, &transaction.Category, &transaction.SplitTag, &transaction.Description)
 
 	if err != nil {
