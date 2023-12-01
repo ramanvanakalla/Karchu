@@ -46,6 +46,12 @@ type DeleteTransactionReq struct {
 	TransactionId uint
 }
 
+type DeleteTransactionFromTransStringReq struct {
+	Email       string
+	Password    string
+	TransString string
+}
+
 type NetAmountByCategory struct {
 	Email    string
 	Password string

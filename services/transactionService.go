@@ -28,6 +28,26 @@ func DeleteTransaction(transactionId uint, userId uint) (uint, *exceptions.Gener
 	return delTransactionId, nil
 }
 
+func DeleteTransactionFromTransString(TransString string, userId uint) (uint, *exceptions.GeneralException) {
+	transaction, err := StringToTransaction(TransString)
+	if err != nil {
+		return 0, exceptions.InternalServerError(err.Error(), "CANT_PARSE_TRANS_STRING")
+	}
+	return DeleteTransaction(transaction.ID, userId)
+}
+
+func StringToTransaction(input string) (*models.Transaction, error) {
+	var transaction models.Transaction
+	_, err := fmt.Sscanf(input, "Id: %d|Amount: %d|category: %s|splitTag: %s|Desc: %s",
+		&transaction.ID, &transaction.Amount, &transaction.Category, &transaction.SplitTag, &transaction.Description)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return &transaction, nil
+}
+
 func transactionToString(transaction *models.Transaction) string {
 	return fmt.Sprintf("Id: %d|Amount: %d|category: %s|splitTag: %s|Desc: %s", transaction.ID, transaction.Amount, transaction.Category, transaction.SplitTag, transaction.Description)
 }
