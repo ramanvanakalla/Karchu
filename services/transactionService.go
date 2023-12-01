@@ -5,6 +5,7 @@ import (
 	"Karchu/exceptions"
 	"Karchu/models"
 	"fmt"
+	"strings"
 	"time"
 )
 
@@ -37,13 +38,25 @@ func DeleteTransactionFromTransString(TransString string, userId uint) (uint, *e
 }
 
 func StringToTransaction(input string) (*models.Transaction, error) {
+	fields := strings.Split(input, "|")
 	var transaction models.Transaction
-	fmt.Println(input)
-	_, err := fmt.Sscanf(input, "Id: %d|Amount: %d|category: %[^|]|splitTag: %[^|]|Desc: %[^\n]",
-		&transaction.ID, &transaction.Amount, &transaction.Category, &transaction.SplitTag, &transaction.Description)
-
-	if err != nil {
-		return nil, err
+	for _, field := range fields {
+		keyValue := strings.SplitN(field, ":", 2)
+		if len(keyValue) == 2 {
+			key, value := strings.TrimSpace(keyValue[0]), strings.TrimSpace(keyValue[1])
+			switch key {
+			case "Id":
+				fmt.Sscanf(value, "%d", &transaction.ID)
+			case "Amount":
+				fmt.Sscanf(value, "%d", &transaction.Amount)
+			case "category":
+				transaction.Category = value
+			case "splitTag":
+				transaction.SplitTag = value
+			case "Desc":
+				transaction.Description = value
+			}
+		}
 	}
 
 	return &transaction, nil
