@@ -43,7 +43,7 @@ func DeleteTransactionFromTransString(ctx *gin.Context) {
 		ctx.Abort()
 		return
 	}
-	fmt.Println(req)
+	fmt.Println(req.TransString)
 	delTransactionId, ex := services.DeleteTransactionFromTransString(req.TransString, userIDUint)
 	if ex != nil {
 		ctx.JSON(ex.StatusCode, helpers.CreateErrorResponse(ex.Status, ex.Message))
