@@ -10,6 +10,9 @@ import (
 )
 
 func CreateTransaction(userId uint, time time.Time, amount int, category string, description string, splitTag string) (uint, *exceptions.GeneralException) {
+	if !validateAndNormalizeCategory(&category) {
+		return 0, exceptions.BadRequestError(fmt.Sprintf("invalid category format %s", category), "INVALID_CATEGORY_FORMAT")
+	}
 	categoryId, err := dao.GetCategoryIdByUserIdAndCategoryName(userId, category)
 	if err != nil {
 		return 0, exceptions.BadRequestError(err.Error(), "CANT_GET_CATEGORY")
