@@ -12,7 +12,6 @@ type Transaction struct {
 	CategoryId  uint
 	Amount      int
 	Time        time.Time
-	Category    string
 	Description string
 	SplitTag    string
 }

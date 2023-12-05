@@ -53,7 +53,6 @@ func StringToTransaction(input string) (*models.Transaction, error) {
 			case "Amount":
 				fmt.Sscanf(value, "%d", &transaction.Amount)
 			case "category":
-				transaction.Category = value
 			case "splitTag":
 				transaction.SplitTag = value
 			case "Desc":
@@ -66,7 +65,7 @@ func StringToTransaction(input string) (*models.Transaction, error) {
 }
 
 func transactionToString(transaction *models.Transaction) string {
-	return fmt.Sprintf("Id: %d|Amount: %d|category: %s|splitTag: %s|Desc: %s", transaction.ID, transaction.Amount, transaction.Category, transaction.SplitTag, transaction.Description)
+	return fmt.Sprintf("Id: %d|Amount: %d|splitTag: %s|Desc: %s", transaction.ID, transaction.Amount, transaction.SplitTag, transaction.Description)
 }
 
 func GetLastNTransactionsList(userId uint, lastN int) ([]string, *exceptions.GeneralException) {
