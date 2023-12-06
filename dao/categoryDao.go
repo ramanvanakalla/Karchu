@@ -25,6 +25,16 @@ func GetCategoryIdByUserIdAndCategoryName(userId uint, categoryName string) (uin
 	return category.ID, err
 }
 
+func GetCategoryNameFromId(categoryId uint) (string, error) {
+	var category models.Category
+	err := initializers.DB.
+		Model(&models.Category{}).
+		Where("id = ?", categoryId).
+		First(&category).
+		Error
+	return category.CategoryName, err
+}
+
 func CreateCategory(userID uint, categoryName string) (uint, error) {
 	newCategory := models.Category{UserId: userID, CategoryName: categoryName}
 	err := initializers.DB.Create(&newCategory).Error

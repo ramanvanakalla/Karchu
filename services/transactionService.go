@@ -64,8 +64,12 @@ func StringToTransaction(input string) (*models.Transaction, error) {
 	return &transaction, nil
 }
 
-func transactionToString(transaction *models.Transaction) string {
-	return fmt.Sprintf("Id: %d|Amount: %d|splitTag: %s|Desc: %s", transaction.ID, transaction.Amount, transaction.SplitTag, transaction.Description)
+func transactionToString(transaction *models.Transaction) (string, *exceptions.GeneralException) {
+	categoryName, err := dao.GetCategoryNameFromId(transaction.CategoryId)
+	if err != nil {
+		return "", exceptions.InternalServerError(err.Error(), "TRANSACTION_TO_STR_FAIL")
+	}
+	return fmt.Sprintf("Id: %d|Amount: %d|Category: %s|splitTag: %s|Desc: %s", transaction.ID, transaction.Amount, categoryName, transaction.SplitTag, transaction.Description), nil
 }
 
 func GetLastNTransactionsList(userId uint, lastN int) ([]string, *exceptions.GeneralException) {
@@ -75,7 +79,11 @@ func GetLastNTransactionsList(userId uint, lastN int) ([]string, *exceptions.Gen
 		return transactionsList, exceptions.InternalServerError(err.Error(), "TRANSACTION_GET_FAIL")
 	}
 	for _, transaction := range transactions {
-		transactionsList = append(transactionsList, transactionToString(&transaction))
+		transStr, ex := transactionToString(&transaction)
+		if ex != nil {
+			return nil, ex
+		}
+		transactionsList = append(transactionsList, transStr)
 	}
 	return transactionsList, nil
 }
