@@ -88,6 +88,22 @@ func GetLastNTransactionsList(userId uint, lastN int) ([]string, *exceptions.Gen
 	return transactionsList, nil
 }
 
+func GetTransactionsList(userId uint) ([]string, *exceptions.GeneralException) {
+	transactions, err := dao.GetAllTransactionsByUserId(userId)
+	transactionsList := make([]string, 0)
+	if err != nil {
+		return transactionsList, exceptions.InternalServerError(err.Error(), "TRANSACTION_GET_FAIL")
+	}
+	for _, transaction := range transactions {
+		transStr, ex := transactionToString(&transaction)
+		if ex != nil {
+			return nil, ex
+		}
+		transactionsList = append(transactionsList, transStr)
+	}
+	return transactionsList, nil
+}
+
 func GetNetMoneySpentByCategory(userId uint) ([]string, *exceptions.GeneralException) {
 	categoriesAndSum, err := dao.GetNetMoneySpentByCategory(userId)
 	netByCategoriesList := make([]string, 0)

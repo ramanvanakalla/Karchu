@@ -40,6 +40,10 @@ type GetLastNTransactionsReq struct {
 	LastN    int
 }
 
+type GetTransactionsReq struct {
+	Email    string
+	Password string
+}
 type DeleteTransactionReq struct {
 	Email         string
 	Password      string

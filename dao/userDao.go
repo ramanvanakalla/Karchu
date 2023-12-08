@@ -21,3 +21,12 @@ func CreateUser(email string, password string, name string) (uint, error) {
 	err := initializers.DB.Create(&newUser).Error
 	return newUser.ID, err
 }
+
+func GetAllTransactionsByUserId(userId uint) ([]models.Transaction, error) {
+	var user models.User
+	err := initializers.DB.Preload("Transactions").
+		Preload("Categories").
+		First(&user, userId).
+		Error
+	return user.Transactions, err
+}
