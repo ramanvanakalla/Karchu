@@ -28,6 +28,7 @@ func main() {
 	router.POST("/v1/transactions", controllers.NewTransaction)
 	router.POST("/v1/transactions/all", controllers.GetTransactionsListOfUser)
 	router.POST("/v1/transactions/last-n", controllers.GetLastNTransactions)
+	router.POST("/v1/transactions/category", controllers.GetTransactionOfCategory)
 	router.DELETE("/v1/transactions", controllers.DeleteTransaction)
 	router.DELETE("/v1/transactions/str", controllers.DeleteTransactionFromTransString)
 	// SplitTags

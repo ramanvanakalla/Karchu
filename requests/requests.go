@@ -24,6 +24,12 @@ type DeleteCategoryReq struct {
 	CategoryName string
 }
 
+type TransactionsOfCategoryReq struct {
+	Email        string
+	Password     string
+	CategoryName string
+}
+
 type CreateTransactionReq struct {
 	Email       string
 	Password    string
