@@ -27,12 +27,14 @@ func DeleteTransactionbyTransactionIdAndUserId(transactionId uint, userId uint) 
 	return transaction.ID, deletionErr
 }
 
-func GetLastNTransactionsByUserId(userId uint, lastN int) ([]models.Transaction, error) {
-	var transactions []models.Transaction
+func GetLastNTransactionsByUserId(userId uint, lastN int) ([]views.TransactionWithCategory, error) {
+	var transactions []views.TransactionWithCategory
 	err := initializers.DB.
 		Model(&models.Transaction{}).
-		Where("user_id = ?", userId).
-		Order("created_at desc").
+		Select("transactions.*,categories.category_name").
+		Joins("JOIN categories ON transactions.category_id = categories.id").
+		Where("transactions.user_id = ?", userId).
+		Order("transactions.created_at desc").
 		Limit(lastN).
 		Find(&transactions).
 		Error

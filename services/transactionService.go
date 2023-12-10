@@ -79,10 +79,7 @@ func GetLastNTransactionsList(userId uint, lastN int) ([]string, *exceptions.Gen
 		return transactionsList, exceptions.InternalServerError(err.Error(), "TRANSACTION_GET_FAIL")
 	}
 	for _, transaction := range transactions {
-		transStr, ex := transactionToString(&transaction)
-		if ex != nil {
-			return nil, ex
-		}
+		transStr := transaction.ToString()
 		transactionsList = append(transactionsList, transStr)
 	}
 	return transactionsList, nil
