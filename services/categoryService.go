@@ -52,6 +52,7 @@ func DeleteCategoryForUserID(userId uint, categoryName string) (uint, *exception
 }
 
 func GetTransactionsOfCategory(userId uint, categoryName string) ([]string, *exceptions.GeneralException) {
+	categoryName = strings.Split(categoryName, "-")[0]
 	if !validateAndNormalizeCategory(&categoryName) {
 		return nil, exceptions.BadRequestError(fmt.Sprintf("invalid category format %s", categoryName), "INVALID_CATEGORY_FORMAT")
 	}
