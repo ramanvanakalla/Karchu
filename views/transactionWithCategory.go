@@ -20,5 +20,6 @@ func NewTransactionWithCategory(transaction models.Transaction, categoryName str
 }
 
 func (transaction *TransactionWithCategory) ToString() string {
-	return fmt.Sprintf("Id: %d|Amount: %d|Category: %s|splitTag: %s|Desc: %s", transaction.ID, transaction.Amount, transaction.CategoryName, transaction.SplitTag, transaction.Description)
+	year, month, day := transaction.Time.Date()
+	return fmt.Sprintf("Id: %d|Amount: %d|Category: %s|splitTag: %s|Desc: %s|%d/%d/%d", transaction.ID, transaction.Amount, transaction.CategoryName, transaction.SplitTag, transaction.Description, day, month, year)
 }
