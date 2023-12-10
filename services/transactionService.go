@@ -4,6 +4,7 @@ import (
 	"Karchu/dao"
 	"Karchu/exceptions"
 	"Karchu/models"
+	"Karchu/views"
 	"fmt"
 	"strings"
 	"time"
@@ -64,14 +65,6 @@ func StringToTransaction(input string) (*models.Transaction, error) {
 	return &transaction, nil
 }
 
-func transactionToString(transaction *models.Transaction) (string, *exceptions.GeneralException) {
-	categoryName, err := dao.GetCategoryNameFromId(transaction.CategoryId)
-	if err != nil {
-		return "", exceptions.InternalServerError(err.Error(), "TRANSACTION_TO_STR_FAIL")
-	}
-	return fmt.Sprintf("Id: %d|Amount: %d|Category: %s|splitTag: %s|Desc: %s", transaction.ID, transaction.Amount, categoryName, transaction.SplitTag, transaction.Description), nil
-}
-
 func GetLastNTransactionsList(userId uint, lastN int) ([]string, *exceptions.GeneralException) {
 	transactions, err := dao.GetLastNTransactionsByUserId(userId, lastN)
 	transactionsList := make([]string, 0)
@@ -86,29 +79,33 @@ func GetLastNTransactionsList(userId uint, lastN int) ([]string, *exceptions.Gen
 }
 
 func GetTransactionsList(userId uint) ([]string, *exceptions.GeneralException) {
-	transactions, err := dao.GetAllTransactionsByUserId(userId)
+	categoryTransactionsMap, err := dao.GetAllTransactionsByUserId(userId)
 	transactionsList := make([]string, 0)
 	if err != nil {
 		return transactionsList, exceptions.InternalServerError(err.Error(), "TRANSACTION_GET_FAIL")
 	}
-	for _, transaction := range transactions {
-		transStr, ex := transactionToString(&transaction)
-		if ex != nil {
-			return nil, ex
+	for categoryName, transactions := range categoryTransactionsMap {
+		for _, transaction := range transactions {
+			transactionView := views.NewTransactionWithCategory(transaction, categoryName)
+			transactionsList = append(transactionsList, transactionView.ToString())
 		}
-		transactionsList = append(transactionsList, transStr)
 	}
 	return transactionsList, nil
 }
 
 func GetNetMoneySpentByCategory(userId uint) ([]string, *exceptions.GeneralException) {
-	categoriesAndSum, err := dao.GetNetMoneySpentByCategory(userId)
-	netByCategoriesList := make([]string, 0)
+	categoryTransactionsMap, err := dao.GetAllTransactionsByUserId(userId)
+	netCategorySumList := make([]string, 0)
 	if err != nil {
-		return netByCategoriesList, exceptions.InternalServerError(err.Error(), "NET_CATEGORY_SUM_GET_FAIL")
+		return netCategorySumList, exceptions.InternalServerError(err.Error(), "TRANSACTION_GET_FAIL")
 	}
-	for _, categorySum := range categoriesAndSum {
-		netByCategoriesList = append(netByCategoriesList, categorySum.ToString())
+	for categoryName, transactions := range categoryTransactionsMap {
+		netAmount := 0
+		for _, transaction := range transactions {
+			netAmount += transaction.Amount
+		}
+		netCategorySum := views.NetCategorySum{Category: categoryName, NetAmount: netAmount}
+		netCategorySumList = append(netCategorySumList, netCategorySum.ToString())
 	}
-	return netByCategoriesList, nil
+	return netCategorySumList, nil
 }

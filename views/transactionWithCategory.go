@@ -1,6 +1,7 @@
 package views
 
 import (
+	"Karchu/models"
 	"fmt"
 	"time"
 )
@@ -12,6 +13,10 @@ type TransactionWithCategory struct {
 	Time         time.Time
 	Description  string
 	SplitTag     string
+}
+
+func NewTransactionWithCategory(transaction models.Transaction, categoryName string) TransactionWithCategory {
+	return TransactionWithCategory{ID: transaction.ID, CategoryName: categoryName, Amount: transaction.Amount, Time: transaction.Time, Description: transaction.Description, SplitTag: transaction.SplitTag}
 }
 
 func (transaction *TransactionWithCategory) ToString() string {
