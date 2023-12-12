@@ -26,6 +26,15 @@ func CreateUser(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, helpers.CreateSuccessResponse("USER_CREATED", fmt.Sprintf("user id %d is created", userId)))
 }
 
+func AuthUser(ctx *gin.Context) {
+	userIDUint, ok := getUserID(ctx)
+	if !ok {
+		ctx.JSON(http.StatusInternalServerError, helpers.CreateErrorResponse("Error while getting userId", "USERID_NOT_SET_CTX"))
+		return
+	}
+	ctx.JSON(http.StatusOK, userIDUint)
+}
+
 func GetTransactionsListOfUser(ctx *gin.Context) {
 	userIDUint, ok := getUserID(ctx)
 	if !ok {
