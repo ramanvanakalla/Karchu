@@ -19,6 +19,7 @@ func main() {
 	router.Use(controllers.AuthMiddleware)
 	// User
 	router.POST("/v1/user", controllers.CreateUser)
+	router.POST("/v1/user/auth", controllers.AuthUser)
 	// Categories
 	router.POST("/v1/categories/all", controllers.GetCategories)
 	router.POST("/v1/categories/n", controllers.GetCategories)
