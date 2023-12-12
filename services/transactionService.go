@@ -93,6 +93,21 @@ func GetTransactionsList(userId uint) ([]string, *exceptions.GeneralException) {
 	return transactionsList, nil
 }
 
+func GetTransactions(userId uint) ([]views.TransactionWithCategory, *exceptions.GeneralException) {
+	categoryTransactionsMap, err := dao.GetAllTransactionsByUserId(userId)
+	transactionsList := make([]views.TransactionWithCategory, 0)
+	if err != nil {
+		return transactionsList, exceptions.InternalServerError(err.Error(), "TRANSACTION_GET_FAIL")
+	}
+	for categoryName, transactions := range categoryTransactionsMap {
+		for _, transaction := range transactions {
+			transactionView := views.NewTransactionWithCategory(transaction, categoryName)
+			transactionsList = append(transactionsList, transactionView)
+		}
+	}
+	return transactionsList, nil
+}
+
 func GetNetMoneySpentByCategory(userId uint) ([]string, *exceptions.GeneralException) {
 	categoryTransactionsMap, err := dao.GetAllTransactionsByUserId(userId)
 	netCategorySumList := make([]string, 0)

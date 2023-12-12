@@ -54,3 +54,23 @@ func GetTransactionsListOfUser(ctx *gin.Context) {
 	}
 	ctx.JSON(http.StatusOK, transactionList)
 }
+
+func GetTransactions(ctx *gin.Context) {
+	userIDUint, ok := getUserID(ctx)
+	if !ok {
+		ctx.JSON(http.StatusInternalServerError, helpers.CreateErrorResponse("Error while getting userId", "USERID_NOT_SET_CTX"))
+		return
+	}
+	var req requests.GetTransactionsReq
+	if err := ctx.ShouldBindBodyWith(&req, binding.JSON); err != nil {
+		ctx.JSON(http.StatusBadRequest, helpers.CreateErrorResponse("CANT_PARSE_REQ", err.Error()))
+		ctx.Abort()
+		return
+	}
+	transactionList, ex := services.GetTransactions(userIDUint)
+	if ex != nil {
+		ctx.JSON(ex.StatusCode, helpers.CreateErrorResponse(ex.Status, ex.Message))
+		return
+	}
+	ctx.JSON(http.StatusOK, transactionList)
+}
