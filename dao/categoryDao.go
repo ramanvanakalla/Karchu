@@ -65,3 +65,21 @@ func GetTransactionsOfCategory(userId uint, categoryName string) ([]models.Trans
 		Error
 	return category.Transactions, err
 }
+
+func RenameCategory(userId uint, oldCategoryName string, newCategoryName string) (uint, error) {
+	err := initializers.DB.
+		Model(&models.Category{}).
+		Where("user_id = ? AND category_name = ?", userId, oldCategoryName).
+		Update("category_name", newCategoryName).
+		Error
+	if err != nil {
+		return 0, err
+	}
+	var updatedCategory models.Category
+	err = initializers.DB.
+		Model(&models.Category{}).
+		Where("user_id = ? AND category_name = ?", userId, newCategoryName).
+		First(&updatedCategory).
+		Error
+	return updatedCategory.ID, err
+}

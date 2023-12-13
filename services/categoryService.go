@@ -67,3 +67,14 @@ func GetTransactionsOfCategory(userId uint, categoryName string) ([]string, *exc
 	}
 	return transactionsList, nil
 }
+
+func RenameCategory(userId uint, oldCategoryName string, newCategoryName string) (uint, *exceptions.GeneralException) {
+	if !validateAndNormalizeCategory(&newCategoryName) {
+		return 0, exceptions.BadRequestError(fmt.Sprintf("invalid category format %s", newCategoryName), "INVALID_CATEGORY_FORMAT")
+	}
+	id, err := dao.RenameCategory(userId, oldCategoryName, newCategoryName)
+	if err != nil {
+		return 0, exceptions.InternalServerError(err.Error(), "RENAME_FAIL")
+	}
+	return id, nil
+}

@@ -62,7 +62,14 @@ type DeleteTransactionFromTransStringReq struct {
 	TransString string
 }
 
-type NetAmountByCategory struct {
+type NetAmountByCategoryReq struct {
 	Email    string
 	Password string
+}
+
+type RenameCategoryReq struct {
+	Email           string
+	Password        string
+	OldCategoryName string
+	NewCategoryName string
 }

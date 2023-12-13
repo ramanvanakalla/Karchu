@@ -25,6 +25,7 @@ func main() {
 	router.POST("/v1/categories/n", controllers.GetCategories)
 	router.POST("/v1/categories", controllers.CreateCategory)
 	router.DELETE("/v1/categories", controllers.DeleteCategory)
+	router.PATCH("/v1/categories", controllers.RenameCategory)
 	// Transactions
 	router.POST("/v1/transactions", controllers.NewTransaction)
 	router.POST("/v1/transactions/get", controllers.GetTransactions)

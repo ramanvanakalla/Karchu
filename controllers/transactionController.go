@@ -98,7 +98,7 @@ func GetNetMoneySpentByCategory(ctx *gin.Context) {
 		ctx.JSON(http.StatusInternalServerError, helpers.CreateErrorResponse("Error while getting userId", "USERID_NOT_SET_CTX"))
 		return
 	}
-	var req requests.NetAmountByCategory
+	var req requests.NetAmountByCategoryReq
 	if err := ctx.ShouldBindBodyWith(&req, binding.JSON); err != nil {
 		ctx.JSON(http.StatusBadRequest, helpers.CreateErrorResponse("CANT_PARSE_REQ", err.Error()))
 		ctx.Abort()
