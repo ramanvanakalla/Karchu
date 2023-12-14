@@ -130,6 +130,7 @@ func MergeCategory(ctx *gin.Context) {
 	ex := services.MergeCategory(userIDUint, req.SourceCategoryName, req.DestinationCategoryName)
 	if ex != nil {
 		ctx.JSON(ex.StatusCode, helpers.CreateErrorResponse(ex.Status, ex.Message))
+		return
 	}
 	ctx.JSON(http.StatusOK, helpers.CreateSuccessResponse("CATEGORY_MERGED", fmt.Sprintf("Category %s merged into %s", req.SourceCategoryName, req.DestinationCategoryName)))
 }
