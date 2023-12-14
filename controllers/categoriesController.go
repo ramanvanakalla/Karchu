@@ -12,7 +12,7 @@ import (
 )
 
 func addExtraCategoriesForUI(categoriesArr *[]string) {
-	*categoriesArr = append(*categoriesArr, "New-Category")
+	*categoriesArr = append(*categoriesArr, "Add a New Category?")
 }
 
 func GetCategories(ctx *gin.Context) {
