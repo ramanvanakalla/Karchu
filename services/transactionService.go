@@ -6,6 +6,7 @@ import (
 	"Karchu/models"
 	"Karchu/views"
 	"fmt"
+	"sort"
 	"strings"
 	"time"
 )
@@ -84,11 +85,17 @@ func GetTransactionsList(userId uint) ([]string, *exceptions.GeneralException) {
 	if err != nil {
 		return transactionsList, exceptions.InternalServerError(err.Error(), "TRANSACTION_GET_FAIL")
 	}
+	transactionViewList := make([]views.TransactionWithCategory, 0)
 	for categoryName, transactions := range categoryTransactionsMap {
 		for _, transaction := range transactions {
-			transactionView := views.NewTransactionWithCategory(transaction, categoryName)
-			transactionsList = append(transactionsList, transactionView.ToString())
+			transactionViewList = append(transactionViewList, views.NewTransactionWithCategory(transaction, categoryName))
 		}
+	}
+	sort.Slice(transactionViewList, func(i, j int) bool {
+		return transactionViewList[i].ID > transactionViewList[j].ID
+	})
+	for _, transactionView := range transactionViewList {
+		transactionsList = append(transactionsList, transactionView.ToString())
 	}
 	return transactionsList, nil
 }
