@@ -3,6 +3,7 @@ package dao
 import (
 	"Karchu/initializers"
 	"Karchu/models"
+	"errors"
 )
 
 func GetCategoriesByUserID(userID uint) ([]models.Category, error) {
@@ -85,6 +86,9 @@ func RenameCategory(userId uint, oldCategoryName string, newCategoryName string)
 }
 
 func MergeCategory(userId uint, sourceCategoryId uint, destinationCategoryId uint) error {
+	if sourceCategoryId == destinationCategoryId {
+		return errors.New("source and destination category are same")
+	}
 	tx := initializers.DB.Begin()
 	defer func() {
 		if r := recover(); r != nil {
