@@ -112,6 +112,9 @@ func GetTransactions(userId uint) ([]views.TransactionWithCategory, *exceptions.
 			transactionsList = append(transactionsList, transactionView)
 		}
 	}
+	sort.Slice(transactionsList, func(i, j int) bool {
+		return transactionsList[i].ID > transactionsList[j].ID
+	})
 	return transactionsList, nil
 }
 
