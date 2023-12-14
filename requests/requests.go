@@ -73,3 +73,10 @@ type RenameCategoryReq struct {
 	OldCategoryName string
 	NewCategoryName string
 }
+
+type MergeCategory struct {
+	Email                   string
+	Password                string
+	SourceCategoryName      string
+	DestinationCategoryName string
+}

@@ -114,3 +114,22 @@ func RenameCategory(ctx *gin.Context) {
 	}
 	ctx.JSON(http.StatusOK, helpers.CreateSuccessResponse("CATEGORY_RENAMED", fmt.Sprintf("Category ID %d renamed", categoryId)))
 }
+
+func MergeCategory(ctx *gin.Context) {
+	userIDUint, ok := getUserID(ctx)
+	if !ok {
+		ctx.JSON(http.StatusInternalServerError, helpers.CreateErrorResponse("Error while getting userId", "USERID_NOT_SET_CTX"))
+		return
+	}
+	var req requests.MergeCategory
+	if err := ctx.ShouldBindBodyWith(&req, binding.JSON); err != nil {
+		ctx.JSON(http.StatusBadRequest, helpers.CreateErrorResponse("CANT_PARSE_REQ", err.Error()))
+		ctx.Abort()
+		return
+	}
+	ex := services.MergeCategory(userIDUint, req.SourceCategoryName, req.DestinationCategoryName)
+	if ex != nil {
+		ctx.JSON(ex.StatusCode, helpers.CreateErrorResponse(ex.Status, ex.Message))
+	}
+	ctx.JSON(http.StatusOK, helpers.CreateSuccessResponse("CATEGORY_MERGED", fmt.Sprintf("Category %s merged into %s", req.SourceCategoryName, req.DestinationCategoryName)))
+}

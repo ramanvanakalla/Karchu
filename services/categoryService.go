@@ -78,3 +78,19 @@ func RenameCategory(userId uint, oldCategoryName string, newCategoryName string)
 	}
 	return id, nil
 }
+
+func MergeCategory(userId uint, sourceCategoryName string, destinationCategoryName string) *exceptions.GeneralException {
+	sourceCategoryId, sourceCaterr := dao.GetCategoryIdByUserIdAndCategoryName(userId, sourceCategoryName)
+	if sourceCaterr != nil {
+		return exceptions.InternalServerError(fmt.Sprintf("Failed to get CategoryId for %s", sourceCategoryName), "FAIL_CATEGORY_ID")
+	}
+	destCategoryId, destCaterr := dao.GetCategoryIdByUserIdAndCategoryName(userId, destinationCategoryName)
+	if destCaterr != nil {
+		return exceptions.InternalServerError(fmt.Sprintf("Failed to get CategoryId for %s", destinationCategoryName), "FAIL_CATEGORY_ID")
+	}
+	mergeErr := dao.MergeCategory(userId, sourceCategoryId, destCategoryId)
+	if mergeErr != nil {
+		return exceptions.InternalServerError(fmt.Sprintf("Failed to merge category %s into %s", sourceCategoryName, destinationCategoryName), "FAIL_CATEGORY_MERGE")
+	}
+	return nil
+}

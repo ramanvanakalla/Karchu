@@ -83,3 +83,32 @@ func RenameCategory(userId uint, oldCategoryName string, newCategoryName string)
 		Error
 	return updatedCategory.ID, err
 }
+
+func MergeCategory(userId uint, sourceCategoryId uint, destinationCategoryId uint) error {
+	tx := initializers.DB.Begin()
+	defer func() {
+		if r := recover(); r != nil {
+			tx.Rollback()
+		}
+	}()
+
+	// Step 1: Update Transactions
+	updateErr := tx.Model(&models.Transaction{}).
+		Where("category_id = ?", sourceCategoryId).
+		Update("category_id", destinationCategoryId).
+		Error
+	if updateErr != nil {
+		tx.Rollback()
+		return updateErr
+	}
+
+	// Step 2: Delete Source Category
+	deleteErr := tx.Delete(&models.Category{}, sourceCategoryId).Error
+	if deleteErr != nil {
+		tx.Rollback()
+		return deleteErr
+	}
+
+	// Commit the transaction if everything is successful
+	return tx.Commit().Error
+}
