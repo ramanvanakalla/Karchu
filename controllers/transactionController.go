@@ -1,8 +1,8 @@
 package controllers
 
 import (
-	"Karchu/helpers"
 	"Karchu/requests"
+	"Karchu/responses"
 	"Karchu/services"
 	"fmt"
 	"net/http"
@@ -14,79 +14,79 @@ import (
 func NewTransaction(ctx *gin.Context) {
 	userIDUint, ok := getUserID(ctx)
 	if !ok {
-		ctx.JSON(http.StatusInternalServerError, helpers.CreateErrorResponse("Error while getting userId", "USERID_NOT_SET_CTX"))
+		ctx.JSON(http.StatusInternalServerError, responses.CreateErrorResponse("Error while getting userId", "USERID_NOT_SET_CTX"))
 		return
 	}
 	var req requests.CreateTransactionReq
 	if err := ctx.ShouldBindBodyWith(&req, binding.JSON); err != nil {
-		ctx.JSON(http.StatusBadRequest, helpers.CreateErrorResponse("CANT_PARSE_REQ", err.Error()))
+		ctx.JSON(http.StatusBadRequest, responses.CreateErrorResponse("CANT_PARSE_REQ", err.Error()))
 		ctx.Abort()
 		return
 	}
 	transactionId, ex := services.CreateTransaction(userIDUint, req.Time, req.Amount, req.Category, req.Description, req.SplitTag)
 	if ex != nil {
-		ctx.JSON(ex.StatusCode, helpers.CreateErrorResponse(ex.Status, ex.Message))
+		ctx.JSON(ex.StatusCode, responses.CreateErrorResponse(ex.Status, ex.Message))
 		return
 	}
-	ctx.JSON(http.StatusOK, helpers.CreateSuccessResponse("TRANSACTION_CREATED", fmt.Sprintf("transaction Id %d created", transactionId)))
+	ctx.JSON(http.StatusOK, responses.CreateSuccessResponse("TRANSACTION_CREATED", fmt.Sprintf("transaction Id %d created", transactionId)))
 }
 
 func DeleteTransactionFromTransString(ctx *gin.Context) {
 	userIDUint, ok := getUserID(ctx)
 	if !ok {
-		ctx.JSON(http.StatusInternalServerError, helpers.CreateErrorResponse("Error while getting userId", "USERID_NOT_SET_CTX"))
+		ctx.JSON(http.StatusInternalServerError, responses.CreateErrorResponse("Error while getting userId", "USERID_NOT_SET_CTX"))
 		return
 	}
 	var req requests.DeleteTransactionFromTransStringReq
 	if err := ctx.ShouldBindBodyWith(&req, binding.JSON); err != nil {
-		ctx.JSON(http.StatusBadRequest, helpers.CreateErrorResponse("CANT_PARSE_REQ", err.Error()))
+		ctx.JSON(http.StatusBadRequest, responses.CreateErrorResponse("CANT_PARSE_REQ", err.Error()))
 		ctx.Abort()
 		return
 	}
 	fmt.Println(req.TransString)
 	delTransactionId, ex := services.DeleteTransactionFromTransString(req.TransString, userIDUint)
 	if ex != nil {
-		ctx.JSON(ex.StatusCode, helpers.CreateErrorResponse(ex.Status, ex.Message))
+		ctx.JSON(ex.StatusCode, responses.CreateErrorResponse(ex.Status, ex.Message))
 		return
 	}
-	ctx.JSON(http.StatusOK, helpers.CreateSuccessResponse("TRANS_DELETED", fmt.Sprintf("Trans Id %d deleted", delTransactionId)))
+	ctx.JSON(http.StatusOK, responses.CreateSuccessResponse("TRANS_DELETED", fmt.Sprintf("Trans Id %d deleted", delTransactionId)))
 }
 
 func DeleteTransaction(ctx *gin.Context) {
 	userIDUint, ok := getUserID(ctx)
 	if !ok {
-		ctx.JSON(http.StatusInternalServerError, helpers.CreateErrorResponse("Error while getting userId", "USERID_NOT_SET_CTX"))
+		ctx.JSON(http.StatusInternalServerError, responses.CreateErrorResponse("Error while getting userId", "USERID_NOT_SET_CTX"))
 		return
 	}
 	var req requests.DeleteTransactionReq
 	if err := ctx.ShouldBindBodyWith(&req, binding.JSON); err != nil {
-		ctx.JSON(http.StatusBadRequest, helpers.CreateErrorResponse("CANT_PARSE_REQ", err.Error()))
+		ctx.JSON(http.StatusBadRequest, responses.CreateErrorResponse("CANT_PARSE_REQ", err.Error()))
 		ctx.Abort()
 		return
 	}
 	delTransactionId, ex := services.DeleteTransaction(req.TransactionId, userIDUint)
 	if ex != nil {
-		ctx.JSON(ex.StatusCode, helpers.CreateErrorResponse(ex.Status, ex.Message))
+		ctx.JSON(ex.StatusCode, responses.CreateErrorResponse(ex.Status, ex.Message))
 		return
 	}
-	ctx.JSON(http.StatusOK, helpers.CreateSuccessResponse("TRANS_DELETED", fmt.Sprintf("Trans Id %d deleted", delTransactionId)))
+	ctx.JSON(http.StatusOK, responses.CreateSuccessResponse("TRANS_DELETED", fmt.Sprintf("Trans Id %d deleted", delTransactionId)))
 }
 
 func GetLastNTransactions(ctx *gin.Context) {
 	userIDUint, ok := getUserID(ctx)
 	if !ok {
-		ctx.JSON(http.StatusInternalServerError, helpers.CreateErrorResponse("Error while getting userId", "USERID_NOT_SET_CTX"))
+		ctx.JSON(http.StatusInternalServerError, responses.CreateErrorResponse("Error while getting userId", "USERID_NOT_SET_CTX"))
 		return
 	}
 	var req requests.GetLastNTransactionsReq
 	if err := ctx.ShouldBindBodyWith(&req, binding.JSON); err != nil {
-		ctx.JSON(http.StatusBadRequest, helpers.CreateErrorResponse("CANT_PARSE_REQ", err.Error()))
+		ctx.JSON(http.StatusBadRequest, responses.CreateErrorResponse("CANT_PARSE_REQ", err.Error()))
 		ctx.Abort()
 		return
 	}
 	transactionList, ex := services.GetLastNTransactionsList(userIDUint, req.LastN)
 	if ex != nil {
-		ctx.JSON(ex.StatusCode, helpers.CreateErrorResponse(ex.Status, ex.Message))
+		ctx.JSON(ex.StatusCode, responses.CreateErrorResponse(ex.Status, ex.Message))
 		return
 	}
 	ctx.JSON(http.StatusOK, transactionList)
@@ -95,18 +95,18 @@ func GetLastNTransactions(ctx *gin.Context) {
 func GetNetMoneySpentByCategory(ctx *gin.Context) {
 	userIDUint, ok := getUserID(ctx)
 	if !ok {
-		ctx.JSON(http.StatusInternalServerError, helpers.CreateErrorResponse("Error while getting userId", "USERID_NOT_SET_CTX"))
+		ctx.JSON(http.StatusInternalServerError, responses.CreateErrorResponse("Error while getting userId", "USERID_NOT_SET_CTX"))
 		return
 	}
 	var req requests.NetAmountByCategoryReq
 	if err := ctx.ShouldBindBodyWith(&req, binding.JSON); err != nil {
-		ctx.JSON(http.StatusBadRequest, helpers.CreateErrorResponse("CANT_PARSE_REQ", err.Error()))
+		ctx.JSON(http.StatusBadRequest, responses.CreateErrorResponse("CANT_PARSE_REQ", err.Error()))
 		ctx.Abort()
 		return
 	}
 	netByCategoriesList, ex := services.GetNetMoneySpentByCategory(userIDUint)
 	if ex != nil {
-		ctx.JSON(ex.StatusCode, helpers.CreateErrorResponse(ex.Status, ex.Message))
+		ctx.JSON(ex.StatusCode, responses.CreateErrorResponse(ex.Status, ex.Message))
 		return
 	}
 	ctx.JSON(http.StatusOK, netByCategoriesList)

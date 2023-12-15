@@ -1,8 +1,8 @@
 package controllers
 
 import (
-	"Karchu/helpers"
 	"Karchu/requests"
+	"Karchu/responses"
 	"Karchu/services"
 	"fmt"
 	"net/http"
@@ -11,25 +11,43 @@ import (
 	"github.com/gin-gonic/gin/binding"
 )
 
+// CreateUser godoc
+// @Summary      create a user
+// @Description  creates a user
+// @Tags         Users
+// @Accept       json
+// @Produce      json
+// @Param        request body requests.CreateUserReq true "enter Email, Name and Password"
+// @Success      200  {object} responses.SuccessRes
+// @Router       /user/ [post]
 func CreateUser(ctx *gin.Context) {
 	var req requests.CreateUserReq
 	if err := ctx.ShouldBindBodyWith(&req, binding.JSON); err != nil {
-		ctx.JSON(http.StatusBadRequest, helpers.CreateErrorResponse("AUTH_BAD_REQUEST", err.Error()))
+		ctx.JSON(http.StatusBadRequest, responses.CreateErrorResponse("AUTH_BAD_REQUEST", err.Error()))
 		ctx.Abort()
 		return
 	}
 	userId, ex := services.CreateUser(req.Email, req.Password, req.Name)
 	if ex != nil {
-		ctx.JSON(ex.StatusCode, helpers.CreateErrorResponse(ex.Status, ex.Message))
+		ctx.JSON(ex.StatusCode, responses.CreateErrorResponse(ex.Status, ex.Message))
 		return
 	}
-	ctx.JSON(http.StatusOK, helpers.CreateSuccessResponse("USER_CREATED", fmt.Sprintf("user id %d is created", userId)))
+	ctx.JSON(http.StatusOK, responses.CreateSuccessResponse("USER_CREATED", fmt.Sprintf("user id %d is created", userId)))
 }
 
+// AuthUser godoc
+// @Summary      Authorizes the user creds
+// @Description  authorizes given user credentials
+// @Tags         Users
+// @Accept       json
+// @Produce      json
+// @Param        request body requests.UserReq true "enter Email and Password"
+// @Success      200  {object} responses.SuccessRes
+// @Router       /user/auth [post]
 func AuthUser(ctx *gin.Context) {
 	userIDUint, ok := getUserID(ctx)
 	if !ok {
-		ctx.JSON(http.StatusInternalServerError, helpers.CreateErrorResponse("Error while getting userId", "USERID_NOT_SET_CTX"))
+		ctx.JSON(http.StatusInternalServerError, responses.CreateErrorResponse("Error while getting userId", "USERID_NOT_SET_CTX"))
 		return
 	}
 	ctx.JSON(http.StatusOK, userIDUint)
@@ -38,18 +56,18 @@ func AuthUser(ctx *gin.Context) {
 func GetTransactionsListOfUser(ctx *gin.Context) {
 	userIDUint, ok := getUserID(ctx)
 	if !ok {
-		ctx.JSON(http.StatusInternalServerError, helpers.CreateErrorResponse("Error while getting userId", "USERID_NOT_SET_CTX"))
+		ctx.JSON(http.StatusInternalServerError, responses.CreateErrorResponse("Error while getting userId", "USERID_NOT_SET_CTX"))
 		return
 	}
 	var req requests.GetTransactionsReq
 	if err := ctx.ShouldBindBodyWith(&req, binding.JSON); err != nil {
-		ctx.JSON(http.StatusBadRequest, helpers.CreateErrorResponse("CANT_PARSE_REQ", err.Error()))
+		ctx.JSON(http.StatusBadRequest, responses.CreateErrorResponse("CANT_PARSE_REQ", err.Error()))
 		ctx.Abort()
 		return
 	}
 	transactionList, ex := services.GetTransactionsList(userIDUint)
 	if ex != nil {
-		ctx.JSON(ex.StatusCode, helpers.CreateErrorResponse(ex.Status, ex.Message))
+		ctx.JSON(ex.StatusCode, responses.CreateErrorResponse(ex.Status, ex.Message))
 		return
 	}
 	ctx.JSON(http.StatusOK, transactionList)
@@ -58,18 +76,18 @@ func GetTransactionsListOfUser(ctx *gin.Context) {
 func GetTransactions(ctx *gin.Context) {
 	userIDUint, ok := getUserID(ctx)
 	if !ok {
-		ctx.JSON(http.StatusInternalServerError, helpers.CreateErrorResponse("Error while getting userId", "USERID_NOT_SET_CTX"))
+		ctx.JSON(http.StatusInternalServerError, responses.CreateErrorResponse("Error while getting userId", "USERID_NOT_SET_CTX"))
 		return
 	}
 	var req requests.GetTransactionsReq
 	if err := ctx.ShouldBindBodyWith(&req, binding.JSON); err != nil {
-		ctx.JSON(http.StatusBadRequest, helpers.CreateErrorResponse("CANT_PARSE_REQ", err.Error()))
+		ctx.JSON(http.StatusBadRequest, responses.CreateErrorResponse("CANT_PARSE_REQ", err.Error()))
 		ctx.Abort()
 		return
 	}
 	transactionList, ex := services.GetTransactions(userIDUint)
 	if ex != nil {
-		ctx.JSON(ex.StatusCode, helpers.CreateErrorResponse(ex.Status, ex.Message))
+		ctx.JSON(ex.StatusCode, responses.CreateErrorResponse(ex.Status, ex.Message))
 		return
 	}
 	ctx.JSON(http.StatusOK, transactionList)

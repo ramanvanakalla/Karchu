@@ -29,7 +29,7 @@ func init() {
 // @license.name  Apache 2.0
 // @license.url   http://www.apache.org/licenses/LICENSE-2.0.html
 
-// @host      https://karchu.onrender.com
+// @host      karchu.onrender.com
 // @BasePath  /v1
 
 // @securityDefinitions.basic  BasicAuth

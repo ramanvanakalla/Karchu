@@ -1,8 +1,8 @@
 package controllers
 
 import (
-	"Karchu/helpers"
 	"Karchu/requests"
+	"Karchu/responses"
 	"Karchu/services"
 	"net/http"
 
@@ -27,13 +27,13 @@ func AuthMiddleware(ctx *gin.Context) {
 	}
 	var userReq requests.UserReq
 	if err := ctx.ShouldBindBodyWith(&userReq, binding.JSON); err != nil {
-		ctx.JSON(http.StatusBadRequest, helpers.CreateErrorResponse("CANT_PARSE_REQ", err.Error()))
+		ctx.JSON(http.StatusBadRequest, responses.CreateErrorResponse("CANT_PARSE_REQ", err.Error()))
 		ctx.Abort()
 		return
 	}
 	userID, ex := services.AuthenticateUser(userReq.Email, userReq.Password)
 	if ex != nil {
-		ctx.JSON(ex.StatusCode, helpers.CreateErrorResponse(ex.Status, ex.Message))
+		ctx.JSON(ex.StatusCode, responses.CreateErrorResponse(ex.Status, ex.Message))
 		ctx.Abort()
 		return
 	}

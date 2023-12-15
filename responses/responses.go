@@ -1,6 +1,16 @@
-package helpers
+package responses
 
 import "github.com/gin-gonic/gin"
+
+type ErrorRes struct {
+	Error_code    string
+	Error_message string
+}
+
+type SuccessRes struct {
+	Success_code    string
+	Success_message string
+}
 
 func CreateErrorResponse(errorCode string, errorMessage string) gin.H {
 	return (gin.H{
