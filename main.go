@@ -5,7 +5,11 @@ import (
 	"Karchu/initializers"
 	"log"
 
+	_ "Karchu/docs"
+
 	"github.com/gin-gonic/gin"
+	swaggerFiles "github.com/swaggo/files"     // swagger embed files
+	ginSwagger "github.com/swaggo/gin-swagger" // gin-swagger middleware
 )
 
 func init() {
@@ -13,11 +17,30 @@ func init() {
 	initializers.ConnectToDatabase()
 }
 
+// @title           Karchu API
+// @version         1.0
+// @description     All APIs related to Karchu.
+// @termsOfService  http://swagger.io/terms/
+
+// @contact.name   API Support
+// @contact.url    http://www.swagger.io/support
+// @contact.email  support@swagger.io
+
+// @license.name  Apache 2.0
+// @license.url   http://www.apache.org/licenses/LICENSE-2.0.html
+
+// @host      localhost:3000
+// @BasePath  /v1
+
+// @securityDefinitions.basic  BasicAuth
+
+// @externalDocs.description  OpenAPI
+// @externalDocs.url          https://swagger.io/resources/open-api/
 func main() {
 	router := gin.Default()
-	router.Use(controllers.AuthMiddleware)
 	v1 := router.Group("/v1")
 	{
+		v1.Use(controllers.AuthMiddleware)
 		user := v1.Group("/user")
 		{
 			user.POST("", controllers.CreateUser)
@@ -52,7 +75,7 @@ func main() {
 		}
 	}
 	router.GET("/", controllers.Home)
-
+	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 	router.Run(":3000")
 	log.Println("Everything is setup")
 }
