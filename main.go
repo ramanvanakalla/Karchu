@@ -14,33 +14,43 @@ func init() {
 }
 
 func main() {
-	//gin.SetMode(gin.ReleaseMode)
 	router := gin.Default()
 	router.Use(controllers.AuthMiddleware)
-	// User
-	router.POST("/v1/user", controllers.CreateUser)
-	router.POST("/v1/user/auth", controllers.AuthUser)
-	// Categories
-	router.POST("/v1/categories/all", controllers.GetCategories)
-	router.POST("/v1/categories/n", controllers.GetCategories)
-	router.POST("/v1/categories", controllers.CreateCategory)
-	router.DELETE("/v1/categories", controllers.DeleteCategory)
-	router.PATCH("/v1/categories", controllers.RenameCategory)
-	router.POST("/v1/categories/merge", controllers.MergeCategory)
-	// Transactions
-	router.POST("/v1/transactions", controllers.NewTransaction)
-	router.POST("/v1/transactions/get", controllers.GetTransactions)
-	router.POST("/v1/transactions/all", controllers.GetTransactionsListOfUser)
-	router.POST("/v1/transactions/last-n", controllers.GetLastNTransactions)
-	router.POST("/v1/transactions/category", controllers.GetTransactionOfCategory)
-	router.DELETE("/v1/transactions", controllers.DeleteTransaction)
-	router.DELETE("/v1/transactions/str", controllers.DeleteTransactionFromTransString)
-	// SplitTags
-	router.GET("/v1/split-tags", controllers.GetSplitTags)
-
-	// Net
-	router.POST("/v1/net-amount/categories", controllers.GetNetMoneySpentByCategory)
-	//Home
+	v1 := router.Group("/v1")
+	{
+		user := v1.Group("/user")
+		{
+			user.POST("", controllers.CreateUser)
+			user.POST("/auth", controllers.AuthUser)
+		}
+		categories := v1.Group("/categories")
+		{
+			categories.POST("/all", controllers.GetCategories)
+			categories.POST("/n", controllers.GetCategories)
+			categories.POST("", controllers.CreateCategory)
+			categories.DELETE("", controllers.DeleteCategory)
+			categories.PATCH("", controllers.RenameCategory)
+			categories.POST("/merge", controllers.MergeCategory)
+		}
+		transactions := v1.Group("/transactions")
+		{
+			transactions.POST("", controllers.NewTransaction)
+			transactions.POST("/get", controllers.GetTransactions)
+			transactions.POST("/all", controllers.GetTransactionsListOfUser)
+			transactions.POST("/last-n", controllers.GetLastNTransactions)
+			transactions.POST("/category", controllers.GetTransactionOfCategory)
+			transactions.DELETE("", controllers.DeleteTransaction)
+			transactions.DELETE("/str", controllers.DeleteTransactionFromTransString)
+		}
+		splitTags := v1.Group("/split-tags")
+		{
+			splitTags.GET("", controllers.GetSplitTags)
+		}
+		netAmount := v1.Group("/net-amount")
+		{
+			netAmount.POST("/categories", controllers.GetNetMoneySpentByCategory)
+		}
+	}
 	router.GET("/", controllers.Home)
 
 	router.Run(":3000")
