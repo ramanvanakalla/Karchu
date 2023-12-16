@@ -11,6 +11,15 @@ import (
 	"github.com/gin-gonic/gin/binding"
 )
 
+// CreateTransaction godoc
+// @Summary      creates a transaction for a user
+// @Description  create a transaction with category
+// @Tags         Transactions
+// @Accept       json
+// @Produce      json
+// @Param        request body requests.CreateTransactionReq true "enter Email,Password"
+// @Success      200  {array} responses.SuccessRes
+// @Router       /transactions [post]
 func NewTransaction(ctx *gin.Context) {
 	userIDUint, ok := getUserID(ctx)
 	if !ok {
@@ -31,6 +40,15 @@ func NewTransaction(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, responses.CreateSuccessResponse("TRANSACTION_CREATED", fmt.Sprintf("transaction Id %d created", transactionId)))
 }
 
+// DeleteTransactionFromTransString godoc
+// @Summary      delete transaction for a user
+// @Description  delete a transaction for a given trans string
+// @Tags         Transactions
+// @Accept       json
+// @Produce      json
+// @Param        request body requests.DeleteTransactionFromTransStringReq true "enter Email,Password"
+// @Success      200  {object} responses.SuccessRes
+// @Router       /transactions/str [delete]
 func DeleteTransactionFromTransString(ctx *gin.Context) {
 	userIDUint, ok := getUserID(ctx)
 	if !ok {
@@ -52,6 +70,15 @@ func DeleteTransactionFromTransString(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, responses.CreateSuccessResponse("TRANS_DELETED", fmt.Sprintf("Trans Id %d deleted", delTransactionId)))
 }
 
+// DeleteTransaction godoc
+// @Summary      delete transaction for a user
+// @Description  delete a transaction
+// @Tags         Transactions
+// @Accept       json
+// @Produce      json
+// @Param        request body requests.DeleteTransactionReq true "enter Email,Password"
+// @Success      200  {object} responses.SuccessRes
+// @Router       /transactions [delete]
 func DeleteTransaction(ctx *gin.Context) {
 	userIDUint, ok := getUserID(ctx)
 	if !ok {
@@ -72,6 +99,15 @@ func DeleteTransaction(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, responses.CreateSuccessResponse("TRANS_DELETED", fmt.Sprintf("Trans Id %d deleted", delTransactionId)))
 }
 
+// GetLastNTransaction godoc
+// @Summary      Get last N transactions of user
+// @Description  Get last N transaction list of user
+// @Tags         Transactions
+// @Accept       json
+// @Produce      json
+// @Param        request body requests.GetLastNTransactionsReq true "enter Email,Password"
+// @Success      200  {array} string "last N transactions list"
+// @Router       /transactions/last-n [post]
 func GetLastNTransactions(ctx *gin.Context) {
 	userIDUint, ok := getUserID(ctx)
 	if !ok {
@@ -92,6 +128,15 @@ func GetLastNTransactions(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, transactionList)
 }
 
+// GetNetMoneySpentByCategory godoc
+// @Summary      get money spent on each category
+// @Description  get money spent on each category
+// @Tags         Net-Amount
+// @Accept       json
+// @Produce      json
+// @Param        request body requests.NetAmountByCategoryReq true "enter Email,Password"
+// @Success      200  {array} string "money spent on each category as list"
+// @Router       /net-amount/categories [post]
 func GetNetMoneySpentByCategory(ctx *gin.Context) {
 	userIDUint, ok := getUserID(ctx)
 	if !ok {

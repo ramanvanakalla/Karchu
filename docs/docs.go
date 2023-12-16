@@ -24,6 +24,80 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/categories/all": {
+            "post": {
+                "description": "returns array of categories",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Categories"
+                ],
+                "summary": "Get categories of user",
+                "parameters": [
+                    {
+                        "description": "enter Email,Password",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/requests.UserReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "list of categories",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/categories/n": {
+            "post": {
+                "description": "returns array of categories",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Categories"
+                ],
+                "summary": "Get categories of user",
+                "parameters": [
+                    {
+                        "description": "enter Email,Password",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/requests.UserReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "list of categories",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/user/": {
             "post": {
                 "description": "creates a user",
@@ -60,7 +134,7 @@ const docTemplate = `{
         },
         "/user/auth": {
             "post": {
-                "description": "authorizes given user credentials",
+                "description": "returns userId",
                 "consumes": [
                     "application/json"
                 ],
@@ -84,9 +158,9 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "200": {
-                        "description": "OK",
+                        "description": "User Id",
                         "schema": {
-                            "$ref": "#/definitions/responses.SuccessRes"
+                            "type": "int"
                         }
                     }
                 }

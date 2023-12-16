@@ -40,6 +40,54 @@ info:
   title: Karchu API
   version: "1.0"
 paths:
+  /categories/all:
+    post:
+      consumes:
+      - application/json
+      description: returns array of categories
+      parameters:
+      - description: enter Email,Password
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/requests.UserReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: list of categories
+          schema:
+            items:
+              type: string
+            type: array
+      summary: Get categories of user
+      tags:
+      - Categories
+  /categories/n:
+    post:
+      consumes:
+      - application/json
+      description: returns array of categories
+      parameters:
+      - description: enter Email,Password
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/requests.UserReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: list of categories
+          schema:
+            items:
+              type: string
+            type: array
+      summary: Get categories of user
+      tags:
+      - Categories
   /user/:
     post:
       consumes:
@@ -66,7 +114,7 @@ paths:
     post:
       consumes:
       - application/json
-      description: authorizes given user credentials
+      description: returns userId
       parameters:
       - description: enter Email and Password
         in: body
@@ -78,9 +126,9 @@ paths:
       - application/json
       responses:
         "200":
-          description: OK
+          description: User Id
           schema:
-            $ref: '#/definitions/responses.SuccessRes'
+            type: int
       summary: Authorizes the user creds
       tags:
       - Users

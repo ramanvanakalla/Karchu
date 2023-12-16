@@ -37,12 +37,12 @@ func CreateUser(ctx *gin.Context) {
 
 // AuthUser godoc
 // @Summary      Authorizes the user creds
-// @Description  authorizes given user credentials
+// @Description  returns userId
 // @Tags         Users
 // @Accept       json
 // @Produce      json
 // @Param        request body requests.UserReq true "enter Email and Password"
-// @Success      200  {object} responses.SuccessRes
+// @Success      200  {int} int "UserId"
 // @Router       /user/auth [post]
 func AuthUser(ctx *gin.Context) {
 	userIDUint, ok := getUserID(ctx)
@@ -53,6 +53,15 @@ func AuthUser(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, userIDUint)
 }
 
+// GetTransactionsListAsString godoc
+// @Summary      Get transactions list as string of user
+// @Description  returns transactions as string for UI
+// @Tags         Transactions
+// @Accept       json
+// @Produce      json
+// @Param        request body requests.GetTransactionsReq true "enter Email,Password"
+// @Success      200  {array} string "returns transaction strings as list"
+// @Router       /transactions/all [post]
 func GetTransactionsListOfUser(ctx *gin.Context) {
 	userIDUint, ok := getUserID(ctx)
 	if !ok {
@@ -73,6 +82,15 @@ func GetTransactionsListOfUser(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, transactionList)
 }
 
+// GetTransactions godoc
+// @Summary      Get transactions of user
+// @Description  returns transactions
+// @Tags         Transactions
+// @Accept       json
+// @Produce      json
+// @Param        request body requests.CreateTransactionReq true "enter Email,Password"
+// @Success      200  {array} models.Transaction "returns transaction as list"
+// @Router       /transactions/get [post]
 func GetTransactions(ctx *gin.Context) {
 	userIDUint, ok := getUserID(ctx)
 	if !ok {

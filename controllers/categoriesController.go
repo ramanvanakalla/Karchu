@@ -15,6 +15,16 @@ func addExtraCategoriesForUI(categoriesArr *[]string) {
 	*categoriesArr = append(*categoriesArr, "Add a New Category?")
 }
 
+// GetCategories godoc
+// @Summary      Get categories of user
+// @Description  returns array of categories
+// @Tags         Categories
+// @Accept       json
+// @Produce      json
+// @Param        request body requests.UserReq true "enter Email,Password"
+// @Success      200  {array} string "list of categories"
+// @Router       /categories/all [post]
+// @Router		 /categories/n [post]
 func GetCategories(ctx *gin.Context) {
 	userIDUint, ok := getUserID(ctx)
 	if !ok {
@@ -35,6 +45,15 @@ func GetCategories(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, categoriesArr)
 }
 
+// CreateCategory godoc
+// @Summary      create a category
+// @Description  creates a category for a user
+// @Tags         Category
+// @Accept       json
+// @Produce      json
+// @Param        request body requests.CreateCategoryReq true "enter credentials"
+// @Success      200  {object} responses.SuccessRes
+// @Router       /categories/ [post]
 func CreateCategory(ctx *gin.Context) {
 	userIDUint, ok := getUserID(ctx)
 	if !ok {
@@ -55,6 +74,15 @@ func CreateCategory(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, responses.CreateSuccessResponse("CATEGORY_CREATED", fmt.Sprintf("category Id %d created", categoryId)))
 }
 
+// DeleteCategory godoc
+// @Summary      Delete a category
+// @Description  Deletes a category for a user
+// @Tags         Category
+// @Accept       json
+// @Produce      json
+// @Param        request body requests.DeleteCategoryReq true "enter credentials"
+// @Success      200  {object} responses.SuccessRes
+// @Router       /categories/ [delete]
 func DeleteCategory(ctx *gin.Context) {
 	userIDUint, ok := getUserID(ctx)
 	if !ok {
@@ -75,6 +103,15 @@ func DeleteCategory(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, responses.CreateSuccessResponse("CATEGORY_DELETED", fmt.Sprintf("category Id %d deleted", categoryId)))
 }
 
+// GetTransactionOfCategory godoc
+// @Summary      returns transactions of category
+// @Description  returns transactions list for a category
+// @Tags         Transactions
+// @Accept       json
+// @Produce      json
+// @Param        request body requests.TransactionsOfCategoryReq true "enter Email,Password"
+// @Success      200  {array} string
+// @Router       /transactions/category [post]
 func GetTransactionOfCategory(ctx *gin.Context) {
 	userIDUint, ok := getUserID(ctx)
 	if !ok {
@@ -95,6 +132,15 @@ func GetTransactionOfCategory(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, transactionsOfCategory)
 }
 
+// RenameCategory godoc
+// @Summary      Rename a category
+// @Description  Renames a category for a user
+// @Tags         Category
+// @Accept       json
+// @Produce      json
+// @Param        request body requests.RenameCategoryReq true "enter credentials"
+// @Success      200  {object} responses.SuccessRes
+// @Router       /categories/ [patch]
 func RenameCategory(ctx *gin.Context) {
 	userIDUint, ok := getUserID(ctx)
 	if !ok {
@@ -115,6 +161,15 @@ func RenameCategory(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, responses.CreateSuccessResponse("CATEGORY_RENAMED", fmt.Sprintf("Category ID %d renamed", categoryId)))
 }
 
+// MergeCategory godoc
+// @Summary      Merge a category into another
+// @Description  Merges a category into another, all the transactions of soruce category will now be part of destination category
+// @Tags         Category
+// @Accept       json
+// @Produce      json
+// @Param        request body requests.MergeCategory true "enter credentials"
+// @Success      200  {object} responses.SuccessRes
+// @Router       /categories/merge [post]
 func MergeCategory(ctx *gin.Context) {
 	userIDUint, ok := getUserID(ctx)
 	if !ok {
