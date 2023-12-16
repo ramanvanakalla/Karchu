@@ -1,10 +1,117 @@
 basePath: /v1
 definitions:
+  requests.CreateCategoryReq:
+    properties:
+      categoryName:
+        type: string
+      email:
+        type: string
+      password:
+        type: string
+    type: object
+  requests.CreateTransactionReq:
+    properties:
+      amount:
+        type: integer
+      category:
+        type: string
+      description:
+        type: string
+      email:
+        type: string
+      password:
+        type: string
+      splitTag:
+        type: string
+      time:
+        type: string
+    type: object
   requests.CreateUserReq:
     properties:
       email:
         type: string
       name:
+        type: string
+      password:
+        type: string
+    type: object
+  requests.DeleteCategoryReq:
+    properties:
+      categoryName:
+        type: string
+      email:
+        type: string
+      password:
+        type: string
+    type: object
+  requests.DeleteTransactionFromTransStringReq:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+      transString:
+        type: string
+    type: object
+  requests.DeleteTransactionReq:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+      transactionId:
+        type: integer
+    type: object
+  requests.GetLastNTransactionsReq:
+    properties:
+      email:
+        type: string
+      lastN:
+        type: integer
+      password:
+        type: string
+    type: object
+  requests.GetTransactionsReq:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+    type: object
+  requests.MergeCategory:
+    properties:
+      destinationCategoryName:
+        type: string
+      email:
+        type: string
+      password:
+        type: string
+      sourceCategoryName:
+        type: string
+    type: object
+  requests.NetAmountByCategoryReq:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+    type: object
+  requests.RenameCategoryReq:
+    properties:
+      email:
+        type: string
+      newCategoryName:
+        type: string
+      oldCategoryName:
+        type: string
+      password:
+        type: string
+    type: object
+  requests.TransactionsOfCategoryReq:
+    properties:
+      categoryName:
+        type: string
+      email:
         type: string
       password:
         type: string
@@ -23,23 +130,77 @@ definitions:
       success_message:
         type: string
     type: object
-externalDocs:
-  description: OpenAPI
-  url: https://swagger.io/resources/open-api/
 host: karchu.onrender.com
 info:
-  contact:
-    email: support@swagger.io
-    name: API Support
-    url: http://www.swagger.io/support
+  contact: {}
   description: All APIs related to Karchu.
-  license:
-    name: Apache 2.0
-    url: http://www.apache.org/licenses/LICENSE-2.0.html
-  termsOfService: http://swagger.io/terms/
   title: Karchu API
   version: "1.0"
 paths:
+  /categories/:
+    delete:
+      consumes:
+      - application/json
+      description: Deletes a category for a user
+      parameters:
+      - description: enter credentials
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/requests.DeleteCategoryReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/responses.SuccessRes'
+      summary: Delete a category
+      tags:
+      - Category
+    patch:
+      consumes:
+      - application/json
+      description: Renames a category for a user
+      parameters:
+      - description: enter credentials
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/requests.RenameCategoryReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/responses.SuccessRes'
+      summary: Rename a category
+      tags:
+      - Category
+    post:
+      consumes:
+      - application/json
+      description: creates a category for a user
+      parameters:
+      - description: enter credentials
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/requests.CreateCategoryReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/responses.SuccessRes'
+      summary: create a category
+      tags:
+      - Category
   /categories/all:
     post:
       consumes:
@@ -64,6 +225,29 @@ paths:
       summary: Get categories of user
       tags:
       - Categories
+  /categories/merge:
+    post:
+      consumes:
+      - application/json
+      description: Merges a category into another, all the transactions of soruce
+        category will now be part of destination category
+      parameters:
+      - description: enter credentials
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/requests.MergeCategory'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/responses.SuccessRes'
+      summary: Merge a category into another
+      tags:
+      - Category
   /categories/n:
     post:
       consumes:
@@ -88,6 +272,206 @@ paths:
       summary: Get categories of user
       tags:
       - Categories
+  /net-amount/categories:
+    post:
+      consumes:
+      - application/json
+      description: get money spent on each category
+      parameters:
+      - description: enter Email,Password
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/requests.NetAmountByCategoryReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: money spent on each category as list
+          schema:
+            items:
+              type: string
+            type: array
+      summary: get money spent on each category
+      tags:
+      - Net-Amount
+  /split-tags:
+    get:
+      consumes:
+      - application/json
+      description: returns split tags
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: returns split tags
+          schema:
+            items:
+              type: string
+            type: array
+      summary: Get split tags
+      tags:
+      - Split-tags
+  /transactions:
+    delete:
+      consumes:
+      - application/json
+      description: delete a transaction
+      parameters:
+      - description: enter Email,Password
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/requests.DeleteTransactionReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/responses.SuccessRes'
+      summary: delete transaction for a user
+      tags:
+      - Transactions
+    post:
+      consumes:
+      - application/json
+      description: create a transaction with category
+      parameters:
+      - description: enter Email,Password
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/requests.CreateTransactionReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/responses.SuccessRes'
+            type: array
+      summary: creates a transaction for a user
+      tags:
+      - Transactions
+  /transactions/all:
+    post:
+      consumes:
+      - application/json
+      description: returns transactions as string for UI
+      parameters:
+      - description: enter Email,Password
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/requests.GetTransactionsReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: returns transaction strings as list
+          schema:
+            items:
+              type: string
+            type: array
+      summary: Get transactions list as string of user
+      tags:
+      - Transactions
+  /transactions/category:
+    post:
+      consumes:
+      - application/json
+      description: returns transactions list for a category
+      parameters:
+      - description: enter Email,Password
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/requests.TransactionsOfCategoryReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              type: string
+            type: array
+      summary: returns transactions of category
+      tags:
+      - Transactions
+  /transactions/get:
+    post:
+      consumes:
+      - application/json
+      description: returns transactions
+      parameters:
+      - description: enter Email,Password
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/requests.CreateTransactionReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+      summary: Get transactions of user
+      tags:
+      - Transactions
+  /transactions/last-n:
+    post:
+      consumes:
+      - application/json
+      description: Get last N transaction list of user
+      parameters:
+      - description: enter Email,Password
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/requests.GetLastNTransactionsReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: last N transactions list
+          schema:
+            items:
+              type: string
+            type: array
+      summary: Get last N transactions of user
+      tags:
+      - Transactions
+  /transactions/str:
+    delete:
+      consumes:
+      - application/json
+      description: delete a transaction for a given trans string
+      parameters:
+      - description: enter Email,Password
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/requests.DeleteTransactionFromTransStringReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/responses.SuccessRes'
+      summary: delete transaction for a user
+      tags:
+      - Transactions
   /user/:
     post:
       consumes:
@@ -126,7 +510,7 @@ paths:
       - application/json
       responses:
         "200":
-          description: User Id
+          description: UserId
           schema:
             type: int
       summary: Authorizes the user creds

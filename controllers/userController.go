@@ -89,7 +89,7 @@ func GetTransactionsListOfUser(ctx *gin.Context) {
 // @Accept       json
 // @Produce      json
 // @Param        request body requests.CreateTransactionReq true "enter Email,Password"
-// @Success      200  {array} models.Transaction "returns transaction as list"
+// @Success      200
 // @Router       /transactions/get [post]
 func GetTransactions(ctx *gin.Context) {
 	userIDUint, ok := getUserID(ctx)
