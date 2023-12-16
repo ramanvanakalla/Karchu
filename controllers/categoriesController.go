@@ -48,7 +48,7 @@ func GetCategories(ctx *gin.Context) {
 // CreateCategory godoc
 // @Summary      create a category
 // @Description  creates a category for a user
-// @Tags         Category
+// @Tags         Categories
 // @Accept       json
 // @Produce      json
 // @Param        request body requests.CreateCategoryReq true "enter credentials"
@@ -77,7 +77,7 @@ func CreateCategory(ctx *gin.Context) {
 // DeleteCategory godoc
 // @Summary      Delete a category
 // @Description  Deletes a category for a user
-// @Tags         Category
+// @Tags         Categories
 // @Accept       json
 // @Produce      json
 // @Param        request body requests.DeleteCategoryReq true "enter credentials"
@@ -135,7 +135,7 @@ func GetTransactionOfCategory(ctx *gin.Context) {
 // RenameCategory godoc
 // @Summary      Rename a category
 // @Description  Renames a category for a user
-// @Tags         Category
+// @Tags         Categories
 // @Accept       json
 // @Produce      json
 // @Param        request body requests.RenameCategoryReq true "enter credentials"
@@ -164,7 +164,7 @@ func RenameCategory(ctx *gin.Context) {
 // MergeCategory godoc
 // @Summary      Merge a category into another
 // @Description  Merges a category into another, all the transactions of soruce category will now be part of destination category
-// @Tags         Category
+// @Tags         Categories
 // @Accept       json
 // @Produce      json
 // @Param        request body requests.MergeCategory true "enter credentials"

@@ -25,7 +25,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Category"
+                    "Categories"
                 ],
                 "summary": "create a category",
                 "parameters": [
@@ -57,7 +57,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Category"
+                    "Categories"
                 ],
                 "summary": "Delete a category",
                 "parameters": [
@@ -89,7 +89,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Category"
+                    "Categories"
                 ],
                 "summary": "Rename a category",
                 "parameters": [
@@ -160,7 +160,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Category"
+                    "Categories"
                 ],
                 "summary": "Merge a category into another",
                 "parameters": [

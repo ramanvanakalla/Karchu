@@ -158,7 +158,7 @@ paths:
             $ref: '#/definitions/responses.SuccessRes'
       summary: Delete a category
       tags:
-      - Category
+      - Categories
     patch:
       consumes:
       - application/json
@@ -179,7 +179,7 @@ paths:
             $ref: '#/definitions/responses.SuccessRes'
       summary: Rename a category
       tags:
-      - Category
+      - Categories
     post:
       consumes:
       - application/json
@@ -200,7 +200,7 @@ paths:
             $ref: '#/definitions/responses.SuccessRes'
       summary: create a category
       tags:
-      - Category
+      - Categories
   /categories/all:
     post:
       consumes:
@@ -247,7 +247,7 @@ paths:
             $ref: '#/definitions/responses.SuccessRes'
       summary: Merge a category into another
       tags:
-      - Category
+      - Categories
   /categories/n:
     post:
       consumes:

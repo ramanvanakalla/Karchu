@@ -19,7 +19,7 @@
                     "application/json"
                 ],
                 "tags": [
-                    "Category"
+                    "Categories"
                 ],
                 "summary": "create a category",
                 "parameters": [
@@ -51,7 +51,7 @@
                     "application/json"
                 ],
                 "tags": [
-                    "Category"
+                    "Categories"
                 ],
                 "summary": "Delete a category",
                 "parameters": [
@@ -83,7 +83,7 @@
                     "application/json"
                 ],
                 "tags": [
-                    "Category"
+                    "Categories"
                 ],
                 "summary": "Rename a category",
                 "parameters": [
@@ -154,7 +154,7 @@
                     "application/json"
                 ],
                 "tags": [
-                    "Category"
+                    "Categories"
                 ],
                 "summary": "Merge a category into another",
                 "parameters": [
