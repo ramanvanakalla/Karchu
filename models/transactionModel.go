@@ -8,10 +8,11 @@ import (
 
 type Transaction struct {
 	gorm.Model
-	UserId      uint
-	CategoryId  uint
-	Amount      int
-	Time        time.Time
-	Description string
-	SplitTag    string
+	UserId           uint
+	CategoryId       uint
+	Amount           int
+	Time             time.Time
+	Description      string
+	SplitTag         string
+	CategoryMappings []CategoryTransactionMapping `gorm:"foreignKey:TransactionId"`
 }

@@ -6,7 +6,8 @@ import (
 
 type Category struct {
 	gorm.Model
-	UserId       uint
-	CategoryName string
-	Transactions []Transaction `gorm:"foreignKey:CategoryId;constraint:OnDelete:CASCADE;"`
+	UserId              uint
+	CategoryName        string
+	Transactions        []Transaction                `gorm:"foreignKey:CategoryId;constraint:OnDelete:CASCADE;"`
+	TransactionMappings []CategoryTransactionMapping `gorm:"foreignKey:CategoryId"`
 }

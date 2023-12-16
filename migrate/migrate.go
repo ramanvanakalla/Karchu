@@ -10,5 +10,5 @@ func init() {
 	initializers.ConnectToDatabase()
 }
 func main() {
-	initializers.DB.AutoMigrate(&models.User{}, &models.Transaction{}, &models.Category{})
+	initializers.DB.AutoMigrate(&models.User{}, &models.Transaction{}, &models.Category{}, &models.CategoryTransactionMapping{})
 }
