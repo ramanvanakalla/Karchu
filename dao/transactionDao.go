@@ -7,6 +7,31 @@ import (
 	"time"
 )
 
+func CreateTransactionV2(userId uint, time time.Time, amount int, category string, categoryId uint, description string, splitTag string) (uint, error) {
+	tx := initializers.DB.Begin()
+	defer func() {
+		if r := recover(); r != nil {
+			tx.Rollback()
+		}
+	}()
+
+	// step 1: add transaction to table
+	transaction := models.Transaction{UserId: userId, Time: time, Amount: amount, CategoryId: categoryId, Description: description, SplitTag: splitTag}
+	transactionErr := tx.Create(&transaction).Error
+	if transactionErr != nil {
+		tx.Rollback()
+		return 0, transactionErr
+	}
+	// step 2: add to transactionCatgoryTable
+	categoryTransactionMap := models.CategoryTransactionMapping{CategoryId: categoryId, TransactionId: transaction.ID}
+	categoryTransactionErr := tx.Create(&categoryTransactionMap).Error
+	if categoryTransactionErr != nil {
+		tx.Rollback()
+		return 0, categoryTransactionErr
+	}
+	return transaction.ID, tx.Commit().Error
+}
+
 func CreateTransaction(userId uint, time time.Time, amount int, category string, categoryId uint, description string, splitTag string) (uint, error) {
 	transaction := models.Transaction{UserId: userId, Time: time, Amount: amount, CategoryId: categoryId, Description: description, SplitTag: splitTag}
 	err := initializers.DB.Create(&transaction).Error
@@ -27,6 +52,24 @@ func DeleteTransactionbyTransactionIdAndUserId(transactionId uint, userId uint) 
 	return transaction.ID, deletionErr
 }
 
+func GetLastNTransactionsByUserIdV2(userId uint, lastN int) ([]views.TransactionWithCategory, error) {
+	var transactions []views.TransactionWithCategory
+	err := initializers.DB.
+		Model(&models.Transaction{}).
+		Joins("JOIN category_transaction_mappings ON transactions.id = category_transaction_mappings.transaction_id").
+		Joins("JOIN categories ON category_transaction_mappings.category_id = categories.id").
+		Where("transactions.user_id = ?", userId).
+		Select("transactions.*,categories.category_name").
+		Order("transactions.id desc").
+		Limit(lastN).
+		Find(&transactions).
+		Error
+	if err != nil {
+		return nil, err
+	}
+	return transactions, nil
+}
+
 func GetLastNTransactionsByUserId(userId uint, lastN int) ([]views.TransactionWithCategory, error) {
 	var transactions []views.TransactionWithCategory
 	err := initializers.DB.
@@ -39,6 +82,23 @@ func GetLastNTransactionsByUserId(userId uint, lastN int) ([]views.TransactionWi
 		Find(&transactions).
 		Error
 	return transactions, err
+}
+
+func GetTransactionsByUserId(userId uint) ([]views.TransactionWithCategory, error) {
+	var transactions []views.TransactionWithCategory
+	err := initializers.DB.
+		Model(&models.Transaction{}).
+		Joins("JOIN category_transaction_mappings ON transactions.id = category_transaction_mappings.transaction_id").
+		Joins("JOIN categories ON category_transaction_mappings.category_id = categories.id").
+		Where("transactions.user_id = ?", userId).
+		Select("transactions.*,categories.category_name").
+		Order("transactions.id desc").
+		Find(&transactions).
+		Error
+	if err != nil {
+		return nil, err
+	}
+	return transactions, nil
 }
 
 func GetNetMoneySpentByCategory(userID uint) ([]views.NetCategorySum, error) {

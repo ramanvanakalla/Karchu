@@ -11,6 +11,35 @@ import (
 	"github.com/gin-gonic/gin/binding"
 )
 
+// CreateTransactionV2 godoc
+// @Summary      creates a transaction for a user V2
+// @Description  create a transaction with category V2
+// @Tags         Transactions, V2
+// @Accept       json
+// @Produce      json
+// @Param        request body requests.CreateTransactionReq true "enter Email,Password"
+// @Success      200  {array} responses.SuccessRes
+// @Router       /transactions [post]
+func NewTransactionV2(ctx *gin.Context) {
+	userIDUint, ok := getUserID(ctx)
+	if !ok {
+		ctx.JSON(http.StatusInternalServerError, responses.CreateErrorResponse("Error while getting userId", "USERID_NOT_SET_CTX"))
+		return
+	}
+	var req requests.CreateTransactionReq
+	if err := ctx.ShouldBindBodyWith(&req, binding.JSON); err != nil {
+		ctx.JSON(http.StatusBadRequest, responses.CreateErrorResponse("CANT_PARSE_REQ", err.Error()))
+		ctx.Abort()
+		return
+	}
+	transactionId, ex := services.CreateTransactionV2(userIDUint, req.Time, req.Amount, req.Category, req.Description, req.SplitTag)
+	if ex != nil {
+		ctx.JSON(ex.StatusCode, responses.CreateErrorResponse(ex.Status, ex.Message))
+		return
+	}
+	ctx.JSON(http.StatusOK, responses.CreateSuccessResponse("TRANSACTION_CREATED", fmt.Sprintf("transaction Id %d created", transactionId)))
+}
+
 // CreateTransaction godoc
 // @Summary      creates a transaction for a user
 // @Description  create a transaction with category
@@ -97,6 +126,35 @@ func DeleteTransaction(ctx *gin.Context) {
 		return
 	}
 	ctx.JSON(http.StatusOK, responses.CreateSuccessResponse("TRANS_DELETED", fmt.Sprintf("Trans Id %d deleted", delTransactionId)))
+}
+
+// GetLastNTransactionV2 godoc
+// @Summary      Get last N transactions of user
+// @Description  Get last N transaction list of user
+// @Tags         Transactions
+// @Accept       json
+// @Produce      json
+// @Param        request body requests.GetLastNTransactionsReq true "enter Email,Password"
+// @Success      200  {array} string "last N transactions list"
+// @Router       /transactions/last-n [post]
+func GetLastNTransactionsV2(ctx *gin.Context) {
+	userIDUint, ok := getUserID(ctx)
+	if !ok {
+		ctx.JSON(http.StatusInternalServerError, responses.CreateErrorResponse("Error while getting userId", "USERID_NOT_SET_CTX"))
+		return
+	}
+	var req requests.GetLastNTransactionsReq
+	if err := ctx.ShouldBindBodyWith(&req, binding.JSON); err != nil {
+		ctx.JSON(http.StatusBadRequest, responses.CreateErrorResponse("CANT_PARSE_REQ", err.Error()))
+		ctx.Abort()
+		return
+	}
+	transactionList, ex := services.GetLastNTransactionsListV2(userIDUint, req.LastN)
+	if ex != nil {
+		ctx.JSON(ex.StatusCode, responses.CreateErrorResponse(ex.Status, ex.Message))
+		return
+	}
+	ctx.JSON(http.StatusOK, transactionList)
 }
 
 // GetLastNTransaction godoc

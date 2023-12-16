@@ -11,6 +11,21 @@ import (
 	"time"
 )
 
+func CreateTransactionV2(userId uint, time time.Time, amount int, category string, description string, splitTag string) (uint, *exceptions.GeneralException) {
+	if !validateAndNormalizeCategory(&category) {
+		return 0, exceptions.BadRequestError(fmt.Sprintf("invalid category format %s", category), "INVALID_CATEGORY_FORMAT")
+	}
+	categoryId, err := dao.GetCategoryIdByUserIdAndCategoryName(userId, category)
+	if err != nil {
+		return 0, exceptions.BadRequestError(err.Error(), "CANT_GET_CATEGORY")
+	}
+	transactionId, err := dao.CreateTransactionV2(userId, time, amount, category, categoryId, description, splitTag)
+	if err != nil {
+		return 0, exceptions.InternalServerError(err.Error(), "DB_INSERTION_FAIL")
+	}
+	return transactionId, nil
+}
+
 func CreateTransaction(userId uint, time time.Time, amount int, category string, description string, splitTag string) (uint, *exceptions.GeneralException) {
 	if !validateAndNormalizeCategory(&category) {
 		return 0, exceptions.BadRequestError(fmt.Sprintf("invalid category format %s", category), "INVALID_CATEGORY_FORMAT")
@@ -79,6 +94,19 @@ func GetLastNTransactionsList(userId uint, lastN int) ([]string, *exceptions.Gen
 	return transactionsList, nil
 }
 
+func GetLastNTransactionsListV2(userId uint, lastN int) ([]string, *exceptions.GeneralException) {
+	transactions, err := dao.GetLastNTransactionsByUserIdV2(userId, lastN)
+	transactionsList := make([]string, 0)
+	if err != nil {
+		return transactionsList, exceptions.InternalServerError(err.Error(), "TRANSACTION_GET_FAIL")
+	}
+	for _, transaction := range transactions {
+		transStr := transaction.ToString()
+		transactionsList = append(transactionsList, transStr)
+	}
+	return transactionsList, nil
+}
+
 func GetTransactionsList(userId uint) ([]string, *exceptions.GeneralException) {
 	categoryTransactionsMap, err := dao.GetAllTransactionsByUserId(userId)
 	transactionsList := make([]string, 0)
@@ -98,6 +126,26 @@ func GetTransactionsList(userId uint) ([]string, *exceptions.GeneralException) {
 		transactionsList = append(transactionsList, transactionView.ToString())
 	}
 	return transactionsList, nil
+}
+
+func GetTransactionsListV2(userId uint) ([]string, *exceptions.GeneralException) {
+	transactionViewList, err := dao.GetTransactionsByUserId(userId)
+	transactionsList := make([]string, 0)
+	if err != nil {
+		return transactionsList, exceptions.InternalServerError(err.Error(), "TRANSACTION_GET_FAIL")
+	}
+	for _, transactionView := range transactionViewList {
+		transactionsList = append(transactionsList, transactionView.ToString())
+	}
+	return transactionsList, nil
+}
+
+func GetTransactionsV2(userId uint) ([]views.TransactionWithCategory, *exceptions.GeneralException) {
+	transactionViewList, err := dao.GetTransactionsByUserId(userId)
+	if err != nil {
+		return transactionViewList, exceptions.InternalServerError(err.Error(), "TRANSACTION_GET_FAIL")
+	}
+	return transactionViewList, nil
 }
 
 func GetTransactions(userId uint) ([]views.TransactionWithCategory, *exceptions.GeneralException) {

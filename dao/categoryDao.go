@@ -3,6 +3,7 @@ package dao
 import (
 	"Karchu/initializers"
 	"Karchu/models"
+	"Karchu/views"
 	"errors"
 )
 
@@ -65,6 +66,20 @@ func GetTransactionsOfCategory(userId uint, categoryName string) ([]models.Trans
 		First(&category).
 		Error
 	return category.Transactions, err
+}
+
+func GetTransactionsOfCategoryV2(userId uint, categoryName string) ([]views.TransactionWithCategory, error) {
+	var transactions []views.TransactionWithCategory
+	err := initializers.DB.
+		Table("categories").
+		Where("categories.user_id = ? AND categories.category_name = ?", userId, categoryName).
+		Joins("JOIN category_transaction_mappings ON categories.id = category_transaction_mappings.category_id").
+		Joins("JOIN transactions ON category_transaction_mappings.transaction_id = transactions.id").
+		Select("transactions.*, categories.category_name").
+		Order("transaction_id desc").
+		Find(&transactions).
+		Error
+	return transactions, err
 }
 
 func RenameCategory(userId uint, oldCategoryName string, newCategoryName string) (uint, error) {

@@ -63,6 +63,20 @@ func main() {
 			netAmount.POST("/categories", controllers.GetNetMoneySpentByCategory)
 		}
 	}
+	v2 := router.Group("/v2")
+	{
+		v2.Use(controllers.AuthMiddleware)
+		transactions := v2.Group("/transactions")
+		{
+			transactions.POST("", controllers.NewTransactionV2)
+			transactions.POST("/get", controllers.GetTransactionsV2)
+			transactions.POST("/all", controllers.GetTransactionsListOfUserV2)
+			transactions.POST("/last-n", controllers.GetLastNTransactionsV2)
+			transactions.POST("/category", controllers.GetTransactionOfCategoryV2)
+			transactions.DELETE("", controllers.DeleteTransaction)
+			transactions.DELETE("/str", controllers.DeleteTransactionFromTransString)
+		}
+	}
 	router.GET("/", controllers.Home)
 	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 	router.Run(":3000")

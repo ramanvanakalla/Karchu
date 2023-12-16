@@ -53,6 +53,35 @@ func AuthUser(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, userIDUint)
 }
 
+// GetTransactionsListAsStringV2 godoc
+// @Summary      Get transactions list as string of user
+// @Description  returns transactions as string for UI
+// @Tags         Transactions, V2
+// @Accept       json
+// @Produce      json
+// @Param        request body requests.GetTransactionsReq true "enter Email,Password"
+// @Success      200  {array} string "returns transaction strings as list"
+// @Router       /transactions/all [post]
+func GetTransactionsListOfUserV2(ctx *gin.Context) {
+	userIDUint, ok := getUserID(ctx)
+	if !ok {
+		ctx.JSON(http.StatusInternalServerError, responses.CreateErrorResponse("Error while getting userId", "USERID_NOT_SET_CTX"))
+		return
+	}
+	var req requests.GetTransactionsReq
+	if err := ctx.ShouldBindBodyWith(&req, binding.JSON); err != nil {
+		ctx.JSON(http.StatusBadRequest, responses.CreateErrorResponse("CANT_PARSE_REQ", err.Error()))
+		ctx.Abort()
+		return
+	}
+	transactionList, ex := services.GetTransactionsListV2(userIDUint)
+	if ex != nil {
+		ctx.JSON(ex.StatusCode, responses.CreateErrorResponse(ex.Status, ex.Message))
+		return
+	}
+	ctx.JSON(http.StatusOK, transactionList)
+}
+
 // GetTransactionsListAsString godoc
 // @Summary      Get transactions list as string of user
 // @Description  returns transactions as string for UI
@@ -104,6 +133,35 @@ func GetTransactions(ctx *gin.Context) {
 		return
 	}
 	transactionList, ex := services.GetTransactions(userIDUint)
+	if ex != nil {
+		ctx.JSON(ex.StatusCode, responses.CreateErrorResponse(ex.Status, ex.Message))
+		return
+	}
+	ctx.JSON(http.StatusOK, transactionList)
+}
+
+// GetTransactionsV2 godoc
+// @Summary      Get transactions of user
+// @Description  returns transactions
+// @Tags         Transactions, V2
+// @Accept       json
+// @Produce      json
+// @Param        request body requests.CreateTransactionReq true "enter Email,Password"
+// @Success      200
+// @Router       /transactions/get [post]
+func GetTransactionsV2(ctx *gin.Context) {
+	userIDUint, ok := getUserID(ctx)
+	if !ok {
+		ctx.JSON(http.StatusInternalServerError, responses.CreateErrorResponse("Error while getting userId", "USERID_NOT_SET_CTX"))
+		return
+	}
+	var req requests.GetTransactionsReq
+	if err := ctx.ShouldBindBodyWith(&req, binding.JSON); err != nil {
+		ctx.JSON(http.StatusBadRequest, responses.CreateErrorResponse("CANT_PARSE_REQ", err.Error()))
+		ctx.Abort()
+		return
+	}
+	transactionList, ex := services.GetTransactionsV2(userIDUint)
 	if ex != nil {
 		ctx.JSON(ex.StatusCode, responses.CreateErrorResponse(ex.Status, ex.Message))
 		return
