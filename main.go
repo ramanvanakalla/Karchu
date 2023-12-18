@@ -42,7 +42,7 @@ func main() {
 			categories.POST("", controllers.CreateCategory)
 			categories.DELETE("", controllers.DeleteCategory)
 			categories.PATCH("", controllers.RenameCategory)
-			categories.POST("/merge", controllers.MergeCategory)
+			categories.POST("/merge", controllers.MergeCategoryV2)
 		}
 		transactions := v1.Group("/transactions")
 		{
