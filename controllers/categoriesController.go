@@ -112,7 +112,7 @@ func DeleteCategory(ctx *gin.Context) {
 // @Param        request body requests.TransactionsOfCategoryReq true "enter Email,Password"
 // @Success      200  {array} string
 // @Router       /transactions/category [post]
-func GetTransactionOfCategoryV2(ctx *gin.Context) {
+func GetTransactionOfCategory(ctx *gin.Context) {
 	userIDUint, ok := getUserID(ctx)
 	if !ok {
 		ctx.JSON(http.StatusInternalServerError, responses.CreateErrorResponse("Error while getting userId", "USERID_NOT_SET_CTX"))
@@ -161,35 +161,6 @@ func RenameCategory(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, responses.CreateSuccessResponse("CATEGORY_RENAMED", fmt.Sprintf("Category ID %d renamed", categoryId)))
 }
 
-// MergeCategory godoc
-// @Summary      Merge a category into another
-// @Description  Merges a category into another, all the transactions of soruce category will now be part of destination category
-// @Tags         Categories
-// @Accept       json
-// @Produce      json
-// @Param        request body requests.MergeCategory true "enter credentials"
-// @Success      200  {object} responses.SuccessRes
-// @Router       /categories/merge [post]
-func MergeCategory(ctx *gin.Context) {
-	userIDUint, ok := getUserID(ctx)
-	if !ok {
-		ctx.JSON(http.StatusInternalServerError, responses.CreateErrorResponse("Error while getting userId", "USERID_NOT_SET_CTX"))
-		return
-	}
-	var req requests.MergeCategory
-	if err := ctx.ShouldBindBodyWith(&req, binding.JSON); err != nil {
-		ctx.JSON(http.StatusBadRequest, responses.CreateErrorResponse("CANT_PARSE_REQ", err.Error()))
-		ctx.Abort()
-		return
-	}
-	ex := services.MergeCategory(userIDUint, req.SourceCategoryName, req.DestinationCategoryName)
-	if ex != nil {
-		ctx.JSON(ex.StatusCode, responses.CreateErrorResponse(ex.Status, ex.Message))
-		return
-	}
-	ctx.JSON(http.StatusOK, responses.CreateSuccessResponse("CATEGORY_MERGED", fmt.Sprintf("Category %s merged into %s", req.SourceCategoryName, req.DestinationCategoryName)))
-}
-
 // MergeCategoryV2 godoc
 // @Summary      Merge a category into another
 // @Description  Merges a category into another, all the transactions of soruce category will now be part of destination category
@@ -199,7 +170,7 @@ func MergeCategory(ctx *gin.Context) {
 // @Param        request body requests.MergeCategory true "enter credentials"
 // @Success      200  {object} responses.SuccessRes
 // @Router       /categories/merge [post]
-func MergeCategoryV2(ctx *gin.Context) {
+func MergeCategory(ctx *gin.Context) {
 	userIDUint, ok := getUserID(ctx)
 	if !ok {
 		ctx.JSON(http.StatusInternalServerError, responses.CreateErrorResponse("Error while getting userId", "USERID_NOT_SET_CTX"))

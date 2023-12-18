@@ -42,15 +42,15 @@ func main() {
 			categories.POST("", controllers.CreateCategory)
 			categories.DELETE("", controllers.DeleteCategory)
 			categories.PATCH("", controllers.RenameCategory)
-			categories.POST("/merge", controllers.MergeCategoryV2)
+			categories.POST("/merge", controllers.MergeCategory)
 		}
 		transactions := v1.Group("/transactions")
 		{
-			transactions.POST("", controllers.NewTransactionV2)
-			transactions.POST("/get", controllers.GetTransactionsV2)
-			transactions.POST("/all", controllers.GetTransactionsListOfUserV2)
-			transactions.POST("/last-n", controllers.GetLastNTransactionsV2)
-			transactions.POST("/category", controllers.GetTransactionOfCategoryV2)
+			transactions.POST("", controllers.NewTransaction)
+			transactions.POST("/get", controllers.GetTransactions)
+			transactions.POST("/all", controllers.GetTransactionsListOfUser)
+			transactions.POST("/last-n", controllers.GetLastNTransactions)
+			transactions.POST("/category", controllers.GetTransactionOfCategory)
 			transactions.DELETE("", controllers.DeleteTransaction)
 			transactions.DELETE("/str", controllers.DeleteTransactionFromTransString)
 		}
@@ -60,29 +60,7 @@ func main() {
 		}
 		netAmount := v1.Group("/net-amount")
 		{
-			netAmount.POST("/categories", controllers.GetNetMoneySpentByCategory2)
-		}
-	}
-	v2 := router.Group("/v2")
-	{
-		v2.Use(controllers.AuthMiddleware)
-		categories := v2.Group("/categories")
-		{
-			categories.POST("/merge", controllers.MergeCategoryV2)
-		}
-		transactions := v2.Group("/transactions")
-		{
-			transactions.POST("", controllers.NewTransactionV2)
-			transactions.POST("/get", controllers.GetTransactionsV2)
-			transactions.POST("/all", controllers.GetTransactionsListOfUserV2)
-			transactions.POST("/last-n", controllers.GetLastNTransactionsV2)
-			transactions.POST("/category", controllers.GetTransactionOfCategoryV2)
-			transactions.DELETE("", controllers.DeleteTransaction)
-			transactions.DELETE("/str", controllers.DeleteTransactionFromTransString)
-		}
-		netAmount := v2.Group("/net-amount")
-		{
-			netAmount.POST("/categories", controllers.GetNetMoneySpentByCategory2)
+			netAmount.POST("/categories", controllers.GetNetMoneySpentByCategory)
 		}
 	}
 	router.GET("/", controllers.Home)

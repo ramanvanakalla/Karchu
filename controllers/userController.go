@@ -62,7 +62,7 @@ func AuthUser(ctx *gin.Context) {
 // @Param        request body requests.GetTransactionsReq true "enter Email,Password"
 // @Success      200  {array} string "returns transaction strings as list"
 // @Router       /transactions/all [post]
-func GetTransactionsListOfUserV2(ctx *gin.Context) {
+func GetTransactionsListOfUser(ctx *gin.Context) {
 	userIDUint, ok := getUserID(ctx)
 	if !ok {
 		ctx.JSON(http.StatusInternalServerError, responses.CreateErrorResponse("Error while getting userId", "USERID_NOT_SET_CTX"))
@@ -91,7 +91,7 @@ func GetTransactionsListOfUserV2(ctx *gin.Context) {
 // @Param        request body requests.CreateTransactionReq true "enter Email,Password"
 // @Success      200
 // @Router       /transactions/get [post]
-func GetTransactionsV2(ctx *gin.Context) {
+func GetTransactions(ctx *gin.Context) {
 	userIDUint, ok := getUserID(ctx)
 	if !ok {
 		ctx.JSON(http.StatusInternalServerError, responses.CreateErrorResponse("Error while getting userId", "USERID_NOT_SET_CTX"))

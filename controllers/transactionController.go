@@ -20,35 +20,6 @@ import (
 // @Param        request body requests.CreateTransactionReq true "enter Email,Password"
 // @Success      200  {array} responses.SuccessRes
 // @Router       /transactions [post]
-func NewTransactionV2(ctx *gin.Context) {
-	userIDUint, ok := getUserID(ctx)
-	if !ok {
-		ctx.JSON(http.StatusInternalServerError, responses.CreateErrorResponse("Error while getting userId", "USERID_NOT_SET_CTX"))
-		return
-	}
-	var req requests.CreateTransactionReq
-	if err := ctx.ShouldBindBodyWith(&req, binding.JSON); err != nil {
-		ctx.JSON(http.StatusBadRequest, responses.CreateErrorResponse("CANT_PARSE_REQ", err.Error()))
-		ctx.Abort()
-		return
-	}
-	transactionId, ex := services.CreateTransactionV2(userIDUint, req.Time, req.Amount, req.Category, req.Description, req.SplitTag)
-	if ex != nil {
-		ctx.JSON(ex.StatusCode, responses.CreateErrorResponse(ex.Status, ex.Message))
-		return
-	}
-	ctx.JSON(http.StatusOK, responses.CreateSuccessResponse("TRANSACTION_CREATED", fmt.Sprintf("transaction Id %d created", transactionId)))
-}
-
-// CreateTransaction godoc
-// @Summary      creates a transaction for a user
-// @Description  create a transaction with category
-// @Tags         Transactions
-// @Accept       json
-// @Produce      json
-// @Param        request body requests.CreateTransactionReq true "enter Email,Password"
-// @Success      200  {array} responses.SuccessRes
-// @Router       /transactions [post]
 func NewTransaction(ctx *gin.Context) {
 	userIDUint, ok := getUserID(ctx)
 	if !ok {
@@ -61,7 +32,7 @@ func NewTransaction(ctx *gin.Context) {
 		ctx.Abort()
 		return
 	}
-	transactionId, ex := services.CreateTransaction(userIDUint, req.Time, req.Amount, req.Category, req.Description, req.SplitTag)
+	transactionId, ex := services.CreateTransactionV2(userIDUint, req.Time, req.Amount, req.Category, req.Description, req.SplitTag)
 	if ex != nil {
 		ctx.JSON(ex.StatusCode, responses.CreateErrorResponse(ex.Status, ex.Message))
 		return
@@ -137,7 +108,7 @@ func DeleteTransaction(ctx *gin.Context) {
 // @Param        request body requests.GetLastNTransactionsReq true "enter Email,Password"
 // @Success      200  {array} string "last N transactions list"
 // @Router       /transactions/last-n [post]
-func GetLastNTransactionsV2(ctx *gin.Context) {
+func GetLastNTransactions(ctx *gin.Context) {
 	userIDUint, ok := getUserID(ctx)
 	if !ok {
 		ctx.JSON(http.StatusInternalServerError, responses.CreateErrorResponse("Error while getting userId", "USERID_NOT_SET_CTX"))
@@ -157,35 +128,6 @@ func GetLastNTransactionsV2(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, transactionList)
 }
 
-// GetLastNTransaction godoc
-// @Summary      Get last N transactions of user
-// @Description  Get last N transaction list of user
-// @Tags         Transactions
-// @Accept       json
-// @Produce      json
-// @Param        request body requests.GetLastNTransactionsReq true "enter Email,Password"
-// @Success      200  {array} string "last N transactions list"
-// @Router       /transactions/last-n [post]
-func GetLastNTransactions(ctx *gin.Context) {
-	userIDUint, ok := getUserID(ctx)
-	if !ok {
-		ctx.JSON(http.StatusInternalServerError, responses.CreateErrorResponse("Error while getting userId", "USERID_NOT_SET_CTX"))
-		return
-	}
-	var req requests.GetLastNTransactionsReq
-	if err := ctx.ShouldBindBodyWith(&req, binding.JSON); err != nil {
-		ctx.JSON(http.StatusBadRequest, responses.CreateErrorResponse("CANT_PARSE_REQ", err.Error()))
-		ctx.Abort()
-		return
-	}
-	transactionList, ex := services.GetLastNTransactionsList(userIDUint, req.LastN)
-	if ex != nil {
-		ctx.JSON(ex.StatusCode, responses.CreateErrorResponse(ex.Status, ex.Message))
-		return
-	}
-	ctx.JSON(http.StatusOK, transactionList)
-}
-
 // GetNetMoneySpentByCategory2 godoc
 // @Summary      get money spent on each category
 // @Description  get money spent on each category
@@ -195,7 +137,7 @@ func GetLastNTransactions(ctx *gin.Context) {
 // @Param        request body requests.NetAmountByCategoryReq true "enter Email,Password"
 // @Success      200  {array} string "money spent on each category as list"
 // @Router       /net-amount/categories [post]
-func GetNetMoneySpentByCategory2(ctx *gin.Context) {
+func GetNetMoneySpentByCategory(ctx *gin.Context) {
 	userIDUint, ok := getUserID(ctx)
 	if !ok {
 		ctx.JSON(http.StatusInternalServerError, responses.CreateErrorResponse("Error while getting userId", "USERID_NOT_SET_CTX"))
