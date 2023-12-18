@@ -76,6 +76,10 @@ func main() {
 			transactions.DELETE("", controllers.DeleteTransaction)
 			transactions.DELETE("/str", controllers.DeleteTransactionFromTransString)
 		}
+		netAmount := v2.Group("/net-amount")
+		{
+			netAmount.POST("/categories", controllers.GetNetMoneySpentByCategory2)
+		}
 	}
 	router.GET("/", controllers.Home)
 	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
