@@ -16,7 +16,7 @@ func CreateTransactionV2(userId uint, time time.Time, amount int, category strin
 	}()
 
 	// step 1: add transaction to table
-	transaction := models.Transaction{UserId: userId, Time: time, Amount: amount, CategoryId: categoryId, Description: description, SplitTag: splitTag}
+	transaction := models.Transaction{UserId: userId, Time: time, Amount: amount, Description: description, SplitTag: splitTag}
 	transactionErr := tx.Create(&transaction).Error
 	if transactionErr != nil {
 		tx.Rollback()
@@ -33,7 +33,7 @@ func CreateTransactionV2(userId uint, time time.Time, amount int, category strin
 }
 
 func CreateTransaction(userId uint, time time.Time, amount int, category string, categoryId uint, description string, splitTag string) (uint, error) {
-	transaction := models.Transaction{UserId: userId, Time: time, Amount: amount, CategoryId: categoryId, Description: description, SplitTag: splitTag}
+	transaction := models.Transaction{UserId: userId, Time: time, Amount: amount, Description: description, SplitTag: splitTag}
 	err := initializers.DB.Create(&transaction).Error
 	return transaction.ID, err
 }

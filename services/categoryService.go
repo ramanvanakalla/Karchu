@@ -3,9 +3,7 @@ package services
 import (
 	"Karchu/dao"
 	"Karchu/exceptions"
-	"Karchu/views"
 	"fmt"
-	"sort"
 	"strings"
 )
 
@@ -63,30 +61,6 @@ func GetTransactionsOfCategoryV2(userId uint, categoryName string) ([]string, *e
 	}
 	transactionsList := make([]string, 0)
 	for _, transactionView := range transactions {
-		transactionsList = append(transactionsList, transactionView.ToString())
-	}
-	return transactionsList, nil
-}
-
-func GetTransactionsOfCategory(userId uint, categoryName string) ([]string, *exceptions.GeneralException) {
-	categoryName = strings.Split(categoryName, "-")[0]
-	if !validateAndNormalizeCategory(&categoryName) {
-		return nil, exceptions.BadRequestError(fmt.Sprintf("invalid category format %s", categoryName), "INVALID_CATEGORY_FORMAT")
-	}
-	transactionsOfCategory, err := dao.GetTransactionsOfCategory(userId, categoryName)
-	if err != nil {
-		return nil, exceptions.InternalServerError(err.Error(), "TRANSACTIONS_GET_FAIL")
-	}
-	transactionsList := make([]string, 0)
-	transactionViewList := make([]views.TransactionWithCategory, 0)
-	for _, transaction := range transactionsOfCategory {
-		transactionViewList = append(transactionViewList, views.NewTransactionWithCategory(transaction, categoryName))
-	}
-
-	sort.Slice(transactionViewList, func(i, j int) bool {
-		return transactionViewList[i].ID > transactionViewList[j].ID
-	})
-	for _, transactionView := range transactionViewList {
 		transactionsList = append(transactionsList, transactionView.ToString())
 	}
 	return transactionsList, nil

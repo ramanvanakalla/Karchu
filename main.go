@@ -60,7 +60,7 @@ func main() {
 		}
 		netAmount := v1.Group("/net-amount")
 		{
-			netAmount.POST("/categories", controllers.GetNetMoneySpentByCategory)
+			netAmount.POST("/categories", controllers.GetNetMoneySpentByCategory2)
 		}
 	}
 	v2 := router.Group("/v2")

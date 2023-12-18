@@ -21,21 +21,3 @@ func CreateUser(email string, password string, name string) (uint, error) {
 	err := initializers.DB.Create(&newUser).Error
 	return newUser.ID, err
 }
-
-func GetAllTransactionsByUserId(userId uint) (map[string][]models.Transaction, error) {
-	transactionsByCategory := make(map[string][]models.Transaction)
-
-	var user models.User
-	err := initializers.DB.
-		Preload("Categories").
-		Preload("Categories.Transactions").
-		First(&user, userId).
-		Error
-	if err != nil {
-		return nil, err
-	}
-	for _, category := range user.Categories {
-		transactionsByCategory[category.CategoryName] = category.Transactions
-	}
-	return transactionsByCategory, nil
-}

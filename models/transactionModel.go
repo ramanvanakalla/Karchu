@@ -9,7 +9,6 @@ import (
 type Transaction struct {
 	gorm.Model
 	UserId           uint
-	CategoryId       uint
 	Amount           int
 	Time             time.Time
 	Description      string

@@ -6,7 +6,6 @@ import (
 	"Karchu/models"
 	"Karchu/views"
 	"fmt"
-	"sort"
 	"strings"
 	"time"
 )
@@ -107,27 +106,6 @@ func GetLastNTransactionsListV2(userId uint, lastN int) ([]string, *exceptions.G
 	return transactionsList, nil
 }
 
-func GetTransactionsList(userId uint) ([]string, *exceptions.GeneralException) {
-	categoryTransactionsMap, err := dao.GetAllTransactionsByUserId(userId)
-	transactionsList := make([]string, 0)
-	if err != nil {
-		return transactionsList, exceptions.InternalServerError(err.Error(), "TRANSACTION_GET_FAIL")
-	}
-	transactionViewList := make([]views.TransactionWithCategory, 0)
-	for categoryName, transactions := range categoryTransactionsMap {
-		for _, transaction := range transactions {
-			transactionViewList = append(transactionViewList, views.NewTransactionWithCategory(transaction, categoryName))
-		}
-	}
-	sort.Slice(transactionViewList, func(i, j int) bool {
-		return transactionViewList[i].ID > transactionViewList[j].ID
-	})
-	for _, transactionView := range transactionViewList {
-		transactionsList = append(transactionsList, transactionView.ToString())
-	}
-	return transactionsList, nil
-}
-
 func GetTransactionsListV2(userId uint) ([]string, *exceptions.GeneralException) {
 	transactionViewList, err := dao.GetTransactionsByUserId(userId)
 	transactionsList := make([]string, 0)
@@ -146,41 +124,6 @@ func GetTransactionsV2(userId uint) ([]views.TransactionWithCategory, *exception
 		return transactionViewList, exceptions.InternalServerError(err.Error(), "TRANSACTION_GET_FAIL")
 	}
 	return transactionViewList, nil
-}
-
-func GetTransactions(userId uint) ([]views.TransactionWithCategory, *exceptions.GeneralException) {
-	categoryTransactionsMap, err := dao.GetAllTransactionsByUserId(userId)
-	transactionsList := make([]views.TransactionWithCategory, 0)
-	if err != nil {
-		return transactionsList, exceptions.InternalServerError(err.Error(), "TRANSACTION_GET_FAIL")
-	}
-	for categoryName, transactions := range categoryTransactionsMap {
-		for _, transaction := range transactions {
-			transactionView := views.NewTransactionWithCategory(transaction, categoryName)
-			transactionsList = append(transactionsList, transactionView)
-		}
-	}
-	sort.Slice(transactionsList, func(i, j int) bool {
-		return transactionsList[i].ID > transactionsList[j].ID
-	})
-	return transactionsList, nil
-}
-
-func GetNetMoneySpentByCategory(userId uint) ([]string, *exceptions.GeneralException) {
-	categoryTransactionsMap, err := dao.GetAllTransactionsByUserId(userId)
-	netCategorySumList := make([]string, 0)
-	if err != nil {
-		return netCategorySumList, exceptions.InternalServerError(err.Error(), "TRANSACTION_GET_FAIL")
-	}
-	for categoryName, transactions := range categoryTransactionsMap {
-		netAmount := 0
-		for _, transaction := range transactions {
-			netAmount += transaction.Amount
-		}
-		netCategorySum := views.NetCategorySum{Category: categoryName, NetAmount: netAmount}
-		netCategorySumList = append(netCategorySumList, netCategorySum.ToString())
-	}
-	return netCategorySumList, nil
 }
 
 func GetNetMoneySpentByCategory2(userId uint) ([]string, *exceptions.GeneralException) {

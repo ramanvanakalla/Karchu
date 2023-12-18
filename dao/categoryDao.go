@@ -57,17 +57,6 @@ func DeleteCategory(userID uint, categoryName string) (uint, error) {
 	return category.ID, deletionErr
 }
 
-func GetTransactionsOfCategory(userId uint, categoryName string) ([]models.Transaction, error) {
-	var category models.Category
-	err := initializers.DB.
-		Model(&models.Category{}).
-		Where("user_id = ? AND category_name = ?", userId, categoryName).
-		Preload("Transactions").
-		First(&category).
-		Error
-	return category.Transactions, err
-}
-
 func GetTransactionsOfCategoryV2(userId uint, categoryName string) ([]views.TransactionWithCategory, error) {
 	var transactions []views.TransactionWithCategory
 	err := initializers.DB.

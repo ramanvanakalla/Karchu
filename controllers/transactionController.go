@@ -186,35 +186,6 @@ func GetLastNTransactions(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, transactionList)
 }
 
-// GetNetMoneySpentByCategory godoc
-// @Summary      get money spent on each category
-// @Description  get money spent on each category
-// @Tags         Net-Amount
-// @Accept       json
-// @Produce      json
-// @Param        request body requests.NetAmountByCategoryReq true "enter Email,Password"
-// @Success      200  {array} string "money spent on each category as list"
-// @Router       /net-amount/categories [post]
-func GetNetMoneySpentByCategory(ctx *gin.Context) {
-	userIDUint, ok := getUserID(ctx)
-	if !ok {
-		ctx.JSON(http.StatusInternalServerError, responses.CreateErrorResponse("Error while getting userId", "USERID_NOT_SET_CTX"))
-		return
-	}
-	var req requests.NetAmountByCategoryReq
-	if err := ctx.ShouldBindBodyWith(&req, binding.JSON); err != nil {
-		ctx.JSON(http.StatusBadRequest, responses.CreateErrorResponse("CANT_PARSE_REQ", err.Error()))
-		ctx.Abort()
-		return
-	}
-	netByCategoriesList, ex := services.GetNetMoneySpentByCategory(userIDUint)
-	if ex != nil {
-		ctx.JSON(ex.StatusCode, responses.CreateErrorResponse(ex.Status, ex.Message))
-		return
-	}
-	ctx.JSON(http.StatusOK, netByCategoriesList)
-}
-
 // GetNetMoneySpentByCategory2 godoc
 // @Summary      get money spent on each category
 // @Description  get money spent on each category
