@@ -89,7 +89,7 @@ func GetTransactionsByUserId(userId uint) ([]views.TransactionWithCategory, erro
 	err := initializers.DB.
 		Model(&models.Transaction{}).
 		Joins("JOIN category_transaction_mappings ON transactions.id = category_transaction_mappings.transaction_id").
-		Joins("JOIN categories ON category_transaction_mappings.category_id = categories.id").
+		Joins("JOIN categories ON category_transaction_mappings.category_id = categories.id AND categories.deleted_at IS NULL").
 		Where("transactions.user_id = ?", userId).
 		Select("transactions.*,categories.category_name").
 		Order("transactions.id desc").
