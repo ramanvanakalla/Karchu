@@ -286,7 +286,7 @@ const docTemplate = `{
         },
         "/transactions": {
             "post": {
-                "description": "create a transaction with category",
+                "description": "create a transaction with category V2",
                 "consumes": [
                     "application/json"
                 ],
@@ -294,9 +294,10 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Transactions"
+                    "Transactions",
+                    "V2"
                 ],
-                "summary": "creates a transaction for a user",
+                "summary": "creates a transaction for a user V2",
                 "parameters": [
                     {
                         "description": "enter Email,Password",
@@ -363,7 +364,8 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Transactions"
+                    "Transactions",
+                    "V2"
                 ],
                 "summary": "Get transactions list as string of user",
                 "parameters": [
@@ -437,7 +439,8 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Transactions"
+                    "Transactions",
+                    "V2"
                 ],
                 "summary": "Get transactions of user",
                 "parameters": [

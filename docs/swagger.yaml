@@ -338,7 +338,7 @@ paths:
     post:
       consumes:
       - application/json
-      description: create a transaction with category
+      description: create a transaction with category V2
       parameters:
       - description: enter Email,Password
         in: body
@@ -355,9 +355,10 @@ paths:
             items:
               $ref: '#/definitions/responses.SuccessRes'
             type: array
-      summary: creates a transaction for a user
+      summary: creates a transaction for a user V2
       tags:
       - Transactions
+      - V2
   /transactions/all:
     post:
       consumes:
@@ -382,6 +383,7 @@ paths:
       summary: Get transactions list as string of user
       tags:
       - Transactions
+      - V2
   /transactions/category:
     post:
       consumes:
@@ -426,6 +428,7 @@ paths:
       summary: Get transactions of user
       tags:
       - Transactions
+      - V2
   /transactions/last-n:
     post:
       consumes:
