@@ -27,22 +27,41 @@ type Transaction struct {
 }
 
 func main() {
-	sourceDB, err := gorm.Open(postgres.Open(os.Getenv("DB_URL_PROD")), &gorm.Config{})
-	if err != nil {
-		log.Fatal(err)
+	if len(os.Args) > 1 {
+		// Iterate over the command-line arguments (excluding the program name)
+		mode := os.Args[1]
+		if mode == "MigrateProdToDev" {
+			sourceDB, err := gorm.Open(postgres.Open(os.Getenv("DB_URL_PROD")), &gorm.Config{})
+			if err != nil {
+				log.Fatal(err)
+			}
+			defer sourceDB.DB()
+			fmt.Println("Connected to source DB")
+			destinationDB, err := gorm.Open(postgres.Open(os.Getenv("DB_URL")), &gorm.Config{})
+			if err != nil {
+				log.Fatal(err)
+			}
+			defer destinationDB.DB()
+			fmt.Println("Connected to destination DB")
+			migrateUsersTable(sourceDB, destinationDB)
+			migrateCategoriesTable(sourceDB, destinationDB)
+			migrateTransactionsTable(sourceDB, destinationDB)
+			migrateCategoryTransactionMappingTable(sourceDB, destinationDB)
+		} else if mode == "MigrateToCategoryTransactionMapTable" {
+			prodDB, err := gorm.Open(postgres.Open(os.Getenv("DB_URL_PROD")), &gorm.Config{})
+			if err != nil {
+				log.Fatal(err)
+			}
+			defer prodDB.DB()
+			fmt.Println("Connected to source DB")
+			migrateCategoryTransactionMappingTableProd(prodDB)
+		} else {
+			fmt.Printf("%s mode does't exists", mode)
+		}
+	} else {
+		fmt.Println("No additional arguments.")
 	}
-	defer sourceDB.DB()
-	fmt.Println("Connected to source DB")
-	destinationDB, err := gorm.Open(postgres.Open(os.Getenv("DB_URL")), &gorm.Config{})
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer destinationDB.DB()
-	fmt.Println("Connected to destination DB")
-	migrateUsersTable(sourceDB, destinationDB)
-	migrateCategoriesTable(sourceDB, destinationDB)
-	migrateTransactionsTable(sourceDB, destinationDB)
-	migrateCategoryTransactionMappingTable(sourceDB, destinationDB)
+
 }
 
 func migrateUsersTable(sourceDB *gorm.DB, destinationDB *gorm.DB) {
@@ -110,6 +129,20 @@ func migrateCategoryTransactionMappingTable(sourceDB *gorm.DB, destinationDB *go
 	for _, transaction := range transactions {
 		categoryTransactionMap := models.CategoryTransactionMapping{TransactionId: transaction.ID, CategoryId: transaction.CategoryId}
 		destinationDB.Create(&categoryTransactionMap)
+	}
+	fmt.Println("Data migration successful for categoryTransactionMapping table")
+}
+
+func migrateCategoryTransactionMappingTableProd(db *gorm.DB) {
+
+	// Query data from the source database
+	var transactions []models.Transaction
+	db.Table("transactions").Find(&transactions)
+
+	// Insert data into the destination database
+	for _, transaction := range transactions {
+		categoryTransactionMap := models.CategoryTransactionMapping{TransactionId: transaction.ID, CategoryId: transaction.CategoryId}
+		db.Create(&categoryTransactionMap)
 	}
 	fmt.Println("Data migration successful for categoryTransactionMapping table")
 }
