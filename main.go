@@ -66,6 +66,10 @@ func main() {
 	v2 := router.Group("/v2")
 	{
 		v2.Use(controllers.AuthMiddleware)
+		categories := v2.Group("/categories")
+		{
+			categories.POST("/merge", controllers.MergeCategoryV2)
+		}
 		transactions := v2.Group("/transactions")
 		{
 			transactions.POST("", controllers.NewTransactionV2)
