@@ -74,7 +74,7 @@ func GetTransactionsOfCategoryV2(userId uint, categoryName string) ([]views.Tran
 		Table("categories").
 		Where("categories.user_id = ? AND categories.category_name = ?", userId, categoryName).
 		Joins("JOIN category_transaction_mappings ON categories.id = category_transaction_mappings.category_id").
-		Joins("JOIN transactions ON category_transaction_mappings.transaction_id = transactions.id").
+		Joins("JOIN transactions ON category_transaction_mappings.transaction_id = transactions.id AND transactions.deleted_at is NULL").
 		Select("transactions.*, categories.category_name").
 		Order("transaction_id desc").
 		Find(&transactions).
