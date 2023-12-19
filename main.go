@@ -70,6 +70,10 @@ func main() {
 		{
 			friends.POST("", controllers.CreateFriend)
 		}
+		SplitTransaction := v2.Group("/split-transaction")
+		{
+			SplitTransaction.POST("", controllers.SplitTransaction)
+		}
 	}
 	router.GET("/", controllers.Home)
 	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))

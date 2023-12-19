@@ -38,6 +38,12 @@ func CreateTransaction(userId uint, time time.Time, amount int, category string,
 	return transaction.ID, err
 }
 
+func GetTransaction(transactionId uint) (models.Transaction, error) {
+	var transaction models.Transaction
+	err := initializers.DB.First(&transaction, transactionId).Error
+	return transaction, err
+}
+
 func DeleteTransactionbyTransactionIdAndUserId(transactionId uint, userId uint) (uint, error) {
 	var transaction models.Transaction
 	err := initializers.DB.
