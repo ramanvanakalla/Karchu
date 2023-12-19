@@ -80,3 +80,9 @@ type MergeCategory struct {
 	SourceCategoryName      string
 	DestinationCategoryName string
 }
+
+type CreateFriendReq struct {
+	Email      string
+	Password   string
+	FriendName string
+}
