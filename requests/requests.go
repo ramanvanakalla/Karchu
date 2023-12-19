@@ -90,11 +90,17 @@ type CreateFriendReq struct {
 type SplitTransactionReq struct {
 	Email         string
 	Password      string
-	TransactionId int
+	TransactionId uint
 	Splits        []FriendSplit
 }
 
 type FriendSplit struct {
 	FriendId int
 	Amount   int
+}
+
+type SettleTransactionReq struct {
+	Email              string
+	Password           string
+	SplitTransactionId uint
 }

@@ -7,6 +7,7 @@ import (
 
 	_ "Karchu/docs"
 
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	swaggerFiles "github.com/swaggo/files"     // swagger embed files
 	ginSwagger "github.com/swaggo/gin-swagger" // gin-swagger middleware
@@ -27,6 +28,7 @@ func init() {
 // @securityDefinitions.basic  BasicAuth
 func main() {
 	router := gin.Default()
+	router.Use(cors.Default())
 	v1 := router.Group("/v1")
 	{
 		v1.Use(controllers.AuthMiddleware)
@@ -73,6 +75,10 @@ func main() {
 		SplitTransaction := v2.Group("/split-transaction")
 		{
 			SplitTransaction.POST("", controllers.SplitTransaction)
+		}
+		settleSplit := v2.Group("/settle")
+		{
+			settleSplit.POST("")
 		}
 	}
 	router.GET("/", controllers.Home)
