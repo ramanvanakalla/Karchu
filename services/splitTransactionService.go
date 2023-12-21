@@ -43,9 +43,14 @@ func SplitTransaction(userId uint, transactionId uint, splits []requests.FriendS
 	return nil
 }
 
-func settleTransaction(userId uint, splitTransactionId uint) *exceptions.GeneralException {
+func SettleTransaction(userId uint, splitTransactionId uint) *exceptions.GeneralException {
 	err := dao.VerifySplitTransaction(userId, splitTransactionId)
 	if err != nil {
-
+		return exceptions.InternalServerError(err.Error(), "SETTLE_VERIFICATION_FAIL")
 	}
+	err = dao.SettleTransaction(userId, splitTransactionId)
+	if err != nil {
+		return exceptions.InternalServerError(err.Error(), "SETTLEMENT_FAILED")
+	}
+	return nil
 }

@@ -47,8 +47,8 @@ func SplitTransaction(ctx *gin.Context) {
 // @Produce      json
 // @Param        request body requests.CreateFriendReq true "enter Email, Password and friend Name"
 // @Success      200  {object} responses.SuccessRes
-// @Router       /split-transaction [post]
-func settleSplitTransaction(ctx *gin.Context) {
+// @Router       /settle-transaction [post]
+func SettleSplitTransaction(ctx *gin.Context) {
 	userIDUint, ok := getUserID(ctx)
 	if !ok {
 		ctx.JSON(http.StatusInternalServerError, responses.CreateErrorResponse("Error while getting userId", "USERID_NOT_SET_CTX"))
@@ -60,4 +60,10 @@ func settleSplitTransaction(ctx *gin.Context) {
 		ctx.Abort()
 		return
 	}
+	ex := services.SettleTransaction(userIDUint, req.SplitTransactionId)
+	if ex != nil {
+		ctx.JSON(ex.StatusCode, responses.CreateErrorResponse(ex.Status, ex.Message))
+		return
+	}
+	ctx.JSON(http.StatusOK, responses.CreateSuccessResponse("TRANSACTION_SETTLED", "Transaction got settled"))
 }

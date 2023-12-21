@@ -7,7 +7,7 @@ import (
 	"time"
 )
 
-func CreateTransactionV2(userId uint, time time.Time, amount int, category string, categoryId uint, description string, splitTag string) (uint, error) {
+func CreateTransactionV2(userId uint, time time.Time, amount int, categoryId uint, description string, splitTag string) (uint, error) {
 	tx := initializers.DB.Begin()
 	defer func() {
 		if r := recover(); r != nil {

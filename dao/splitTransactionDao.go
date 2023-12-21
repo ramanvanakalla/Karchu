@@ -52,5 +52,20 @@ func SettleTransaction(userId uint, splitTransactionId uint) error {
 	if err != nil {
 		return err
 	}
-	SettledTransactionId, err := CreateTransactionV2(userId, time.Now(), splitTransaction.Amount)
+	var transaction models.Transaction
+	err = initializers.DB.Preload("CategoryMappings").First(&transaction, splitTransaction.SourceTransactionId).Error
+	if err != nil {
+		return err
+	}
+	categoryId := transaction.CategoryMappings[0].CategoryId
+	SettledTransactionId, err := CreateTransactionV2(userId, time.Now(), -1*splitTransaction.Amount, categoryId, "settle trans", "SETTLED TRANS")
+	if err != nil {
+		return err
+	}
+	splitTransaction.SettledTransactionId = SettledTransactionId
+	err = initializers.DB.Save(&splitTransaction).Error
+	if err != nil {
+		return err
+	}
+	return nil
 }

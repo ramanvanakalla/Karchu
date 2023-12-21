@@ -18,7 +18,7 @@ func CreateTransactionV2(userId uint, time time.Time, amount int, category strin
 	if err != nil {
 		return 0, exceptions.BadRequestError(err.Error(), "CANT_GET_CATEGORY")
 	}
-	transactionId, err := dao.CreateTransactionV2(userId, time, amount, category, categoryId, description, splitTag)
+	transactionId, err := dao.CreateTransactionV2(userId, time, amount, categoryId, description, splitTag)
 	if err != nil {
 		return 0, exceptions.InternalServerError(err.Error(), "DB_INSERTION_FAIL")
 	}

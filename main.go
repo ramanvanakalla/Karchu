@@ -78,7 +78,7 @@ func main() {
 		}
 		settleSplit := v2.Group("/settle")
 		{
-			settleSplit.POST("")
+			settleSplit.POST("", controllers.SettleSplitTransaction)
 		}
 	}
 	router.GET("/", controllers.Home)
