@@ -13,7 +13,6 @@ func CreateFriend(userId uint, friendName string) (uint, error) {
 }
 
 func IsFriends(userId uint, friendIds []uint) (bool, error) {
-	fmt.Println(friendIds)
 	var user models.User
 	err := initializers.DB.Preload("Friends").First(&user, userId).Error
 	if err != nil {

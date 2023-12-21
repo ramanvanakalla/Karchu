@@ -4,7 +4,9 @@ import (
 	"Karchu/initializers"
 	"Karchu/models"
 	"Karchu/requests"
+	"errors"
 	"fmt"
+	"time"
 )
 
 func AddSplitTransactions(userId uint, transactionId uint, splits []requests.FriendSplit) error {
@@ -25,4 +27,30 @@ func AddSplitTransactions(userId uint, transactionId uint, splits []requests.Fri
 		}
 	}
 	return tx.Commit().Error
+}
+
+func VerifySplitTransaction(userId uint, splitTransactionId uint) error {
+	var splitTransaction models.SplitTransaction
+	err := initializers.DB.First(&splitTransaction, splitTransactionId).Error
+	if err != nil {
+		return err
+	}
+	var transaction models.Transaction
+	err = initializers.DB.First(&transaction, splitTransaction.SourceTransactionId).Error
+	if err != nil {
+		return err
+	}
+	if transaction.UserId != userId {
+		return errors.New("split transaction doesn't exists for this user")
+	}
+	return nil
+}
+
+func SettleTransaction(userId uint, splitTransactionId uint) error {
+	var splitTransaction models.SplitTransaction
+	err := initializers.DB.First(&splitTransaction, splitTransactionId).Error
+	if err != nil {
+		return err
+	}
+	SettledTransactionId, err := CreateTransactionV2(userId, time.Now(), splitTransaction.Amount)
 }

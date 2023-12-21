@@ -31,10 +31,6 @@ func verifySplits(userId uint, transactionId uint, Splits []requests.FriendSplit
 	return nil
 }
 
-func verifySplitTransaction(userId uint, splitTransactionId uint) error {
-
-}
-
 func SplitTransaction(userId uint, transactionId uint, splits []requests.FriendSplit) *exceptions.GeneralException {
 	err := verifySplits(userId, transactionId, splits)
 	if err != nil {
@@ -48,5 +44,8 @@ func SplitTransaction(userId uint, transactionId uint, splits []requests.FriendS
 }
 
 func settleTransaction(userId uint, splitTransactionId uint) *exceptions.GeneralException {
+	err := dao.VerifySplitTransaction(userId, splitTransactionId)
+	if err != nil {
 
+	}
 }
