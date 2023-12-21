@@ -52,7 +52,8 @@ func main() {
 			transactions.POST("/get", controllers.GetTransactions)
 			transactions.POST("/all", controllers.GetTransactionsListOfUser)
 			transactions.POST("/last-n", controllers.GetLastNTransactions)
-			transactions.POST("/category", controllers.GetTransactionOfCategory)
+			transactions.POST("/category", controllers.GetTransactionStringsOfCategory)
+			transactions.POST("/categories", controllers.GetTransactionsOfCategory)
 			transactions.DELETE("", controllers.DeleteTransaction)
 			transactions.DELETE("/str", controllers.DeleteTransactionFromTransString)
 		}

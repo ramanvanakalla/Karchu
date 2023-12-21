@@ -112,7 +112,36 @@ func DeleteCategory(ctx *gin.Context) {
 // @Param        request body requests.TransactionsOfCategoryReq true "enter Email,Password"
 // @Success      200  {array} string
 // @Router       /transactions/category [post]
-func GetTransactionOfCategory(ctx *gin.Context) {
+func GetTransactionStringsOfCategory(ctx *gin.Context) {
+	userIDUint, ok := getUserID(ctx)
+	if !ok {
+		ctx.JSON(http.StatusInternalServerError, responses.CreateErrorResponse("Error while getting userId", "USERID_NOT_SET_CTX"))
+		return
+	}
+	var req requests.TransactionsOfCategoryReq
+	if err := ctx.ShouldBindBodyWith(&req, binding.JSON); err != nil {
+		ctx.JSON(http.StatusBadRequest, responses.CreateErrorResponse("CANT_PARSE_REQ", err.Error()))
+		ctx.Abort()
+		return
+	}
+	transactionsOfCategory, ex := services.GetTransactionStringsOfCategoryV2(userIDUint, req.CategoryName)
+	if ex != nil {
+		ctx.JSON(ex.StatusCode, responses.CreateErrorResponse(ex.Status, ex.Message))
+		return
+	}
+	ctx.JSON(http.StatusOK, transactionsOfCategory)
+}
+
+// GetTransactionOfCategory godoc
+// @Summary      returns transactions of category
+// @Description  returns transactions list for a category
+// @Tags         Transactions
+// @Accept       json
+// @Produce      json
+// @Param        request body requests.TransactionsOfCategoryReq true "enter Email,Password"
+// @Success      200  {array} string
+// @Router       /transactions/category [post]
+func GetTransactionsOfCategory(ctx *gin.Context) {
 	userIDUint, ok := getUserID(ctx)
 	if !ok {
 		ctx.JSON(http.StatusInternalServerError, responses.CreateErrorResponse("Error while getting userId", "USERID_NOT_SET_CTX"))
