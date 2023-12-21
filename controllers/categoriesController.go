@@ -139,8 +139,8 @@ func GetTransactionStringsOfCategory(ctx *gin.Context) {
 // @Accept       json
 // @Produce      json
 // @Param        request body requests.TransactionsOfCategoryReq true "enter Email,Password"
-// @Success      200  {array} string
-// @Router       /transactions/category [post]
+// @Success      200 array views.TransactionWithCategory
+// @Router       /transactions/categories [post]
 func GetTransactionsOfCategory(ctx *gin.Context) {
 	userIDUint, ok := getUserID(ctx)
 	if !ok {

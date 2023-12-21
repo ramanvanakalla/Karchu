@@ -392,6 +392,43 @@ const docTemplate = `{
                 }
             }
         },
+        "/transactions/categories": {
+            "post": {
+                "description": "returns transactions list for a category",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Transactions"
+                ],
+                "summary": "returns transactions of category",
+                "parameters": [
+                    {
+                        "description": "enter Email,Password",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/requests.TransactionsOfCategoryReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/views.TransactionWithCategory"
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/transactions/category": {
             "post": {
                 "description": "returns transactions list for a category",
@@ -636,9 +673,6 @@ const docTemplate = `{
                 },
                 "splitTag": {
                     "type": "string"
-                },
-                "time": {
-                    "type": "string"
                 }
             }
         },
@@ -800,6 +834,29 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "success_message": {
+                    "type": "string"
+                }
+            }
+        },
+        "views.TransactionWithCategory": {
+            "type": "object",
+            "properties": {
+                "amount": {
+                    "type": "integer"
+                },
+                "categoryName": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "splitTag": {
+                    "type": "string"
+                },
+                "time": {
                     "type": "string"
                 }
             }
