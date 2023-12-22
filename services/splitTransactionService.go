@@ -31,6 +31,16 @@ func verifySplits(userId uint, transactionId uint, Splits []requests.FriendSplit
 	return nil
 }
 
+func SplitTransactionWithOneFriend(userId uint, transactionId uint, friendName string, amount int) *exceptions.GeneralException {
+	splits := make([]requests.FriendSplit, 0)
+	friendId, err := dao.GetFriendId(userId, friendName)
+	if err != nil {
+		return exceptions.InternalServerError(err.Error(), "FAIL_GETTING_FRND_ID")
+	}
+	splits = append(splits, requests.FriendSplit{FriendId: friendId, Amount: amount})
+	return SplitTransaction(userId, transactionId, splits)
+}
+
 func SplitTransaction(userId uint, transactionId uint, splits []requests.FriendSplit) *exceptions.GeneralException {
 	err := verifySplits(userId, transactionId, splits)
 	if err != nil {

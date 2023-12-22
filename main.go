@@ -77,6 +77,7 @@ func main() {
 		{
 			SplitTransaction.POST("", controllers.SplitTransaction)
 			SplitTransaction.DELETE("", controllers.DeleteSplitTransaction)
+			SplitTransaction.POST("/one", controllers.SplitTransactionWithOneFriend)
 		}
 		settleSplit := v2.Group("/settle")
 		{

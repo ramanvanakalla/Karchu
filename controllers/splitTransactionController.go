@@ -10,6 +10,35 @@ import (
 	"github.com/gin-gonic/gin/binding"
 )
 
+// SplitTransactionWithOneFriend godoc
+// @Summary      split a transaction
+// @Description  split a transaction
+// @Tags         SplitTransaction
+// @Accept       json
+// @Produce      json
+// @Param        request body requests.SplitWithOneFriendReq true
+// @Success      200  {object} responses.SuccessRes
+// @Router       /split-transaction/one [post]
+func SplitTransactionWithOneFriend(ctx *gin.Context) {
+	userIDUint, ok := getUserID(ctx)
+	if !ok {
+		ctx.JSON(http.StatusInternalServerError, responses.CreateErrorResponse("Error while getting userId", "USERID_NOT_SET_CTX"))
+		return
+	}
+	var req requests.SplitWithOneFriendReq
+	if err := ctx.ShouldBindBodyWith(&req, binding.JSON); err != nil {
+		ctx.JSON(http.StatusBadRequest, responses.CreateErrorResponse("CANT_PARSE_REQ", err.Error()))
+		ctx.Abort()
+		return
+	}
+	ex := services.SplitTransactionWithOneFriend(userIDUint, req.TransactionId, req.Friend, req.Amount)
+	if ex != nil {
+		ctx.JSON(ex.StatusCode, responses.CreateErrorResponse(ex.Status, ex.Message))
+		return
+	}
+	ctx.JSON(http.StatusOK, responses.CreateSuccessResponse("TRANSACTION_SPLIT", "Transaction got split"))
+}
+
 // SplitTransaction godoc
 // @Summary      split a transaction
 // @Description  split a transaction
