@@ -1,7 +1,5 @@
 package requests
 
-import "time"
-
 type UserReq struct {
 	Email    string
 	Password string
@@ -33,7 +31,6 @@ type TransactionsOfCategoryReq struct {
 type CreateTransactionReq struct {
 	Email       string
 	Password    string
-	Time        time.Time
 	Amount      int
 	Category    string
 	Description string

@@ -3,6 +3,7 @@ package services
 import (
 	"Karchu/dao"
 	"Karchu/exceptions"
+	"Karchu/views"
 	"fmt"
 	"strings"
 )
@@ -50,7 +51,19 @@ func DeleteCategoryForUserID(userId uint, categoryName string) (uint, *exception
 	return delCategoryId, nil
 }
 
-func GetTransactionsOfCategoryV2(userId uint, categoryName string) ([]string, *exceptions.GeneralException) {
+func GetTransactionsOfCategoryV2(userId uint, categoryName string) ([]views.TransactionWithCategory, *exceptions.GeneralException) {
+	categoryName = strings.Split(categoryName, "-")[0]
+	if !validateAndNormalizeCategory(&categoryName) {
+		return nil, exceptions.BadRequestError(fmt.Sprintf("invalid category format %s", categoryName), "INVALID_CATEGORY_FORMAT")
+	}
+	transactions, err := dao.GetTransactionsOfCategoryV2(userId, categoryName)
+	if err != nil {
+		return nil, exceptions.InternalServerError(err.Error(), "TRANSACTIONS_GET_FAIL")
+	}
+	return transactions, nil
+}
+
+func GetTransactionStringsOfCategoryV2(userId uint, categoryName string) ([]string, *exceptions.GeneralException) {
 	categoryName = strings.Split(categoryName, "-")[0]
 	if !validateAndNormalizeCategory(&categoryName) {
 		return nil, exceptions.BadRequestError(fmt.Sprintf("invalid category format %s", categoryName), "INVALID_CATEGORY_FORMAT")

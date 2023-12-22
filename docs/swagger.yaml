@@ -23,8 +23,6 @@ definitions:
         type: string
       splitTag:
         type: string
-      time:
-        type: string
     type: object
   requests.CreateUserReq:
     properties:
@@ -128,6 +126,21 @@ definitions:
       success_code:
         type: string
       success_message:
+        type: string
+    type: object
+  views.TransactionWithCategory:
+    properties:
+      amount:
+        type: integer
+      categoryName:
+        type: string
+      description:
+        type: string
+      id:
+        type: integer
+      splitTag:
+        type: string
+      time:
         type: string
     type: object
 host: karchu.onrender.com
@@ -384,6 +397,30 @@ paths:
       tags:
       - Transactions
       - V2
+  /transactions/categories:
+    post:
+      consumes:
+      - application/json
+      description: returns transactions list for a category
+      parameters:
+      - description: enter Email,Password
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/requests.TransactionsOfCategoryReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/views.TransactionWithCategory'
+            type: array
+      summary: returns transactions of category
+      tags:
+      - Transactions
   /transactions/category:
     post:
       consumes:

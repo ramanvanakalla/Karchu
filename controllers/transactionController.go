@@ -32,7 +32,7 @@ func NewTransaction(ctx *gin.Context) {
 		ctx.Abort()
 		return
 	}
-	transactionId, ex := services.CreateTransactionV2(userIDUint, req.Time, req.Amount, req.Category, req.Description, req.SplitTag)
+	transactionId, ex := services.CreateTransactionV2(userIDUint, req.Amount, req.Category, req.Description, req.SplitTag)
 	if ex != nil {
 		ctx.JSON(ex.StatusCode, responses.CreateErrorResponse(ex.Status, ex.Message))
 		return
