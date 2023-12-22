@@ -18,7 +18,7 @@ func AddSplitTransactions(userId uint, transactionId uint, splits []requests.Fri
 	}()
 
 	for _, split := range splits {
-		splitTransaction := models.SplitTransaction{SourceTransactionId: transactionId, Amount: split.Amount, FriendId: uint(split.FriendId), SettledTransactionId: transactionId}
+		splitTransaction := models.SplitTransaction{SourceTransactionId: transactionId, Amount: split.Amount, FriendId: uint(split.FriendId)}
 		fmt.Println(splitTransaction)
 		err := initializers.DB.Create(&splitTransaction).Error
 		if err != nil {
@@ -74,10 +74,64 @@ func SettleTransaction(userId uint, splitTransactionId uint) error {
 	if err != nil {
 		return err
 	}
-	splitTransaction.SettledTransactionId = SettledTransactionId
+	splitTransaction.SettledTransactionId = &SettledTransactionId
 	err = initializers.DB.Save(&splitTransaction).Error
 	if err != nil {
 		return err
 	}
 	return nil
+}
+
+func UnSettleSplitTransaction(userId uint, splitTransactionId uint) error {
+	var splitTransaction models.SplitTransaction
+	if err := initializers.DB.First(&splitTransaction, splitTransactionId).Error; err != nil {
+		return err
+	}
+	var settledTransaction models.Transaction
+	if err := initializers.DB.First(&settledTransaction, splitTransaction.SettledTransactionId).Error; err != nil {
+		return err
+	}
+	tx := initializers.DB.Begin()
+	defer func() {
+		if r := recover(); r != nil {
+			tx.Rollback()
+		}
+	}()
+	if err := tx.Delete(&settledTransaction).Error; err != nil {
+		tx.Rollback()
+		return err
+	}
+	splitTransaction.SettledTransactionId = nil
+	if err := tx.Save(&splitTransaction).Error; err != nil {
+		tx.Rollback()
+		return err
+	}
+	return tx.Commit().Error
+}
+
+func DeleteTransactionSplit(userId uint, transactionId uint) error {
+	var transaction models.Transaction
+	if err := initializers.DB.Preload("Splits").First(&transaction, transactionId).Error; err != nil {
+		return err
+	}
+	if transaction.UserId != userId {
+		return errors.New("transaction doesn't exist for this user")
+	}
+	tx := initializers.DB.Begin()
+	defer func() {
+		if r := recover(); r != nil {
+			tx.Rollback()
+		}
+	}()
+	for _, splitTratransaction := range transaction.Splits {
+		if splitTratransaction.SettledTransactionId != nil {
+			tx.Rollback()
+			return errors.New("one of the splits is already settle,unsettle it first")
+		}
+		if err := tx.Delete(&splitTratransaction).Error; err != nil {
+			tx.Rollback()
+			return err
+		}
+	}
+	return tx.Commit().Error
 }

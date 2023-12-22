@@ -76,10 +76,12 @@ func main() {
 		SplitTransaction := v2.Group("/split-transaction")
 		{
 			SplitTransaction.POST("", controllers.SplitTransaction)
+			SplitTransaction.DELETE("", controllers.DeleteSplitTransaction)
 		}
 		settleSplit := v2.Group("/settle")
 		{
 			settleSplit.POST("", controllers.SettleSplitTransaction)
+			settleSplit.DELETE("", controllers.UnSettleSplitTransaction)
 		}
 	}
 	router.GET("/", controllers.Home)
