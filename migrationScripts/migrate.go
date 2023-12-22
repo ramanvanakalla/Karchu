@@ -1,5 +1,6 @@
 package main
 
+/*
 import (
 	"Karchu/initializers"
 	"Karchu/models"
@@ -127,7 +128,7 @@ func migrateCategoryTransactionMappingTable(sourceDB *gorm.DB, destinationDB *go
 
 	// Insert data into the destination database
 	for _, transaction := range transactions {
-		categoryTransactionMap := models.CategoryTransactionMapping{TransactionId: transaction.ID}
+		categoryTransactionMap := models.CategoryTransactionMapping{TransactionId: transaction.ID, CategoryId: transaction.CategoryId}
 		destinationDB.Create(&categoryTransactionMap)
 	}
 	fmt.Println("Data migration successful for categoryTransactionMapping table")
@@ -141,8 +142,9 @@ func migrateCategoryTransactionMappingTableProd(db *gorm.DB) {
 
 	// Insert data into the destination database
 	for _, transaction := range transactions {
-		categoryTransactionMap := models.CategoryTransactionMapping{TransactionId: transaction.ID}
+		categoryTransactionMap := models.CategoryTransactionMapping{TransactionId: transaction.ID, CategoryId: transaction.CategoryId}
 		db.Create(&categoryTransactionMap)
 	}
 	fmt.Println("Data migration successful for categoryTransactionMapping table")
 }
+*/

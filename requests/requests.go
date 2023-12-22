@@ -77,3 +77,27 @@ type MergeCategory struct {
 	SourceCategoryName      string
 	DestinationCategoryName string
 }
+
+type CreateFriendReq struct {
+	Email      string
+	Password   string
+	FriendName string
+}
+
+type SplitTransactionReq struct {
+	Email         string
+	Password      string
+	TransactionId uint
+	Splits        []FriendSplit
+}
+
+type FriendSplit struct {
+	FriendId int
+	Amount   int
+}
+
+type SettleTransactionReq struct {
+	Email              string
+	Password           string
+	SplitTransactionId uint
+}

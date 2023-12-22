@@ -66,6 +66,22 @@ func main() {
 			netAmount.POST("/categories", controllers.GetNetMoneySpentByCategory)
 		}
 	}
+	v2 := router.Group("/v2")
+	{
+		v2.Use(controllers.AuthMiddleware)
+		friends := v2.Group("/friends")
+		{
+			friends.POST("", controllers.CreateFriend)
+		}
+		SplitTransaction := v2.Group("/split-transaction")
+		{
+			SplitTransaction.POST("", controllers.SplitTransaction)
+		}
+		settleSplit := v2.Group("/settle")
+		{
+			settleSplit.POST("", controllers.SettleSplitTransaction)
+		}
+	}
 	router.GET("/", controllers.Home)
 	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 	router.Run(":3000")
