@@ -50,6 +50,20 @@ func SplitTransaction(userId uint, transactionId uint, splits []requests.FriendS
 	return nil
 }
 
+func DeleteSplitTransaction(userId uint, transactionId uint) *exceptions.GeneralException {
+	alreadySplit, err := dao.TransactionAlreadySplit(transactionId)
+	if err != nil {
+		return exceptions.InternalServerError(err.Error(), "DELETE_SPLIT_TRANS_FAIL")
+	}
+	if !alreadySplit {
+		return exceptions.InternalServerError("Transaction is not split", "TRANSACTION_NOT_SPLIT")
+	}
+	if err := dao.DeleteTransactionSplit(userId, transactionId); err != nil {
+		return exceptions.InternalServerError(err.Error(), "DELETE_SPLIT_TRANS_FAIL")
+	}
+	return nil
+}
+
 func SettleTransaction(userId uint, splitTransactionId uint) *exceptions.GeneralException {
 	err := dao.VerifySplitTransaction(userId, splitTransactionId)
 	if err != nil {
@@ -58,6 +72,16 @@ func SettleTransaction(userId uint, splitTransactionId uint) *exceptions.General
 	err = dao.SettleTransaction(userId, splitTransactionId)
 	if err != nil {
 		return exceptions.InternalServerError(err.Error(), "SETTLEMENT_FAILED")
+	}
+	return nil
+}
+
+func UnSettleTransaction(userId uint, splitTransactionId uint) *exceptions.GeneralException {
+	if err := dao.VerifySplitTransaction(userId, splitTransactionId); err != nil {
+		return exceptions.InternalServerError(err.Error(), "SETTLE_VERIFICATION_FAIL")
+	}
+	if err := dao.UnSettleSplitTransaction(userId, splitTransactionId); err != nil {
+		return exceptions.InternalServerError(err.Error(), "UNSETTLE_TRANS_FAIL")
 	}
 	return nil
 }
