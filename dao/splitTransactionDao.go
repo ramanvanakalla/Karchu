@@ -46,6 +46,18 @@ func VerifySplitTransaction(userId uint, splitTransactionId uint) error {
 	return nil
 }
 
+func TransactionAlreadySplit(transactionId uint) (bool, error) {
+	var transaction models.Transaction
+	err := initializers.DB.Preload("Splits").First(&transaction, transactionId).Error
+	if err != nil {
+		return true, err
+	}
+	if len(transaction.Splits) > 0 {
+		return true, nil
+	}
+	return false, nil
+}
+
 func SettleTransaction(userId uint, splitTransactionId uint) error {
 	var splitTransaction models.SplitTransaction
 	err := initializers.DB.First(&splitTransaction, splitTransactionId).Error

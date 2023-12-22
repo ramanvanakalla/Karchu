@@ -36,6 +36,13 @@ func SplitTransaction(userId uint, transactionId uint, splits []requests.FriendS
 	if err != nil {
 		return exceptions.InternalServerError(err.Error(), "SPLIT_TRANSACTION_FAIL")
 	}
+	alreadySplit, err := dao.TransactionAlreadySplit(transactionId)
+	if err != nil {
+		return exceptions.InternalServerError(err.Error(), "SPLIT_TRANSACTION_FAIL")
+	}
+	if alreadySplit {
+		return exceptions.InternalServerError("Transaction is already split", "SPLIT_TRANSACTION_FAIL")
+	}
 	err = dao.AddSplitTransactions(userId, transactionId, splits)
 	if err != nil {
 		return exceptions.InternalServerError(err.Error(), "SPLIT_TRANSACTION_FAIL")
