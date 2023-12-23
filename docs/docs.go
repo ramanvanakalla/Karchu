@@ -221,6 +221,40 @@ const docTemplate = `{
                 }
             }
         },
+        "/friends/": {
+            "post": {
+                "description": "creates a friend",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Friends"
+                ],
+                "summary": "create a friend",
+                "parameters": [
+                    {
+                        "description": "enter Email, Password and friend Name",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/requests.CreateFriendReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/responses.SuccessRes"
+                        }
+                    }
+                }
+            }
+        },
         "/net-amount/categories": {
             "post": {
                 "description": "get money spent on each category",
@@ -258,6 +292,72 @@ const docTemplate = `{
                 }
             }
         },
+        "/settle-transaction": {
+            "post": {
+                "description": "settle a split transaction",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "settleTransaction"
+                ],
+                "summary": "settle a split",
+                "parameters": [
+                    {
+                        "description": "enter Email, Password and friend Name",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/requests.SettleTransactionReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/responses.SuccessRes"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "settle a split transaction",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "settleTransaction"
+                ],
+                "summary": "settle a split",
+                "parameters": [
+                    {
+                        "description": "enter Email, Password and friend Name",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/requests.UnSettleTransactionReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/responses.SuccessRes"
+                        }
+                    }
+                }
+            }
+        },
         "/split-tags": {
             "get": {
                 "description": "returns split tags",
@@ -279,6 +379,140 @@ const docTemplate = `{
                             "items": {
                                 "type": "string"
                             }
+                        }
+                    }
+                }
+            }
+        },
+        "/split-transaction": {
+            "post": {
+                "description": "split a transaction",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "SplitTransaction"
+                ],
+                "summary": "split a transaction",
+                "parameters": [
+                    {
+                        "description": "split transaction",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/requests.SplitTransactionReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/responses.SuccessRes"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "deletes a alreadt split transaction",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "SplitTransaction"
+                ],
+                "summary": "deletes a alreadt split transaction",
+                "parameters": [
+                    {
+                        "description": "delete split",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/requests.DeleteSplitTransactionReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/responses.SuccessRes"
+                        }
+                    }
+                }
+            }
+        },
+        "/split-transaction/one": {
+            "post": {
+                "description": "split a transaction",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "SplitTransaction"
+                ],
+                "summary": "split a transaction",
+                "parameters": [
+                    {
+                        "description": "split with one",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/requests.SplitWithOneFriendReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/responses.SuccessRes"
+                        }
+                    }
+                }
+            }
+        },
+        "/split-transaction/splits": {
+            "post": {
+                "description": "Get splits of user",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "SplitTransaction"
+                ],
+                "summary": "Get splits of user",
+                "parameters": [
+                    {
+                        "description": "get split transaction",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/requests.GetSplitTransactionsReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/responses.SuccessRes"
                         }
                     }
                 }
@@ -653,6 +887,20 @@ const docTemplate = `{
                 }
             }
         },
+        "requests.CreateFriendReq": {
+            "type": "object",
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "friendName": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                }
+            }
+        },
         "requests.CreateTransactionReq": {
             "type": "object",
             "properties": {
@@ -704,6 +952,20 @@ const docTemplate = `{
                 }
             }
         },
+        "requests.DeleteSplitTransactionReq": {
+            "type": "object",
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                },
+                "transactionId": {
+                    "type": "integer"
+                }
+            }
+        },
         "requests.DeleteTransactionFromTransStringReq": {
             "type": "object",
             "properties": {
@@ -732,6 +994,17 @@ const docTemplate = `{
                 }
             }
         },
+        "requests.FriendSplit": {
+            "type": "object",
+            "properties": {
+                "amount": {
+                    "type": "integer"
+                },
+                "friendId": {
+                    "type": "integer"
+                }
+            }
+        },
         "requests.GetLastNTransactionsReq": {
             "type": "object",
             "properties": {
@@ -740,6 +1013,17 @@ const docTemplate = `{
                 },
                 "lastN": {
                     "type": "integer"
+                },
+                "password": {
+                    "type": "string"
+                }
+            }
+        },
+        "requests.GetSplitTransactionsReq": {
+            "type": "object",
+            "properties": {
+                "email": {
+                    "type": "string"
                 },
                 "password": {
                     "type": "string"
@@ -802,6 +1086,60 @@ const docTemplate = `{
                 }
             }
         },
+        "requests.SettleTransactionReq": {
+            "type": "object",
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                },
+                "splitTransactionId": {
+                    "type": "integer"
+                }
+            }
+        },
+        "requests.SplitTransactionReq": {
+            "type": "object",
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                },
+                "splits": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/requests.FriendSplit"
+                    }
+                },
+                "transactionId": {
+                    "type": "integer"
+                }
+            }
+        },
+        "requests.SplitWithOneFriendReq": {
+            "type": "object",
+            "properties": {
+                "amount": {
+                    "type": "integer"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "friend": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                },
+                "transString": {
+                    "type": "string"
+                }
+            }
+        },
         "requests.TransactionsOfCategoryReq": {
             "type": "object",
             "properties": {
@@ -813,6 +1151,20 @@ const docTemplate = `{
                 },
                 "password": {
                     "type": "string"
+                }
+            }
+        },
+        "requests.UnSettleTransactionReq": {
+            "type": "object",
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                },
+                "splitTransactionId": {
+                    "type": "integer"
                 }
             }
         },
