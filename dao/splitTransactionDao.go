@@ -6,7 +6,6 @@ import (
 	"Karchu/requests"
 	"Karchu/views"
 	"errors"
-	"fmt"
 	"time"
 )
 
@@ -20,7 +19,6 @@ func AddSplitTransactions(userId uint, transactionId uint, splits []requests.Fri
 
 	for _, split := range splits {
 		splitTransaction := models.SplitTransaction{SourceTransactionId: transactionId, Amount: split.Amount, FriendId: uint(split.FriendId)}
-		fmt.Println(splitTransaction)
 		err := initializers.DB.Create(&splitTransaction).Error
 		if err != nil {
 			tx.Rollback()
@@ -163,7 +161,6 @@ func GetSplitsOfTransaction(transaction models.Transaction) ([]views.SplitView, 
 			FriendName:           friendName,
 		}
 		splits = append(splits, split)
-		fmt.Println("Done")
 	}
 	return splits, nil
 }
@@ -181,7 +178,6 @@ func GetSplitTransactions(userId uint) ([]views.SplitView, error) {
 		return splits, err
 	}
 	for _, transaction := range user.Transactions {
-		fmt.Println(transaction.CategoryMappings)
 		transactionSplits, err := GetSplitsOfTransaction(transaction)
 		if err != nil {
 			return splits, err

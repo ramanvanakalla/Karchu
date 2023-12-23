@@ -4,7 +4,6 @@ import (
 	"Karchu/initializers"
 	"Karchu/models"
 	"Karchu/views"
-	"fmt"
 	"time"
 )
 
@@ -55,8 +54,6 @@ func CreateTransactionAndSplitWithOne(userId uint, time time.Time, amount int, c
 		tx.Rollback()
 		return categoryTransactionErr
 	}
-	fmt.Println(transaction.ID)
-	fmt.Println(friendId)
 	splitTransaction := models.SplitTransaction{SourceTransactionId: transaction.ID, Amount: splitAmount, FriendId: friendId}
 	err := tx.Create(&splitTransaction).Error
 	if err != nil {
