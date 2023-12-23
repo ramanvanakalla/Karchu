@@ -9,6 +9,15 @@ definitions:
       password:
         type: string
     type: object
+  requests.CreateFriendReq:
+    properties:
+      email:
+        type: string
+      friendName:
+        type: string
+      password:
+        type: string
+    type: object
   requests.CreateTransactionReq:
     properties:
       amount:
@@ -42,6 +51,15 @@ definitions:
       password:
         type: string
     type: object
+  requests.DeleteSplitTransactionReq:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+      transactionId:
+        type: integer
+    type: object
   requests.DeleteTransactionFromTransStringReq:
     properties:
       email:
@@ -60,12 +78,26 @@ definitions:
       transactionId:
         type: integer
     type: object
+  requests.FriendSplit:
+    properties:
+      amount:
+        type: integer
+      friendId:
+        type: integer
+    type: object
   requests.GetLastNTransactionsReq:
     properties:
       email:
         type: string
       lastN:
         type: integer
+      password:
+        type: string
+    type: object
+  requests.GetSplitTransactionsReq:
+    properties:
+      email:
+        type: string
       password:
         type: string
     type: object
@@ -105,6 +137,41 @@ definitions:
       password:
         type: string
     type: object
+  requests.SettleTransactionReq:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+      splitTransactionId:
+        type: integer
+    type: object
+  requests.SplitTransactionReq:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+      splits:
+        items:
+          $ref: '#/definitions/requests.FriendSplit'
+        type: array
+      transactionId:
+        type: integer
+    type: object
+  requests.SplitWithOneFriendReq:
+    properties:
+      amount:
+        type: integer
+      email:
+        type: string
+      friend:
+        type: string
+      password:
+        type: string
+      transString:
+        type: string
+    type: object
   requests.TransactionsOfCategoryReq:
     properties:
       categoryName:
@@ -113,6 +180,15 @@ definitions:
         type: string
       password:
         type: string
+    type: object
+  requests.UnSettleTransactionReq:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+      splitTransactionId:
+        type: integer
     type: object
   requests.UserReq:
     properties:
@@ -285,6 +361,28 @@ paths:
       summary: Get categories of user
       tags:
       - Categories
+  /friends/:
+    post:
+      consumes:
+      - application/json
+      description: creates a friend
+      parameters:
+      - description: enter Email, Password and friend Name
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/requests.CreateFriendReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/responses.SuccessRes'
+      summary: create a friend
+      tags:
+      - Friends
   /net-amount/categories:
     post:
       consumes:
@@ -309,6 +407,49 @@ paths:
       summary: get money spent on each category
       tags:
       - Net-Amount
+  /settle-transaction:
+    delete:
+      consumes:
+      - application/json
+      description: settle a split transaction
+      parameters:
+      - description: enter Email, Password and friend Name
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/requests.UnSettleTransactionReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/responses.SuccessRes'
+      summary: settle a split
+      tags:
+      - settleTransaction
+    post:
+      consumes:
+      - application/json
+      description: settle a split transaction
+      parameters:
+      - description: enter Email, Password and friend Name
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/requests.SettleTransactionReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/responses.SuccessRes'
+      summary: settle a split
+      tags:
+      - settleTransaction
   /split-tags:
     get:
       consumes:
@@ -326,6 +467,93 @@ paths:
       summary: Get split tags
       tags:
       - Split-tags
+  /split-transaction:
+    delete:
+      consumes:
+      - application/json
+      description: deletes a alreadt split transaction
+      parameters:
+      - description: delete split
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/requests.DeleteSplitTransactionReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/responses.SuccessRes'
+      summary: deletes a alreadt split transaction
+      tags:
+      - SplitTransaction
+    post:
+      consumes:
+      - application/json
+      description: split a transaction
+      parameters:
+      - description: split transaction
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/requests.SplitTransactionReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/responses.SuccessRes'
+      summary: split a transaction
+      tags:
+      - SplitTransaction
+  /split-transaction/one:
+    post:
+      consumes:
+      - application/json
+      description: split a transaction
+      parameters:
+      - description: split with one
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/requests.SplitWithOneFriendReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/responses.SuccessRes'
+      summary: split a transaction
+      tags:
+      - SplitTransaction
+  /split-transaction/splits:
+    post:
+      consumes:
+      - application/json
+      description: Get splits of user
+      parameters:
+      - description: get split transaction
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/requests.GetSplitTransactionsReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/responses.SuccessRes'
+      summary: Get splits of user
+      tags:
+      - SplitTransaction
   /transactions:
     delete:
       consumes:

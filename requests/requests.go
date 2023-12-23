@@ -92,8 +92,16 @@ type SplitTransactionReq struct {
 }
 
 type FriendSplit struct {
-	FriendId int
+	FriendId uint
 	Amount   int
+}
+
+type SplitWithOneFriendReq struct {
+	Email       string
+	Password    string
+	TransString string
+	Friend      string
+	Amount      int
 }
 
 type SettleTransactionReq struct {
@@ -112,4 +120,9 @@ type DeleteSplitTransactionReq struct {
 	Email         string
 	Password      string
 	TransactionId uint
+}
+
+type GetSplitTransactionsReq struct {
+	Email    string
+	Password string
 }
