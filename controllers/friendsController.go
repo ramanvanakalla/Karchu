@@ -48,7 +48,7 @@ func CreateFriend(ctx *gin.Context) {
 // @Produce      json
 // @Param        request body requests.GetFriendsReq true "enter Email, Password"
 // @Success      200  {object} responses.SuccessRes
-// @Router       /friends/ [post]
+// @Router       /friends/get [post]
 func GetFriends(ctx *gin.Context) {
 	userIDUint, ok := getUserID(ctx)
 	if !ok {
