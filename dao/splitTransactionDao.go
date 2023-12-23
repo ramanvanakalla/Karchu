@@ -142,6 +142,9 @@ func GetSplitsOfTransaction(transaction models.Transaction) ([]views.SplitView, 
 	for _, splitTransaction := range transaction.Splits {
 		categoryId := transaction.CategoryMappings[0].CategoryId
 		categoryName, err := GetCategoryNameFromId(categoryId)
+		if err != nil {
+			return splits, err
+		}
 		friendName, err := GetFriendNameFromId(splitTransaction.FriendId)
 		if err != nil {
 			return splits, err

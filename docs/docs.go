@@ -255,6 +255,40 @@ const docTemplate = `{
                 }
             }
         },
+        "/friends/get": {
+            "post": {
+                "description": "get friends",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Friends"
+                ],
+                "summary": "get friends",
+                "parameters": [
+                    {
+                        "description": "enter Email, Password",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/requests.GetFriendsReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/responses.SuccessRes"
+                        }
+                    }
+                }
+            }
+        },
         "/net-amount/categories": {
             "post": {
                 "description": "get money spent on each category",
@@ -870,6 +904,43 @@ const docTemplate = `{
                     }
                 }
             }
+        },
+        "/v2/trans-split-with-one": {
+            "post": {
+                "description": "create a transaction and also split",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "trans-split-with-one"
+                ],
+                "summary": "creates a transaction and also split",
+                "parameters": [
+                    {
+                        "description": "add transaction and also split",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/requests.TransactionAndSplitWithOneReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/responses.SuccessRes"
+                            }
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {
@@ -1005,6 +1076,17 @@ const docTemplate = `{
                 }
             }
         },
+        "requests.GetFriendsReq": {
+            "type": "object",
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                }
+            }
+        },
         "requests.GetLastNTransactionsReq": {
             "type": "object",
             "properties": {
@@ -1136,6 +1218,35 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "transString": {
+                    "type": "string"
+                }
+            }
+        },
+        "requests.TransactionAndSplitWithOneReq": {
+            "type": "object",
+            "properties": {
+                "amount": {
+                    "type": "integer"
+                },
+                "category": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "friendName": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                },
+                "splitAmount": {
+                    "type": "integer"
+                },
+                "splitTag": {
                     "type": "string"
                 }
             }

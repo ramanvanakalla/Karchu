@@ -145,3 +145,24 @@ func GetNetMoneySpentByCategory2(userId uint) ([]string, *exceptions.GeneralExce
 	}
 	return netCategorySumList, nil
 }
+
+func CreateTransactionAndSplitWithOne(userId uint, time time.Time, amount int, category string, description string, splitTag string, friendName string, splitAmount int) *exceptions.GeneralException {
+	if !validateAndNormalizeCategory(&category) {
+		return exceptions.BadRequestError(fmt.Sprintf("invalid category format %s", category), "INVALID_CATEGORY_FORMAT")
+	}
+	if splitAmount > amount {
+		return exceptions.BadRequestError("split amount can not be greater than trans amount", "SPLT_GREATER_THAN_TRANS_AMT")
+	}
+	categoryId, err := dao.GetCategoryIdByUserIdAndCategoryName(userId, category)
+	if err != nil {
+		return exceptions.BadRequestError(err.Error(), "CANT_GET_CATEGORY")
+	}
+	friendId, err := dao.GetFriendId(userId, friendName)
+	if err != nil {
+		return exceptions.InternalServerError(err.Error(), "FAIL_GETTING_FRND_ID")
+	}
+	if err := dao.CreateTransactionAndSplitWithOne(userId, time, amount, categoryId, description, splitTag, friendId, splitAmount); err != nil {
+		return exceptions.InternalServerError(err.Error(), "FAIL_TRANS_ADD_SPLIT")
+	}
+	return nil
+}
