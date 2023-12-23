@@ -3,7 +3,6 @@ package dao
 import (
 	"Karchu/initializers"
 	"Karchu/models"
-	"fmt"
 )
 
 func CreateFriend(userId uint, friendName string) (uint, error) {
@@ -48,8 +47,6 @@ func IsFriends(userId uint, friendIds []uint) (bool, error) {
 	if err != nil {
 		return false, err
 	}
-	fmt.Println(user)
-	fmt.Println(user.Friends)
 	idMap := make(map[uint]bool)
 	for _, friend := range user.Friends {
 		idMap[friend.ID] = true

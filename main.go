@@ -87,6 +87,10 @@ func main() {
 			settleSplit.POST("", controllers.SettleSplitTransaction)
 			settleSplit.DELETE("", controllers.UnSettleSplitTransaction)
 		}
+		transactionAndSplit := v2.Group("/trans-split-with-one")
+		{
+			transactionAndSplit.POST("", controllers.CreateTransactionAndSplitWithOne)
+		}
 	}
 	router.GET("/", controllers.Home)
 	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))

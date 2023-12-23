@@ -6,6 +6,7 @@ import (
 	"Karchu/services"
 	"fmt"
 	"net/http"
+	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/gin-gonic/gin/binding"
@@ -38,6 +39,34 @@ func NewTransaction(ctx *gin.Context) {
 		return
 	}
 	ctx.JSON(http.StatusOK, responses.CreateSuccessResponse("TRANSACTION_CREATED", fmt.Sprintf("transaction Id %d created", transactionId)))
+}
+
+// CreateTransactionAndSplitWithOne godoc
+// @Summary      creates a transaction and also split
+// @Description  create a transaction and also split
+// @Tags         trans-split-with-one
+// @Accept       json
+// @Produce      json
+// @Param        request body requests.TransactionAndSplitWithOneReq true "add transaction and also split"
+// @Success      200  {array} responses.SuccessRes
+// @Router       /v2/trans-split-with-one [post]
+func CreateTransactionAndSplitWithOne(ctx *gin.Context) {
+	userIDUint, ok := getUserID(ctx)
+	if !ok {
+		ctx.JSON(http.StatusInternalServerError, responses.CreateErrorResponse("Error while getting userId", "USERID_NOT_SET_CTX"))
+		return
+	}
+	var req requests.TransactionAndSplitWithOneReq
+	if err := ctx.ShouldBindBodyWith(&req, binding.JSON); err != nil {
+		ctx.JSON(http.StatusBadRequest, responses.CreateErrorResponse("CANT_PARSE_REQ", err.Error()))
+		ctx.Abort()
+		return
+	}
+	if ex := services.CreateTransactionAndSplitWithOne(userIDUint, time.Now(), req.Amount, req.Category, req.Description, req.SplitTag, req.FriendName, req.SplitAmount); ex != nil {
+		ctx.JSON(ex.StatusCode, responses.CreateErrorResponse(ex.Status, ex.Message))
+		return
+	}
+	ctx.JSON(http.StatusOK, responses.CreateSuccessResponse("TRANSACTION_AND_SPLT_CREATED", "Transaction and split succesfully created"))
 }
 
 // DeleteTransactionFromTransString godoc

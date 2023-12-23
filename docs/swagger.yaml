@@ -85,6 +85,13 @@ definitions:
       friendId:
         type: integer
     type: object
+  requests.GetFriendsReq:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+    type: object
   requests.GetLastNTransactionsReq:
     properties:
       email:
@@ -170,6 +177,25 @@ definitions:
       password:
         type: string
       transString:
+        type: string
+    type: object
+  requests.TransactionAndSplitWithOneReq:
+    properties:
+      amount:
+        type: integer
+      category:
+        type: string
+      description:
+        type: string
+      email:
+        type: string
+      friendName:
+        type: string
+      password:
+        type: string
+      splitAmount:
+        type: integer
+      splitTag:
         type: string
     type: object
   requests.TransactionsOfCategoryReq:
@@ -381,6 +407,28 @@ paths:
           schema:
             $ref: '#/definitions/responses.SuccessRes'
       summary: create a friend
+      tags:
+      - Friends
+  /friends/get:
+    post:
+      consumes:
+      - application/json
+      description: get friends
+      parameters:
+      - description: enter Email, Password
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/requests.GetFriendsReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/responses.SuccessRes'
+      summary: get friends
       tags:
       - Friends
   /net-amount/categories:
@@ -784,6 +832,30 @@ paths:
       summary: Authorizes the user creds
       tags:
       - Users
+  /v2/trans-split-with-one:
+    post:
+      consumes:
+      - application/json
+      description: create a transaction and also split
+      parameters:
+      - description: add transaction and also split
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/requests.TransactionAndSplitWithOneReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/responses.SuccessRes'
+            type: array
+      summary: creates a transaction and also split
+      tags:
+      - trans-split-with-one
 securityDefinitions:
   BasicAuth:
     type: basic

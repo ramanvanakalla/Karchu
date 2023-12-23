@@ -32,6 +32,37 @@ func CreateTransactionV2(userId uint, time time.Time, amount int, categoryId uin
 	return transaction.ID, tx.Commit().Error
 }
 
+func CreateTransactionAndSplitWithOne(userId uint, time time.Time, amount int, categoryId uint, description string, splitTag string, friendId uint, splitAmount int) error {
+	tx := initializers.DB.Begin()
+	defer func() {
+		if r := recover(); r != nil {
+			tx.Rollback()
+		}
+	}()
+
+	// step 1: add transaction to table
+	transaction := models.Transaction{UserId: userId, Time: time, Amount: amount, Description: description, SplitTag: splitTag}
+	transactionErr := tx.Create(&transaction).Error
+	if transactionErr != nil {
+		tx.Rollback()
+		return transactionErr
+	}
+	// step 2: add to transactionCatgoryTable
+	categoryTransactionMap := models.CategoryTransactionMapping{CategoryId: categoryId, TransactionId: transaction.ID}
+	categoryTransactionErr := tx.Create(&categoryTransactionMap).Error
+	if categoryTransactionErr != nil {
+		tx.Rollback()
+		return categoryTransactionErr
+	}
+	splitTransaction := models.SplitTransaction{SourceTransactionId: transaction.ID, Amount: splitAmount, FriendId: friendId}
+	err := tx.Create(&splitTransaction).Error
+	if err != nil {
+		tx.Rollback()
+		return err
+	}
+	return tx.Commit().Error
+}
+
 func CreateTransaction(userId uint, time time.Time, amount int, category string, categoryId uint, description string, splitTag string) (uint, error) {
 	transaction := models.Transaction{UserId: userId, Time: time, Amount: amount, Description: description, SplitTag: splitTag}
 	err := initializers.DB.Create(&transaction).Error
