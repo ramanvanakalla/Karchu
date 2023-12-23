@@ -26,3 +26,8 @@ func CreateFriend(userId uint, friendName string) (uint, *exceptions.GeneralExce
 	}
 	return friendId, nil
 }
+
+func GetFriends(userId uint) ([]string, *exceptions.GeneralException) {
+	friends, err := dao.GetFriends(userId)
+	return friends, exceptions.InternalServerError(err.Error(), "GET_FRIENDS_FAIL")
+}

@@ -72,6 +72,8 @@ func main() {
 		friends := v2.Group("/friends")
 		{
 			friends.POST("", controllers.CreateFriend)
+			friends.POST("/get", controllers.GetFriends)
+
 		}
 		SplitTransaction := v2.Group("/split-transaction")
 		{
