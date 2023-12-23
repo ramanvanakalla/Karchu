@@ -126,3 +126,8 @@ type GetSplitTransactionsReq struct {
 	Email    string
 	Password string
 }
+
+type GetFriendsReq struct {
+	Email    string
+	Password string
+}

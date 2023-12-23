@@ -39,3 +39,32 @@ func CreateFriend(ctx *gin.Context) {
 	}
 	ctx.JSON(http.StatusOK, responses.CreateSuccessResponse("FRIEND_CREATED", fmt.Sprintf("Friend %s with id %d is created", req.FriendName, friendId)))
 }
+
+// GetFriend godoc
+// @Summary      get friends
+// @Description  get friends
+// @Tags         Friends
+// @Accept       json
+// @Produce      json
+// @Param        request body requests.GetFriendsReq true "enter Email, Password"
+// @Success      200  {object} responses.SuccessRes
+// @Router       /friends/ [post]
+func GetFriends(ctx *gin.Context) {
+	userIDUint, ok := getUserID(ctx)
+	if !ok {
+		ctx.JSON(http.StatusInternalServerError, responses.CreateErrorResponse("Error while getting userId", "USERID_NOT_SET_CTX"))
+		return
+	}
+	var req requests.CreateFriendReq
+	if err := ctx.ShouldBindBodyWith(&req, binding.JSON); err != nil {
+		ctx.JSON(http.StatusBadRequest, responses.CreateErrorResponse("CANT_PARSE_REQ", err.Error()))
+		ctx.Abort()
+		return
+	}
+	friends, ex := services.GetFriends(userIDUint)
+	if ex != nil {
+		ctx.JSON(ex.StatusCode, responses.CreateErrorResponse(ex.Status, ex.Message))
+		return
+	}
+	ctx.JSON(http.StatusOK, friends)
+}
