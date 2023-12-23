@@ -121,3 +121,8 @@ type DeleteSplitTransactionReq struct {
 	Password      string
 	TransactionId uint
 }
+
+type GetSplitTransactionsReq struct {
+	Email    string
+	Password string
+}

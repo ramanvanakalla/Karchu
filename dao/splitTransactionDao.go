@@ -4,6 +4,7 @@ import (
 	"Karchu/initializers"
 	"Karchu/models"
 	"Karchu/requests"
+	"Karchu/views"
 	"errors"
 	"fmt"
 	"time"
@@ -134,4 +135,55 @@ func DeleteTransactionSplit(userId uint, transactionId uint) error {
 		}
 	}
 	return tx.Commit().Error
+}
+
+func GetSplitsOfTransaction(transaction models.Transaction) ([]views.SplitView, error) {
+	splits := make([]views.SplitView, 0)
+	for _, splitTransaction := range transaction.Splits {
+		categoryId := transaction.CategoryMappings[0].CategoryId
+		categoryName, err := GetCategoryNameFromId(categoryId)
+		friendName, err := GetFriendNameFromId(splitTransaction.FriendId)
+		if err != nil {
+			return splits, err
+		}
+		var settleTransactionId uint
+		if splitTransaction.SettledTransactionId != nil {
+			settleTransactionId = *splitTransaction.SettledTransactionId
+		}
+		split := views.SplitView{
+			SplitTransactionId:   splitTransaction.ID,
+			SourceTransactionId:  splitTransaction.SourceTransactionId,
+			SettledTransactionId: settleTransactionId,
+			CategoryName:         categoryName,
+			SourceAmount:         transaction.Amount,
+			Amount:               splitTransaction.Amount,
+			FriendName:           friendName,
+		}
+		splits = append(splits, split)
+		fmt.Println("Done")
+	}
+	return splits, nil
+}
+
+func GetSplitTransactions(userId uint) ([]views.SplitView, error) {
+	var user models.User
+	splits := make([]views.SplitView, 0)
+	if err := initializers.DB.
+		Preload("Transactions").
+		Preload("Friends").
+		Preload("Transactions.Splits").
+		Preload("Transactions.CategoryMappings").
+		First(&user, userId).
+		Error; err != nil {
+		return splits, err
+	}
+	for _, transaction := range user.Transactions {
+		fmt.Println(transaction.CategoryMappings)
+		transactionSplits, err := GetSplitsOfTransaction(transaction)
+		if err != nil {
+			return splits, err
+		}
+		splits = append(splits, transactionSplits...)
+	}
+	return splits, nil
 }

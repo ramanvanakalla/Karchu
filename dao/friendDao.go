@@ -18,6 +18,14 @@ func GetFriendId(userId uint, friendName string) (uint, error) {
 	return newFriend.ID, err
 }
 
+func GetFriendNameFromId(friendId uint) (string, error) {
+	var friend models.Friend
+	err := initializers.DB.
+		First(&friend, friendId).
+		Error
+	return friend.FriendName, err
+}
+
 func IsFriends(userId uint, friendIds []uint) (bool, error) {
 	var user models.User
 	err := initializers.DB.Preload("Friends").First(&user, userId).Error
