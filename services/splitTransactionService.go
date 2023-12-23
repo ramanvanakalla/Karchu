@@ -31,14 +31,18 @@ func verifySplits(userId uint, transactionId uint, Splits []requests.FriendSplit
 	return nil
 }
 
-func SplitTransactionWithOneFriend(userId uint, transactionId uint, friendName string, amount int) *exceptions.GeneralException {
+func SplitTransactionWithOneFriend(userId uint, TransString string, friendName string, amount int) *exceptions.GeneralException {
 	splits := make([]requests.FriendSplit, 0)
+	transaction, err := StringToTransaction(TransString)
+	if err != nil {
+		return exceptions.InternalServerError(err.Error(), "FAIL_GETTING_TRANS_ID")
+	}
 	friendId, err := dao.GetFriendId(userId, friendName)
 	if err != nil {
 		return exceptions.InternalServerError(err.Error(), "FAIL_GETTING_FRND_ID")
 	}
 	splits = append(splits, requests.FriendSplit{FriendId: friendId, Amount: amount})
-	return SplitTransaction(userId, transactionId, splits)
+	return SplitTransaction(userId, transaction.ID, splits)
 }
 
 func GetSplitTransactions(userId uint) ([]string, *exceptions.GeneralException) {

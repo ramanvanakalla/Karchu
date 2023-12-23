@@ -97,11 +97,11 @@ type FriendSplit struct {
 }
 
 type SplitWithOneFriendReq struct {
-	Email         string
-	Password      string
-	TransactionId uint
-	Friend        string
-	Amount        int
+	Email       string
+	Password    string
+	TransString string
+	Friend      string
+	Amount      int
 }
 
 type SettleTransactionReq struct {
