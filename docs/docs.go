@@ -289,6 +289,40 @@ const docTemplate = `{
                 }
             }
         },
+        "/money-lent": {
+            "post": {
+                "description": "Money lent to a friend",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "MoneyLent"
+                ],
+                "summary": "Money Lent to a friend",
+                "parameters": [
+                    {
+                        "description": "enter Email, Password and friend Name",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/requests.MoneyLentFriend"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/responses.SuccessRes"
+                        }
+                    }
+                }
+            }
+        },
         "/net-amount/categories": {
             "post": {
                 "description": "get money spent on each category",
@@ -1136,6 +1170,20 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "sourceCategoryName": {
+                    "type": "string"
+                }
+            }
+        },
+        "requests.MoneyLentFriend": {
+            "type": "object",
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "friendName": {
+                    "type": "string"
+                },
+                "password": {
                     "type": "string"
                 }
             }

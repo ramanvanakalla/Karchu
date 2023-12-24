@@ -126,6 +126,15 @@ definitions:
       sourceCategoryName:
         type: string
     type: object
+  requests.MoneyLentFriend:
+    properties:
+      email:
+        type: string
+      friendName:
+        type: string
+      password:
+        type: string
+    type: object
   requests.NetAmountByCategoryReq:
     properties:
       email:
@@ -431,6 +440,28 @@ paths:
       summary: get friends
       tags:
       - Friends
+  /money-lent:
+    post:
+      consumes:
+      - application/json
+      description: Money lent to a friend
+      parameters:
+      - description: enter Email, Password and friend Name
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/requests.MoneyLentFriend'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/responses.SuccessRes'
+      summary: Money Lent to a friend
+      tags:
+      - MoneyLent
   /net-amount/categories:
     post:
       consumes:

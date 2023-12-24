@@ -186,3 +186,20 @@ func GetSplitTransactions(userId uint) ([]views.SplitView, error) {
 	}
 	return splits, nil
 }
+
+func GetMoenyLentToFriendByCategory(userId uint, friendName string) (map[string][]views.SplitView, error) {
+	moneyLentByCategory := make(map[string][]views.SplitView)
+	splits, err := GetSplitTransactions(userId)
+	if err != nil {
+		return moneyLentByCategory, err
+	}
+	for _, split := range splits {
+		if split.FriendName == friendName && split.SettledTransactionId == 0 {
+			if _, exists := moneyLentByCategory[split.CategoryName]; !exists {
+				moneyLentByCategory[split.CategoryName] = make([]views.SplitView, 0)
+			}
+			moneyLentByCategory[split.CategoryName] = append(moneyLentByCategory[split.CategoryName], split)
+		}
+	}
+	return moneyLentByCategory, nil
+}

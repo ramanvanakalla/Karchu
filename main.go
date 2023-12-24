@@ -91,6 +91,10 @@ func main() {
 		{
 			transactionAndSplit.POST("", controllers.CreateTransactionAndSplitWithOne)
 		}
+		moneyLent := v2.Group("/money-lent")
+		{
+			moneyLent.POST("", controllers.MoneyLentToFriend)
+		}
 	}
 	router.GET("/", controllers.Home)
 	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))

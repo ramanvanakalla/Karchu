@@ -142,3 +142,9 @@ type TransactionAndSplitWithOneReq struct {
 	FriendName  string
 	SplitAmount int
 }
+
+type MoneyLentFriend struct {
+	Email      string
+	Password   string
+	FriendName string
+}
