@@ -126,6 +126,35 @@ func DeleteSplitTransaction(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, responses.CreateSuccessResponse("TRANSACTION_SPLIT_DELETE", "Transaction splits go deleted"))
 }
 
+// DeleteSplitTransactionString godoc
+// @Summary      deletes a alreadt split transaction from transString
+// @Description  deletes a alreadt split transaction from transString
+// @Tags         SplitTransaction
+// @Accept       json
+// @Produce      json
+// @Param        request body requests.DeleteSplitTransactionStringReq true "delete split"
+// @Success      200  {object} responses.SuccessRes
+// @Router       /split-transaction/str [delete]
+func DeleteSplitTransactionString(ctx *gin.Context) {
+	userIDUint, ok := getUserID(ctx)
+	if !ok {
+		ctx.JSON(http.StatusInternalServerError, responses.CreateErrorResponse("Error while getting userId", "USERID_NOT_SET_CTX"))
+		return
+	}
+	var req requests.DeleteSplitTransactionStringReq
+	if err := ctx.ShouldBindBodyWith(&req, binding.JSON); err != nil {
+		ctx.JSON(http.StatusBadRequest, responses.CreateErrorResponse("CANT_PARSE_REQ", err.Error()))
+		ctx.Abort()
+		return
+	}
+	ex := services.DeleteSplitTransactionString(userIDUint, req.TransString)
+	if ex != nil {
+		ctx.JSON(ex.StatusCode, responses.CreateErrorResponse(ex.Status, ex.Message))
+		return
+	}
+	ctx.JSON(http.StatusOK, responses.CreateSuccessResponse("TRANSACTION_SPLIT_DELETE", "Transaction splits go deleted"))
+}
+
 // settleSplitTransaction godoc
 // @Summary      settle a split
 // @Description  settle a split transaction

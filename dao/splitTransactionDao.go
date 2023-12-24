@@ -142,6 +142,11 @@ func DeleteTransactionSplit(userId uint, transactionId uint) error {
 			return err
 		}
 	}
+	transaction.SplitTag = "Will Split"
+	if err := tx.Save(&transaction).Error; err != nil {
+		tx.Rollback()
+		return err
+	}
 	return tx.Commit().Error
 }
 
