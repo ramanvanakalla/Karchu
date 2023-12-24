@@ -4,6 +4,7 @@ import (
 	"Karchu/dao"
 	"Karchu/exceptions"
 	"Karchu/requests"
+	"Karchu/views"
 	"errors"
 )
 
@@ -110,4 +111,25 @@ func UnSettleTransaction(userId uint, splitTransactionId uint) *exceptions.Gener
 		return exceptions.InternalServerError(err.Error(), "UNSETTLE_TRANS_FAIL")
 	}
 	return nil
+}
+
+func MoneyLentToFriend(userId uint, friendName string) ([]string, *exceptions.GeneralException) {
+	categoryLevelMoneyLent := make([]string, 0)
+	SplitsByCategory, err := dao.GetMoenyLentToFriendByCategory(userId, friendName)
+	if err != nil {
+		return categoryLevelMoneyLent, exceptions.InternalServerError(err.Error(), "FAIL_GETTING_SPLITS")
+	}
+	totalMoneyLent := 0
+	for categoryName, splits := range SplitsByCategory {
+		netAmount := 0
+		for _, split := range splits {
+			netAmount += split.Amount
+		}
+		categorySum := views.NetCategorySum{Category: categoryName, NetAmount: netAmount}
+		categoryLevelMoneyLent = append(categoryLevelMoneyLent, categorySum.ToString())
+		totalMoneyLent += netAmount
+	}
+	categorySum := views.NetCategorySum{Category: "Total Money Lent", NetAmount: totalMoneyLent}
+	categoryLevelMoneyLent = append(categoryLevelMoneyLent, categorySum.ToString())
+	return categoryLevelMoneyLent, nil
 }
