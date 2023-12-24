@@ -19,11 +19,21 @@ func AddSplitTransactions(userId uint, transactionId uint, splits []requests.Fri
 
 	for _, split := range splits {
 		splitTransaction := models.SplitTransaction{SourceTransactionId: transactionId, Amount: split.Amount, FriendId: uint(split.FriendId)}
-		err := initializers.DB.Create(&splitTransaction).Error
+		err := tx.Create(&splitTransaction).Error
 		if err != nil {
 			tx.Rollback()
 			return err
 		}
+	}
+	var transaction models.Transaction
+	if err := tx.First(&transaction, transactionId).Error; err != nil {
+		tx.Rollback()
+		return err
+	}
+	transaction.SplitTag = "Done Split"
+	if err := tx.Save(&transaction).Error; err != nil {
+		tx.Rollback()
+		return err
 	}
 	return tx.Commit().Error
 }
