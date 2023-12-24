@@ -4,8 +4,8 @@ import (
 	"Karchu/initializers"
 	"Karchu/models"
 	"Karchu/requests"
-	"Karchu/views"
 	"errors"
+	"fmt"
 	"time"
 )
 
@@ -19,21 +19,12 @@ func AddSplitTransactions(userId uint, transactionId uint, splits []requests.Fri
 
 	for _, split := range splits {
 		splitTransaction := models.SplitTransaction{SourceTransactionId: transactionId, Amount: split.Amount, FriendId: uint(split.FriendId)}
-		err := tx.Create(&splitTransaction).Error
+		fmt.Println(splitTransaction)
+		err := initializers.DB.Create(&splitTransaction).Error
 		if err != nil {
 			tx.Rollback()
 			return err
 		}
-	}
-	var transaction models.Transaction
-	if err := tx.First(&transaction, transactionId).Error; err != nil {
-		tx.Rollback()
-		return err
-	}
-	transaction.SplitTag = "Done Split"
-	if err := tx.Save(&transaction).Error; err != nil {
-		tx.Rollback()
-		return err
 	}
 	return tx.Commit().Error
 }
@@ -143,73 +134,4 @@ func DeleteTransactionSplit(userId uint, transactionId uint) error {
 		}
 	}
 	return tx.Commit().Error
-}
-
-func GetSplitsOfTransaction(transaction models.Transaction) ([]views.SplitView, error) {
-	splits := make([]views.SplitView, 0)
-	for _, splitTransaction := range transaction.Splits {
-		categoryId := transaction.CategoryMappings[0].CategoryId
-		categoryName, err := GetCategoryNameFromId(categoryId)
-		if err != nil {
-			return splits, err
-		}
-		friendName, err := GetFriendNameFromId(splitTransaction.FriendId)
-		if err != nil {
-			return splits, err
-		}
-		var settleTransactionId uint
-		if splitTransaction.SettledTransactionId != nil {
-			settleTransactionId = *splitTransaction.SettledTransactionId
-		}
-		split := views.SplitView{
-			SplitTransactionId:   splitTransaction.ID,
-			SourceTransactionId:  splitTransaction.SourceTransactionId,
-			SettledTransactionId: settleTransactionId,
-			CategoryName:         categoryName,
-			SourceAmount:         transaction.Amount,
-			Amount:               splitTransaction.Amount,
-			FriendName:           friendName,
-		}
-		splits = append(splits, split)
-	}
-	return splits, nil
-}
-
-func GetSplitTransactions(userId uint) ([]views.SplitView, error) {
-	var user models.User
-	splits := make([]views.SplitView, 0)
-	if err := initializers.DB.
-		Preload("Transactions").
-		Preload("Friends").
-		Preload("Transactions.Splits").
-		Preload("Transactions.CategoryMappings").
-		First(&user, userId).
-		Error; err != nil {
-		return splits, err
-	}
-	for _, transaction := range user.Transactions {
-		transactionSplits, err := GetSplitsOfTransaction(transaction)
-		if err != nil {
-			return splits, err
-		}
-		splits = append(splits, transactionSplits...)
-	}
-	return splits, nil
-}
-
-func GetMoenyLentToFriendByCategory(userId uint, friendName string) (map[string][]views.SplitView, error) {
-	moneyLentByCategory := make(map[string][]views.SplitView)
-	splits, err := GetSplitTransactions(userId)
-	if err != nil {
-		return moneyLentByCategory, err
-	}
-	for _, split := range splits {
-		if split.FriendName == friendName && split.SettledTransactionId == 0 {
-			if _, exists := moneyLentByCategory[split.CategoryName]; !exists {
-				moneyLentByCategory[split.CategoryName] = make([]views.SplitView, 0)
-			}
-			moneyLentByCategory[split.CategoryName] = append(moneyLentByCategory[split.CategoryName], split)
-		}
-	}
-	return moneyLentByCategory, nil
 }
