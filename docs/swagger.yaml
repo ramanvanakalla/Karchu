@@ -60,6 +60,15 @@ definitions:
       transactionId:
         type: integer
     type: object
+  requests.DeleteSplitTransactionStringReq:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+      transString:
+        type: string
+    type: object
   requests.DeleteTransactionFromTransStringReq:
     properties:
       email:
@@ -631,6 +640,28 @@ paths:
           schema:
             $ref: '#/definitions/responses.SuccessRes'
       summary: Get splits of user
+      tags:
+      - SplitTransaction
+  /split-transaction/str:
+    delete:
+      consumes:
+      - application/json
+      description: deletes a alreadt split transaction from transString
+      parameters:
+      - description: delete split
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/requests.DeleteSplitTransactionStringReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/responses.SuccessRes'
+      summary: deletes a alreadt split transaction from transString
       tags:
       - SplitTransaction
   /transactions:

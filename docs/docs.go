@@ -586,6 +586,40 @@ const docTemplate = `{
                 }
             }
         },
+        "/split-transaction/str": {
+            "delete": {
+                "description": "deletes a alreadt split transaction from transString",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "SplitTransaction"
+                ],
+                "summary": "deletes a alreadt split transaction from transString",
+                "parameters": [
+                    {
+                        "description": "delete split",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/requests.DeleteSplitTransactionStringReq"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/responses.SuccessRes"
+                        }
+                    }
+                }
+            }
+        },
         "/transactions": {
             "post": {
                 "description": "create a transaction with category V2",
@@ -1068,6 +1102,20 @@ const docTemplate = `{
                 },
                 "transactionId": {
                     "type": "integer"
+                }
+            }
+        },
+        "requests.DeleteSplitTransactionStringReq": {
+            "type": "object",
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                },
+                "transString": {
+                    "type": "string"
                 }
             }
         },

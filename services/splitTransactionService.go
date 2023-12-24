@@ -77,6 +77,24 @@ func SplitTransaction(userId uint, transactionId uint, splits []requests.FriendS
 	return nil
 }
 
+func DeleteSplitTransactionString(userId uint, transString string) *exceptions.GeneralException {
+	transaction, err := StringToTransaction(transString)
+	if err != nil {
+		return exceptions.InternalServerError(err.Error(), "FAIL_GETTING_TRANS_ID")
+	}
+	alreadySplit, err := dao.TransactionAlreadySplit(transaction.ID)
+	if err != nil {
+		return exceptions.InternalServerError(err.Error(), "DELETE_SPLIT_TRANS_FAIL")
+	}
+	if !alreadySplit {
+		return exceptions.InternalServerError("Transaction is not split", "TRANSACTION_NOT_SPLIT")
+	}
+	if err := dao.DeleteTransactionSplit(userId, transaction.ID); err != nil {
+		return exceptions.InternalServerError(err.Error(), "DELETE_SPLIT_TRANS_FAIL")
+	}
+	return nil
+}
+
 func DeleteSplitTransaction(userId uint, transactionId uint) *exceptions.GeneralException {
 	alreadySplit, err := dao.TransactionAlreadySplit(transactionId)
 	if err != nil {

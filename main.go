@@ -79,6 +79,7 @@ func main() {
 		{
 			SplitTransaction.POST("", controllers.SplitTransaction)
 			SplitTransaction.DELETE("", controllers.DeleteSplitTransaction)
+			SplitTransaction.DELETE("/str", controllers.DeleteSplitTransactionString)
 			SplitTransaction.POST("/one", controllers.SplitTransactionWithOneFriend)
 			SplitTransaction.POST("/splits", controllers.GetSplitTransactions)
 		}
