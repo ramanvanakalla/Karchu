@@ -13,10 +13,10 @@ func CreateFriend(userId uint, friendName string) (uint, error) {
 }
 
 func GetFriendId(userId uint, friendName string) (uint, error) {
-	newFriend := models.Friend{UserId: userId, FriendName: friendName}
-	fmt.Println(newFriend)
-	err := initializers.DB.First(&newFriend).Error
-	return newFriend.ID, err
+	var friend models.Friend
+	err := initializers.DB.Where(models.Friend{UserId: userId, FriendName: friendName}).First(&friend).Error
+	fmt.Println(friend)
+	return friend.ID, err
 }
 
 func GetFriendNameFromId(friendId uint) (string, error) {
