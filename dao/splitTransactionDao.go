@@ -156,11 +156,16 @@ func DeleteTransactionSplit(userId uint, transactionId uint) error {
 	return tx.Commit().Error
 }
 
-func GetSplitsOfTransaction(transaction models.Transaction, categoryIdToNameMap *map[uint]string, friendIdToNameMap *map[uint]string, onlyUnSettled bool) ([]views.SplitView, error) {
+func GetSplitsOfTransaction(transaction models.Transaction, categoryIdToNameMap *map[uint]string, friendIdToNameMap *map[uint]string, unSettled bool, settled bool) ([]views.SplitView, error) {
 	splits := make([]views.SplitView, 0)
 	for _, splitTransaction := range transaction.Splits {
-		if onlyUnSettled {
+		if settled == false {
 			if splitTransaction.SettledTransactionId != nil {
+				continue
+			}
+		}
+		if unSettled == false {
+			if splitTransaction.SettledTransactionId == nil {
 				continue
 			}
 		}
@@ -185,7 +190,7 @@ func GetSplitsOfTransaction(transaction models.Transaction, categoryIdToNameMap 
 	return splits, nil
 }
 
-func GetSplitTransactions(userId uint, onlyUnSettled bool) ([]views.SplitView, error) {
+func GetSplitTransactions(userId uint, unSettled bool, settled bool) ([]views.SplitView, error) {
 	var user models.User
 	splits := make([]views.SplitView, 0)
 	if err := initializers.DB.
@@ -207,7 +212,7 @@ func GetSplitTransactions(userId uint, onlyUnSettled bool) ([]views.SplitView, e
 		friendIdToNameMap[friend.ID] = friend.FriendName
 	}
 	for _, transaction := range user.Transactions {
-		transactionSplits, err := GetSplitsOfTransaction(transaction, &categoryIdToNameMap, &friendIdToNameMap, onlyUnSettled)
+		transactionSplits, err := GetSplitsOfTransaction(transaction, &categoryIdToNameMap, &friendIdToNameMap, unSettled, settled)
 		if err != nil {
 			return splits, err
 		}
@@ -218,7 +223,7 @@ func GetSplitTransactions(userId uint, onlyUnSettled bool) ([]views.SplitView, e
 
 func GetMoenyLentToFriendByCategory(userId uint, friendName string) (map[string][]views.SplitView, error) {
 	moneyLentByCategory := make(map[string][]views.SplitView)
-	splits, err := GetSplitTransactions(userId, true)
+	splits, err := GetSplitTransactions(userId, true, false)
 	if err != nil {
 		return moneyLentByCategory, err
 	}

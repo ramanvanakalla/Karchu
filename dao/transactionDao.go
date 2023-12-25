@@ -114,7 +114,7 @@ func DeleteTransactionbyTransactionIdAndUserId(transactionId uint, userId uint) 
 		return 0, err
 	}
 	if isTransactionSplit {
-		return 0, errors.New("Transaction has split, please delete the slit of this trans first")
+		return 0, errors.New("transaction has split, please delete the slit of this trans first")
 	}
 	var transaction models.Transaction
 	err = initializers.DB.

@@ -47,7 +47,7 @@ func SplitTransactionWithOneFriend(ctx *gin.Context) {
 // @Produce      json
 // @Param        request body requests.GetUnSettledSplitTransactionsReq true "get split transaction"
 // @Success      200  {object} responses.SuccessRes
-// @Router       /split-transaction/splits [post]
+// @Router       /split-transaction/unsettled-splits [post]
 func GetUnSettledSplitTransactions(ctx *gin.Context) {
 	userIDUint, ok := getUserID(ctx)
 	if !ok {
@@ -61,6 +61,35 @@ func GetUnSettledSplitTransactions(ctx *gin.Context) {
 		return
 	}
 	splitStrings, ex := services.GetUnSettledSplitTransactions(userIDUint)
+	if ex != nil {
+		ctx.JSON(ex.StatusCode, responses.CreateErrorResponse(ex.Status, ex.Message))
+		return
+	}
+	ctx.JSON(http.StatusOK, splitStrings)
+}
+
+// GetSettledSplitTransactions godoc
+// @Summary      Get splits of user which are settled
+// @Description  Get splits of user which are settled
+// @Tags         SplitTransaction
+// @Accept       json
+// @Produce      json
+// @Param        request body requests.GetSettledSplitTransactionsReq true "get split transaction"
+// @Success      200  {object} responses.SuccessRes
+// @Router       /split-transaction/settled-splits [post]
+func GetSettledSplitTransactions(ctx *gin.Context) {
+	userIDUint, ok := getUserID(ctx)
+	if !ok {
+		ctx.JSON(http.StatusInternalServerError, responses.CreateErrorResponse("Error while getting userId", "USERID_NOT_SET_CTX"))
+		return
+	}
+	var req requests.GetSettledSplitTransactionsReq
+	if err := ctx.ShouldBindBodyWith(&req, binding.JSON); err != nil {
+		ctx.JSON(http.StatusBadRequest, responses.CreateErrorResponse("CANT_PARSE_REQ", err.Error()))
+		ctx.Abort()
+		return
+	}
+	splitStrings, ex := services.GetSettledSplitTransactions(userIDUint)
 	if ex != nil {
 		ctx.JSON(ex.StatusCode, responses.CreateErrorResponse(ex.Status, ex.Message))
 		return
