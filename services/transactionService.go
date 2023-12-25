@@ -132,6 +132,7 @@ func GetNetMoneySpentByCategory2(userId uint) ([]string, *exceptions.GeneralExce
 	if err != nil {
 		return netCategorySumList, exceptions.InternalServerError(err.Error(), "TRANSACTION_GET_FAIL")
 	}
+	totalMoneySpent := 0
 	netCategorySumMap := make(map[string]int)
 	for _, transactionView := range allTransactions {
 		if _, exists := netCategorySumMap[transactionView.CategoryName]; !exists {
@@ -140,9 +141,12 @@ func GetNetMoneySpentByCategory2(userId uint) ([]string, *exceptions.GeneralExce
 		netCategorySumMap[transactionView.CategoryName] += transactionView.Amount
 	}
 	for category, netAmount := range netCategorySumMap {
+		totalMoneySpent += netAmount
 		netCategorySum := views.NetCategorySum{Category: category, NetAmount: netAmount}
 		netCategorySumList = append(netCategorySumList, netCategorySum.ToString())
 	}
+	totalMoney := views.NetCategorySum{Category: "Total Money Spent", NetAmount: totalMoneySpent}
+	netCategorySumList = append(netCategorySumList, totalMoney.ToString())
 	return netCategorySumList, nil
 }
 
