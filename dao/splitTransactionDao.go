@@ -251,8 +251,7 @@ func SettleSplitsOfFriend(userId uint, friendId uint) error {
 	}
 	transactionCategoryIdMap := make(map[uint]uint)
 	for _, transaction := range user.Transactions {
-		transactionCategoryIdMap[transaction.ID] = transaction.CategoryMappings[0].ID
-		fmt.Printf("Trans %d category %d\n", transaction.ID, transaction.CategoryMappings[0].ID)
+		transactionCategoryIdMap[transaction.ID] = transaction.CategoryMappings[0].CategoryId
 	}
 	var friend models.Friend
 	for _, friendIter := range user.Friends {
