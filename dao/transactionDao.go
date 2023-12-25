@@ -88,6 +88,18 @@ func IsTransactionSettledTrans(transactionId uint) (bool, error) {
 	}
 }
 
+func IsTransactionSplit(transactionId uint) (bool, error) {
+	var transaction models.Transaction
+	if err := initializers.DB.Preload("Splits").First(&transaction, transactionId).Error; err != nil {
+		return true, err
+	}
+	if len(transaction.Splits) > 0 {
+		return true, nil
+	} else {
+		return false, nil
+	}
+}
+
 func DeleteTransactionbyTransactionIdAndUserId(transactionId uint, userId uint) (uint, error) {
 	settledTransaction, err := IsTransactionSettledTrans(transactionId)
 	if err != nil {
@@ -95,6 +107,14 @@ func DeleteTransactionbyTransactionIdAndUserId(transactionId uint, userId uint) 
 	}
 	if settledTransaction {
 		return 0, errors.New("settled transaction can not be deleted, it has to be unsettled")
+	}
+
+	isTransactionSplit, err := IsTransactionSplit(transactionId)
+	if err != nil {
+		return 0, err
+	}
+	if isTransactionSplit {
+		return 0, errors.New("Transaction has split, please delete the slit of this trans first")
 	}
 	var transaction models.Transaction
 	err = initializers.DB.
