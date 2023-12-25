@@ -4,6 +4,7 @@ import (
 	"Karchu/initializers"
 	"Karchu/models"
 	"Karchu/views"
+	"errors"
 	"time"
 )
 
@@ -75,9 +76,28 @@ func GetTransaction(transactionId uint) (models.Transaction, error) {
 	return transaction, err
 }
 
-func DeleteTransactionbyTransactionIdAndUserId(transactionId uint, userId uint) (uint, error) {
+func IsTransactionSettledTrans(transactionId uint) (bool, error) {
 	var transaction models.Transaction
-	err := initializers.DB.
+	if err := initializers.DB.Preload("SourceSplitTransaction").First(&transaction, transactionId).Error; err != nil {
+		return true, err
+	}
+	if transaction.SourceSplitTransaction.ID == 0 {
+		return false, nil
+	} else {
+		return true, nil
+	}
+}
+
+func DeleteTransactionbyTransactionIdAndUserId(transactionId uint, userId uint) (uint, error) {
+	settledTransaction, err := IsTransactionSettledTrans(transactionId)
+	if err != nil {
+		return 0, err
+	}
+	if settledTransaction {
+		return 0, errors.New("settled transaction can not be deleted, it has to be unsettled")
+	}
+	var transaction models.Transaction
+	err = initializers.DB.
 		Model(&models.Transaction{}).
 		Where("id = ? and user_id = ?", transactionId, userId).
 		First(&transaction).
