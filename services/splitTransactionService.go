@@ -121,6 +121,22 @@ func SettleTransaction(userId uint, splitTransactionId uint) *exceptions.General
 	return nil
 }
 
+func SettleTransactionString(userId uint, splitTransactionString string) *exceptions.GeneralException {
+	splitTransaction, err := StringToTransaction(splitTransactionString)
+	if err != nil {
+		return exceptions.InternalServerError(err.Error(), "TRANS_TO_STR_FAIL")
+	}
+	err = dao.VerifySplitTransaction(userId, splitTransaction.ID)
+	if err != nil {
+		return exceptions.InternalServerError(err.Error(), "SETTLE_VERIFICATION_FAIL")
+	}
+	err = dao.SettleTransaction(userId, splitTransaction.ID)
+	if err != nil {
+		return exceptions.InternalServerError(err.Error(), "SETTLEMENT_FAILED")
+	}
+	return nil
+}
+
 func UnSettleTransaction(userId uint, splitTransactionId uint) *exceptions.GeneralException {
 	if err := dao.VerifySplitTransaction(userId, splitTransactionId); err != nil {
 		return exceptions.InternalServerError(err.Error(), "SETTLE_VERIFICATION_FAIL")

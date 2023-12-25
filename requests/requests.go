@@ -110,6 +110,12 @@ type SettleTransactionReq struct {
 	SplitTransactionId uint
 }
 
+type SettleTransactionStringReq struct {
+	Email                  string
+	Password               string
+	SplitTransactionString string
+}
+
 type UnSettleTransactionReq struct {
 	Email              string
 	Password           string

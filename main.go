@@ -86,6 +86,7 @@ func main() {
 		settleSplit := v2.Group("/settle")
 		{
 			settleSplit.POST("", controllers.SettleSplitTransaction)
+			settleSplit.POST("/str", controllers.SettleSplitTransactionString)
 			settleSplit.DELETE("", controllers.UnSettleSplitTransaction)
 		}
 		transactionAndSplit := v2.Group("/trans-split-with-one")
