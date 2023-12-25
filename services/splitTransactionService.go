@@ -165,7 +165,7 @@ func UnSettleTransaction(userId uint, splitTransactionId uint) *exceptions.Gener
 }
 
 func UnSettleTransactionString(userId uint, splitTransactionString string) *exceptions.GeneralException {
-	fmt.Println(splitTransactionString)
+	fmt.Printf("String is %s", splitTransactionString)
 	splitTransaction, err := StringToTransaction(splitTransactionString)
 	fmt.Println(splitTransaction)
 	if err != nil {
