@@ -3,7 +3,6 @@ package dao
 import (
 	"Karchu/initializers"
 	"Karchu/models"
-	"fmt"
 )
 
 func CreateFriend(userId uint, friendName string) (uint, error) {
@@ -15,7 +14,6 @@ func CreateFriend(userId uint, friendName string) (uint, error) {
 func GetFriendId(userId uint, friendName string) (uint, error) {
 	var friend models.Friend
 	err := initializers.DB.Where(models.Friend{UserId: userId, FriendName: friendName}).First(&friend).Error
-	fmt.Println(friend)
 	return friend.ID, err
 }
 

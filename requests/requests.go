@@ -128,6 +128,12 @@ type UnSettleTransactionStringReq struct {
 	SplitTransactionString string
 }
 
+type SettleTransactionFriend struct {
+	Email      string
+	Password   string
+	FriendName string
+}
+
 type DeleteSplitTransactionReq struct {
 	Email         string
 	Password      string

@@ -159,12 +159,12 @@ func DeleteTransactionSplit(userId uint, transactionId uint) error {
 func GetSplitsOfTransaction(transaction models.Transaction, categoryIdToNameMap *map[uint]string, friendIdToNameMap *map[uint]string, unSettled bool, settled bool) ([]views.SplitView, error) {
 	splits := make([]views.SplitView, 0)
 	for _, splitTransaction := range transaction.Splits {
-		if settled == false {
+		if !settled {
 			if splitTransaction.SettledTransactionId != nil {
 				continue
 			}
 		}
-		if unSettled == false {
+		if !unSettled {
 			if splitTransaction.SettledTransactionId == nil {
 				continue
 			}
@@ -236,4 +236,50 @@ func GetMoenyLentToFriendByCategory(userId uint, friendName string) (map[string]
 		}
 	}
 	return moneyLentByCategory, nil
+}
+
+func SettleSplitsOfFriend(userId uint, friendId uint) error {
+	var user models.User
+	if err := initializers.DB.
+		Preload("Transactions").
+		Preload("Transactions.CategoryMappings").
+		Preload("Friends").
+		Preload("Friends.Debts").
+		First(&user, userId).
+		Error; err != nil {
+		return err
+	}
+	transactionCategoryIdMap := make(map[uint]uint)
+	for _, transaction := range user.Transactions {
+		transactionCategoryIdMap[transaction.ID] = transaction.CategoryMappings[0].ID
+	}
+	var friend models.Friend
+	for _, friendIter := range user.Friends {
+		if friendIter.ID == friendId {
+			friend = friendIter
+		}
+	}
+	tx := initializers.DB.Begin()
+	defer func() {
+		if r := recover(); r != nil {
+			tx.Rollback()
+		}
+	}()
+	for _, splitTransaction := range friend.Debts {
+		if splitTransaction.SettledTransactionId == nil {
+			categoryId := transactionCategoryIdMap[splitTransaction.SourceTransactionId]
+			SettledTransactionId, err := CreateTransactionV2(userId, time.Now(), -1*splitTransaction.Amount, categoryId, "settle trans", "SETTLED TRANS")
+			if err != nil {
+				tx.Rollback()
+				return err
+			}
+			splitTransaction.SettledTransactionId = &SettledTransactionId
+			err = initializers.DB.Save(&splitTransaction).Error
+			if err != nil {
+				tx.Rollback()
+				return err
+			}
+		}
+	}
+	return tx.Commit().Error
 }

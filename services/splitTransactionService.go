@@ -6,7 +6,6 @@ import (
 	"Karchu/requests"
 	"Karchu/views"
 	"errors"
-	"fmt"
 )
 
 func verifySplits(userId uint, transactionId uint, Splits []requests.FriendSplit) error {
@@ -164,10 +163,20 @@ func UnSettleTransaction(userId uint, splitTransactionId uint) *exceptions.Gener
 	return nil
 }
 
+func SettleSplitsOfFriend(userId uint, friendName string) *exceptions.GeneralException {
+	friendId, err := dao.GetFriendId(userId, friendName)
+	if err != nil {
+		exceptions.InternalServerError(err.Error(), "GET_FRIEND_FAIL")
+	}
+	err = dao.SettleSplitsOfFriend(userId, friendId)
+	if err != nil {
+		exceptions.InternalServerError(err.Error(), "SETTLE_FAIL")
+	}
+	return nil
+}
+
 func UnSettleTransactionString(userId uint, splitTransactionString string) *exceptions.GeneralException {
-	fmt.Printf("String is %s", splitTransactionString)
 	splitTransaction, err := StringToTransaction(splitTransactionString)
-	fmt.Println(splitTransaction)
 	if err != nil {
 		return exceptions.InternalServerError(err.Error(), "TRANS_TO_STR_FAIL")
 	}

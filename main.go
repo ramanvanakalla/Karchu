@@ -91,6 +91,7 @@ func main() {
 			settleSplit.POST("/str", controllers.SettleSplitTransactionString)
 			settleSplit.DELETE("", controllers.UnSettleSplitTransaction)
 			settleSplit.DELETE("/str", controllers.UnSettleSplitTransactionString)
+			settleSplit.POST("/friend", controllers.SettleSplitsOfFriend)
 		}
 		transactionAndSplit := v2.Group("/trans-split-with-one")
 		{
