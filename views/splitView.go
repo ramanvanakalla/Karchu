@@ -13,5 +13,5 @@ type SplitView struct {
 }
 
 func (splitView SplitView) ToString() string {
-	return fmt.Sprintf("ID: %d|SrcId: %d|SettId: %d|SrcAmnt: %d|Amount: %d|Friend: %s|Category: %s", splitView.SplitTransactionId, splitView.SourceTransactionId, splitView.SettledTransactionId, splitView.SourceAmount, splitView.Amount, splitView.FriendName, splitView.CategoryName)
+	return fmt.Sprintf("Id: %d|SrcId: %d|SettId: %d|SrcAmnt: %d|Amount: %d|Friend: %s|Category: %s", splitView.SplitTransactionId, splitView.SourceTransactionId, splitView.SettledTransactionId, splitView.SourceAmount, splitView.Amount, splitView.FriendName, splitView.CategoryName)
 }
