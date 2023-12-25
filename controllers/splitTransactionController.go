@@ -321,7 +321,7 @@ func UnSettleSplitTransactionString(ctx *gin.Context) {
 		ctx.Abort()
 		return
 	}
-	ex := services.UnSettleTransaction(userIDUint, req.SplitTransactionString)
+	ex := services.UnSettleTransactionString(userIDUint, req.SplitTransactionString)
 	if ex != nil {
 		ctx.JSON(ex.StatusCode, responses.CreateErrorResponse(ex.Status, ex.Message))
 		return
