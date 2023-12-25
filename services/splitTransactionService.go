@@ -150,15 +150,7 @@ func SettleTransactionString(userId uint, splitTransactionString string) *except
 	if err != nil {
 		return exceptions.InternalServerError(err.Error(), "TRANS_TO_STR_FAIL")
 	}
-	err = dao.VerifySplitTransaction(userId, splitTransaction.ID)
-	if err != nil {
-		return exceptions.InternalServerError(err.Error(), "SETTLE_VERIFICATION_FAIL")
-	}
-	err = dao.SettleTransaction(userId, splitTransaction.ID)
-	if err != nil {
-		return exceptions.InternalServerError(err.Error(), "SETTLEMENT_FAILED")
-	}
-	return nil
+	return SettleTransaction(userId, splitTransaction.ID)
 }
 
 func UnSettleTransaction(userId uint, splitTransactionId uint) *exceptions.GeneralException {
@@ -169,6 +161,14 @@ func UnSettleTransaction(userId uint, splitTransactionId uint) *exceptions.Gener
 		return exceptions.InternalServerError(err.Error(), "UNSETTLE_TRANS_FAIL")
 	}
 	return nil
+}
+
+func UnSettleTransactionString(userId uint, splitTransactionString string) *exceptions.GeneralException {
+	splitTransaction, err := StringToTransaction(splitTransactionString)
+	if err != nil {
+		return exceptions.InternalServerError(err.Error(), "TRANS_TO_STR_FAIL")
+	}
+	return UnSettleTransaction(userId, splitTransaction.ID)
 }
 
 func MoneyLentToFriend(userId uint, friendName string) ([]string, *exceptions.GeneralException) {

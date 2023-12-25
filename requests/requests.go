@@ -122,6 +122,12 @@ type UnSettleTransactionReq struct {
 	SplitTransactionId uint
 }
 
+type UnSettleTransactionStringReq struct {
+	Email                  string
+	Password               string
+	SplitTransactionString string
+}
+
 type DeleteSplitTransactionReq struct {
 	Email         string
 	Password      string

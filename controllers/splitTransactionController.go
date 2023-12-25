@@ -300,6 +300,35 @@ func UnSettleSplitTransaction(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, responses.CreateSuccessResponse("TRANSACTION_UNSETTLED", "Transaction got un-settled"))
 }
 
+// UnSettleSplitTransactionString godoc
+// @Summary      settle a split
+// @Description  settle a split transaction
+// @Tags         settleTransaction
+// @Accept       json
+// @Produce      json
+// @Param        request body requests.UnSettleTransactionReq true "enter Email, Password and friend Name"
+// @Success      200  {object} responses.SuccessRes
+// @Router       /settle-transaction [delete]
+func UnSettleSplitTransactionString(ctx *gin.Context) {
+	userIDUint, ok := getUserID(ctx)
+	if !ok {
+		ctx.JSON(http.StatusInternalServerError, responses.CreateErrorResponse("Error while getting userId", "USERID_NOT_SET_CTX"))
+		return
+	}
+	var req requests.UnSettleTransactionStringReq
+	if err := ctx.ShouldBindBodyWith(&req, binding.JSON); err != nil {
+		ctx.JSON(http.StatusBadRequest, responses.CreateErrorResponse("CANT_PARSE_REQ", err.Error()))
+		ctx.Abort()
+		return
+	}
+	ex := services.UnSettleTransaction(userIDUint, req.SplitTransactionString)
+	if ex != nil {
+		ctx.JSON(ex.StatusCode, responses.CreateErrorResponse(ex.Status, ex.Message))
+		return
+	}
+	ctx.JSON(http.StatusOK, responses.CreateSuccessResponse("TRANSACTION_UNSETTLED", "Transaction got un-settled"))
+}
+
 // MoneyLentFriend godoc
 // @Summary      Money Lent to a friend
 // @Description  Money lent to a friend
