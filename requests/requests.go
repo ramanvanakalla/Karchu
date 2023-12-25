@@ -139,6 +139,11 @@ type GetSplitTransactionsReq struct {
 	Password string
 }
 
+type GetUnSettledSplitTransactionsReq struct {
+	Email    string
+	Password string
+}
+
 type GetFriendsReq struct {
 	Email    string
 	Password string
