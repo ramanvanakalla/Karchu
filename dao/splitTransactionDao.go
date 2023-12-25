@@ -76,6 +76,9 @@ func SettleTransaction(userId uint, splitTransactionId uint) error {
 	if err != nil {
 		return err
 	}
+	if splitTransaction.SettledTransactionId != nil {
+		return errors.New("transaction is already Split")
+	}
 	var transaction models.Transaction
 	err = initializers.DB.Preload("CategoryMappings").First(&transaction, splitTransaction.SourceTransactionId).Error
 	if err != nil {
