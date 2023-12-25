@@ -153,18 +153,12 @@ func DeleteTransactionSplit(userId uint, transactionId uint) error {
 	return tx.Commit().Error
 }
 
-func GetSplitsOfTransaction(transaction models.Transaction) ([]views.SplitView, error) {
+func GetSplitsOfTransaction(transaction models.Transaction, categoryIdToNameMap *map[uint]string, friendIdToNameMap *map[uint]string) ([]views.SplitView, error) {
 	splits := make([]views.SplitView, 0)
 	for _, splitTransaction := range transaction.Splits {
 		categoryId := transaction.CategoryMappings[0].CategoryId
-		categoryName, err := GetCategoryNameFromId(categoryId)
-		if err != nil {
-			return splits, err
-		}
-		friendName, err := GetFriendNameFromId(splitTransaction.FriendId)
-		if err != nil {
-			return splits, err
-		}
+		categoryName := (*categoryIdToNameMap)[categoryId]
+		friendName := (*friendIdToNameMap)[splitTransaction.FriendId]
 		var settleTransactionId uint
 		if splitTransaction.SettledTransactionId != nil {
 			settleTransactionId = *splitTransaction.SettledTransactionId
@@ -189,14 +183,23 @@ func GetSplitTransactions(userId uint) ([]views.SplitView, error) {
 	if err := initializers.DB.
 		Preload("Transactions").
 		Preload("Friends").
+		Preload("Categories").
 		Preload("Transactions.Splits").
 		Preload("Transactions.CategoryMappings").
 		First(&user, userId).
 		Error; err != nil {
 		return splits, err
 	}
+	categoryIdToNameMap := make(map[uint]string)
+	for _, category := range user.Categories {
+		categoryIdToNameMap[category.ID] = category.CategoryName
+	}
+	friendIdToNameMap := make(map[uint]string)
+	for _, friend := range user.Friends {
+		friendIdToNameMap[friend.ID] = friend.FriendName
+	}
 	for _, transaction := range user.Transactions {
-		transactionSplits, err := GetSplitsOfTransaction(transaction)
+		transactionSplits, err := GetSplitsOfTransaction(transaction, &categoryIdToNameMap, &friendIdToNameMap)
 		if err != nil {
 			return splits, err
 		}
