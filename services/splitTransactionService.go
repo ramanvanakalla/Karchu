@@ -6,6 +6,7 @@ import (
 	"Karchu/requests"
 	"Karchu/views"
 	"errors"
+	"fmt"
 )
 
 func verifySplits(userId uint, transactionId uint, Splits []requests.FriendSplit) error {
@@ -164,7 +165,9 @@ func UnSettleTransaction(userId uint, splitTransactionId uint) *exceptions.Gener
 }
 
 func UnSettleTransactionString(userId uint, splitTransactionString string) *exceptions.GeneralException {
+	fmt.Println(splitTransactionString)
 	splitTransaction, err := StringToTransaction(splitTransactionString)
+	fmt.Println(splitTransaction)
 	if err != nil {
 		return exceptions.InternalServerError(err.Error(), "TRANS_TO_STR_FAIL")
 	}
