@@ -46,7 +46,15 @@ func SplitTransactionWithOneFriend(userId uint, TransString string, friendName s
 	return SplitTransaction(userId, transaction.ID, splits)
 }
 
-func GetSplitTransactions(userId uint) ([]string, *exceptions.GeneralException) {
+func GetSplitTransactions(userId uint) ([]views.SplitView, *exceptions.GeneralException) {
+	splits, err := dao.GetSplitTransactions(userId, true, true)
+	if err != nil {
+		return splits, exceptions.InternalServerError(err.Error(), "FAIL_GETTING_SPLITS")
+	}
+	return splits, nil
+}
+
+func GetSplitTransactionsString(userId uint) ([]string, *exceptions.GeneralException) {
 	splits, err := dao.GetSplitTransactions(userId, true, true)
 	splitStrings := make([]string, 0)
 	if err != nil {

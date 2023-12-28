@@ -126,6 +126,35 @@ func GetSplitTransactions(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, splitStrings)
 }
 
+// GetSplitTransactionsString godoc
+// @Summary      Get splits of user
+// @Description  Get splits of user
+// @Tags         SplitTransaction
+// @Accept       json
+// @Produce      json
+// @Param        request body requests.GetSplitTransactionsReq true "get split transaction"
+// @Success      200  {object} responses.SuccessRes
+// @Router       /split-transaction/splits [post]
+func GetSplitTransactionsString(ctx *gin.Context) {
+	userIDUint, ok := getUserID(ctx)
+	if !ok {
+		ctx.JSON(http.StatusInternalServerError, responses.CreateErrorResponse("Error while getting userId", "USERID_NOT_SET_CTX"))
+		return
+	}
+	var req requests.GetSplitTransactionsReq
+	if err := ctx.ShouldBindBodyWith(&req, binding.JSON); err != nil {
+		ctx.JSON(http.StatusBadRequest, responses.CreateErrorResponse("CANT_PARSE_REQ", err.Error()))
+		ctx.Abort()
+		return
+	}
+	splitStrings, ex := services.GetSplitTransactionsString(userIDUint)
+	if ex != nil {
+		ctx.JSON(ex.StatusCode, responses.CreateErrorResponse(ex.Status, ex.Message))
+		return
+	}
+	ctx.JSON(http.StatusOK, splitStrings)
+}
+
 // SplitTransaction godoc
 // @Summary      split a transaction
 // @Description  split a transaction

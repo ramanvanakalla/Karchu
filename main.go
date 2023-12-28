@@ -81,7 +81,8 @@ func main() {
 			SplitTransaction.DELETE("", controllers.DeleteSplitTransaction)
 			SplitTransaction.DELETE("/str", controllers.DeleteSplitTransactionString)
 			SplitTransaction.POST("/one", controllers.SplitTransactionWithOneFriend)
-			SplitTransaction.POST("/splits", controllers.GetSplitTransactions)
+			SplitTransaction.POST("/get-splits")
+			SplitTransaction.POST("/splits", controllers.GetSplitTransactionsString)
 			SplitTransaction.POST("/unsettled-splits", controllers.GetUnSettledSplitTransactions)
 			SplitTransaction.POST("/settled-splits", controllers.GetSettledSplitTransactions)
 		}
