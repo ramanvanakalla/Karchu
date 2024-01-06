@@ -151,6 +151,7 @@ func GetNetMoneySpentByCategory2(userId uint) ([]string, *exceptions.GeneralExce
 }
 
 func CreateTransactionAndSplitWithOne(userId uint, time time.Time, amount int, category string, description string, splitTag string, friendName string, splitAmount int) *exceptions.GeneralException {
+	fmt.Println(description)
 	if !validateAndNormalizeCategory(&category) {
 		return exceptions.BadRequestError(fmt.Sprintf("invalid category format %s", category), "INVALID_CATEGORY_FORMAT")
 	}
