@@ -62,6 +62,7 @@ func CreateTransactionAndSplitWithOne(ctx *gin.Context) {
 		ctx.Abort()
 		return
 	}
+	fmt.Println(req)
 	if ex := services.CreateTransactionAndSplitWithOne(userIDUint, time.Now(), req.Amount, req.Category, req.Description, req.SplitTag, req.FriendName, req.SplitAmount); ex != nil {
 		ctx.JSON(ex.StatusCode, responses.CreateErrorResponse(ex.Status, ex.Message))
 		return
