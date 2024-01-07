@@ -118,12 +118,12 @@ func GetSplitTransactions(ctx *gin.Context) {
 		ctx.Abort()
 		return
 	}
-	splitStrings, ex := services.GetSplitTransactions(userIDUint)
+	splits, ex := services.GetSplitTransactions(userIDUint)
 	if ex != nil {
 		ctx.JSON(ex.StatusCode, responses.CreateErrorResponse(ex.Status, ex.Message))
 		return
 	}
-	ctx.JSON(http.StatusOK, splitStrings)
+	ctx.JSON(http.StatusOK, splits)
 }
 
 // GetSplitTransactionsString godoc

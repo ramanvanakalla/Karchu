@@ -7,6 +7,7 @@ import (
 	"Karchu/views"
 	"errors"
 	"fmt"
+	"sort"
 	"time"
 )
 
@@ -218,6 +219,7 @@ func GetSplitTransactions(userId uint, unSettled bool, settled bool) ([]views.Sp
 		}
 		splits = append(splits, transactionSplits...)
 	}
+	sort.Sort(views.BySplitTransactionIdDesc(splits))
 	return splits, nil
 }
 
