@@ -19,7 +19,7 @@ import (
 // @Produce      json
 // @Param        request body requests.CreateUserReq true "enter Email, Name and Password"
 // @Success      200  {object} responses.SuccessRes
-// @Router       /user/ [post]
+// @Router       /v1/user/ [post]
 func CreateUser(ctx *gin.Context) {
 	var req requests.CreateUserReq
 	if err := ctx.ShouldBindBodyWith(&req, binding.JSON); err != nil {
@@ -43,7 +43,7 @@ func CreateUser(ctx *gin.Context) {
 // @Produce      json
 // @Param        request body requests.UserReq true "enter Email and Password"
 // @Success      200  {int} int "UserId"
-// @Router       /user/auth [post]
+// @Router       /v1/user/auth [post]
 func AuthUser(ctx *gin.Context) {
 	userIDUint, ok := getUserID(ctx)
 	if !ok {
@@ -61,7 +61,7 @@ func AuthUser(ctx *gin.Context) {
 // @Produce      json
 // @Param        request body requests.GetTransactionsReq true "enter Email,Password"
 // @Success      200  {array} string "returns transaction strings as list"
-// @Router       /transactions/all [post]
+// @Router       /v1/transactions/all [post]
 func GetTransactionsListOfUser(ctx *gin.Context) {
 	userIDUint, ok := getUserID(ctx)
 	if !ok {
@@ -90,7 +90,7 @@ func GetTransactionsListOfUser(ctx *gin.Context) {
 // @Produce      json
 // @Param        request body requests.CreateTransactionReq true "enter Email,Password"
 // @Success      200
-// @Router       /transactions/get [post]
+// @Router       /v1/transactions/get [post]
 func GetTransactions(ctx *gin.Context) {
 	userIDUint, ok := getUserID(ctx)
 	if !ok {

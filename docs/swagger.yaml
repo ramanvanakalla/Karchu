@@ -1,4 +1,4 @@
-basePath: /v1
+basePath: /
 definitions:
   requests.CreateCategoryReq:
     properties:
@@ -110,6 +110,13 @@ definitions:
       password:
         type: string
     type: object
+  requests.GetSettledSplitTransactionsReq:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+    type: object
   requests.GetSplitTransactionsReq:
     properties:
       email:
@@ -118,6 +125,13 @@ definitions:
         type: string
     type: object
   requests.GetTransactionsReq:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+    type: object
+  requests.GetUnSettledSplitTransactionsReq:
     properties:
       email:
         type: string
@@ -158,6 +172,15 @@ definitions:
       newCategoryName:
         type: string
       oldCategoryName:
+        type: string
+      password:
+        type: string
+    type: object
+  requests.SettleTransactionFriend:
+    properties:
+      email:
+        type: string
+      friendName:
         type: string
       password:
         type: string
@@ -270,7 +293,31 @@ info:
   title: Karchu API
   version: "1.0"
 paths:
-  /categories/:
+  /categories/all:
+    post:
+      consumes:
+      - application/json
+      description: returns array of categories
+      parameters:
+      - description: enter Email,Password
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/requests.UserReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: list of categories
+          schema:
+            items:
+              type: string
+            type: array
+      summary: Get categories of user
+      tags:
+      - Categories
+  /v1/categories/:
     delete:
       consumes:
       - application/json
@@ -334,31 +381,7 @@ paths:
       summary: create a category
       tags:
       - Categories
-  /categories/all:
-    post:
-      consumes:
-      - application/json
-      description: returns array of categories
-      parameters:
-      - description: enter Email,Password
-        in: body
-        name: request
-        required: true
-        schema:
-          $ref: '#/definitions/requests.UserReq'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: list of categories
-          schema:
-            items:
-              type: string
-            type: array
-      summary: Get categories of user
-      tags:
-      - Categories
-  /categories/merge:
+  /v1/categories/merge:
     post:
       consumes:
       - application/json
@@ -381,7 +404,7 @@ paths:
       summary: Merge a category into another
       tags:
       - Categories
-  /categories/n:
+  /v1/categories/n:
     post:
       consumes:
       - application/json
@@ -405,73 +428,7 @@ paths:
       summary: Get categories of user
       tags:
       - Categories
-  /friends/:
-    post:
-      consumes:
-      - application/json
-      description: creates a friend
-      parameters:
-      - description: enter Email, Password and friend Name
-        in: body
-        name: request
-        required: true
-        schema:
-          $ref: '#/definitions/requests.CreateFriendReq'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/responses.SuccessRes'
-      summary: create a friend
-      tags:
-      - Friends
-  /friends/get:
-    post:
-      consumes:
-      - application/json
-      description: get friends
-      parameters:
-      - description: enter Email, Password
-        in: body
-        name: request
-        required: true
-        schema:
-          $ref: '#/definitions/requests.GetFriendsReq'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/responses.SuccessRes'
-      summary: get friends
-      tags:
-      - Friends
-  /money-lent:
-    post:
-      consumes:
-      - application/json
-      description: Money lent to a friend
-      parameters:
-      - description: enter Email, Password and friend Name
-        in: body
-        name: request
-        required: true
-        schema:
-          $ref: '#/definitions/requests.MoneyLentFriend'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/responses.SuccessRes'
-      summary: Money Lent to a friend
-      tags:
-      - MoneyLent
-  /net-amount/categories:
+  /v1/net-amount/categories:
     post:
       consumes:
       - application/json
@@ -495,50 +452,7 @@ paths:
       summary: get money spent on each category
       tags:
       - Net-Amount
-  /settle-transaction:
-    delete:
-      consumes:
-      - application/json
-      description: settle a split transaction
-      parameters:
-      - description: enter Email, Password and friend Name
-        in: body
-        name: request
-        required: true
-        schema:
-          $ref: '#/definitions/requests.UnSettleTransactionReq'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/responses.SuccessRes'
-      summary: settle a split
-      tags:
-      - settleTransaction
-    post:
-      consumes:
-      - application/json
-      description: settle a split transaction
-      parameters:
-      - description: enter Email, Password and friend Name
-        in: body
-        name: request
-        required: true
-        schema:
-          $ref: '#/definitions/requests.SettleTransactionReq'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/responses.SuccessRes'
-      summary: settle a split
-      tags:
-      - settleTransaction
-  /split-tags:
+  /v1/split-tags:
     get:
       consumes:
       - application/json
@@ -555,116 +469,7 @@ paths:
       summary: Get split tags
       tags:
       - Split-tags
-  /split-transaction:
-    delete:
-      consumes:
-      - application/json
-      description: deletes a alreadt split transaction
-      parameters:
-      - description: delete split
-        in: body
-        name: request
-        required: true
-        schema:
-          $ref: '#/definitions/requests.DeleteSplitTransactionReq'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/responses.SuccessRes'
-      summary: deletes a alreadt split transaction
-      tags:
-      - SplitTransaction
-    post:
-      consumes:
-      - application/json
-      description: split a transaction
-      parameters:
-      - description: split transaction
-        in: body
-        name: request
-        required: true
-        schema:
-          $ref: '#/definitions/requests.SplitTransactionReq'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/responses.SuccessRes'
-      summary: split a transaction
-      tags:
-      - SplitTransaction
-  /split-transaction/one:
-    post:
-      consumes:
-      - application/json
-      description: split a transaction
-      parameters:
-      - description: split with one
-        in: body
-        name: request
-        required: true
-        schema:
-          $ref: '#/definitions/requests.SplitWithOneFriendReq'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/responses.SuccessRes'
-      summary: split a transaction
-      tags:
-      - SplitTransaction
-  /split-transaction/splits:
-    post:
-      consumes:
-      - application/json
-      description: Get splits of user
-      parameters:
-      - description: get split transaction
-        in: body
-        name: request
-        required: true
-        schema:
-          $ref: '#/definitions/requests.GetSplitTransactionsReq'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/responses.SuccessRes'
-      summary: Get splits of user
-      tags:
-      - SplitTransaction
-  /split-transaction/str:
-    delete:
-      consumes:
-      - application/json
-      description: deletes a alreadt split transaction from transString
-      parameters:
-      - description: delete split
-        in: body
-        name: request
-        required: true
-        schema:
-          $ref: '#/definitions/requests.DeleteSplitTransactionStringReq'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/responses.SuccessRes'
-      summary: deletes a alreadt split transaction from transString
-      tags:
-      - SplitTransaction
-  /transactions:
+  /v1/transactions:
     delete:
       consumes:
       - application/json
@@ -710,7 +515,7 @@ paths:
       tags:
       - Transactions
       - V2
-  /transactions/all:
+  /v1/transactions/all:
     post:
       consumes:
       - application/json
@@ -735,7 +540,7 @@ paths:
       tags:
       - Transactions
       - V2
-  /transactions/categories:
+  /v1/transactions/categories:
     post:
       consumes:
       - application/json
@@ -759,7 +564,7 @@ paths:
       summary: returns transactions of category
       tags:
       - Transactions
-  /transactions/category:
+  /v1/transactions/category:
     post:
       consumes:
       - application/json
@@ -783,7 +588,7 @@ paths:
       summary: returns transactions of category
       tags:
       - Transactions
-  /transactions/get:
+  /v1/transactions/get:
     post:
       consumes:
       - application/json
@@ -804,7 +609,7 @@ paths:
       tags:
       - Transactions
       - V2
-  /transactions/last-n:
+  /v1/transactions/last-n:
     post:
       consumes:
       - application/json
@@ -828,7 +633,7 @@ paths:
       summary: Get last N transactions of user
       tags:
       - Transactions
-  /transactions/str:
+  /v1/transactions/str:
     delete:
       consumes:
       - application/json
@@ -850,7 +655,7 @@ paths:
       summary: delete transaction for a user
       tags:
       - Transactions
-  /user/:
+  /v1/user/:
     post:
       consumes:
       - application/json
@@ -872,7 +677,7 @@ paths:
       summary: create a user
       tags:
       - Users
-  /user/auth:
+  /v1/user/auth:
     post:
       consumes:
       - application/json
@@ -894,6 +699,312 @@ paths:
       summary: Authorizes the user creds
       tags:
       - Users
+  /v2/friends/:
+    post:
+      consumes:
+      - application/json
+      description: creates a friend
+      parameters:
+      - description: enter Email, Password and friend Name
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/requests.CreateFriendReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/responses.SuccessRes'
+      summary: create a friend
+      tags:
+      - Friends
+  /v2/friends/get:
+    post:
+      consumes:
+      - application/json
+      description: get friends
+      parameters:
+      - description: enter Email, Password
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/requests.GetFriendsReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/responses.SuccessRes'
+      summary: get friends
+      tags:
+      - Friends
+  /v2/money-lent:
+    post:
+      consumes:
+      - application/json
+      description: Money lent to a friend
+      parameters:
+      - description: enter Email, Password and friend Name
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/requests.MoneyLentFriend'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/responses.SuccessRes'
+      summary: Money Lent to a friend
+      tags:
+      - MoneyLent
+  /v2/settle-transaction:
+    delete:
+      consumes:
+      - application/json
+      description: settle a split transaction
+      parameters:
+      - description: enter Email, Password and friend Name
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/requests.UnSettleTransactionReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/responses.SuccessRes'
+      summary: settle a split
+      tags:
+      - settleTransaction
+    post:
+      consumes:
+      - application/json
+      description: settle a split transaction
+      parameters:
+      - description: enter Email, Password and friend Name
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/requests.SettleTransactionReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/responses.SuccessRes'
+      summary: settle a split
+      tags:
+      - settleTransaction
+  /v2/settle-transaction/friend:
+    post:
+      consumes:
+      - application/json
+      description: settle a split of a friend
+      parameters:
+      - description: enter Email, Password and friend Name
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/requests.SettleTransactionFriend'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/responses.SuccessRes'
+      summary: settle a split of a friend
+      tags:
+      - settleTransaction
+  /v2/settle-transaction/str:
+    post:
+      consumes:
+      - application/json
+      description: settle a split transaction
+      parameters:
+      - description: settle transaction
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/requests.SettleTransactionReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/responses.SuccessRes'
+      summary: settle a split
+      tags:
+      - settleTransaction
+  /v2/split-transaction:
+    delete:
+      consumes:
+      - application/json
+      description: deletes a alreadt split transaction
+      parameters:
+      - description: delete split
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/requests.DeleteSplitTransactionReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/responses.SuccessRes'
+      summary: deletes a alreadt split transaction
+      tags:
+      - SplitTransaction
+    post:
+      consumes:
+      - application/json
+      description: split a transaction
+      parameters:
+      - description: split transaction
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/requests.SplitTransactionReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/responses.SuccessRes'
+      summary: split a transaction
+      tags:
+      - SplitTransaction
+  /v2/split-transaction/one:
+    post:
+      consumes:
+      - application/json
+      description: split a transaction
+      parameters:
+      - description: split with one
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/requests.SplitWithOneFriendReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/responses.SuccessRes'
+      summary: split a transaction
+      tags:
+      - SplitTransaction
+  /v2/split-transaction/settled-splits:
+    post:
+      consumes:
+      - application/json
+      description: Get splits of user which are settled
+      parameters:
+      - description: get split transaction
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/requests.GetSettledSplitTransactionsReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/responses.SuccessRes'
+      summary: Get splits of user which are settled
+      tags:
+      - SplitTransaction
+  /v2/split-transaction/splits:
+    post:
+      consumes:
+      - application/json
+      description: Get splits of user
+      parameters:
+      - description: get split transaction
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/requests.GetSplitTransactionsReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/responses.SuccessRes'
+      summary: Get splits of user
+      tags:
+      - SplitTransaction
+  /v2/split-transaction/str:
+    delete:
+      consumes:
+      - application/json
+      description: deletes a alreadt split transaction from transString
+      parameters:
+      - description: delete split
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/requests.DeleteSplitTransactionStringReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/responses.SuccessRes'
+      summary: deletes a alreadt split transaction from transString
+      tags:
+      - SplitTransaction
+  /v2/split-transaction/unsettled-splits:
+    post:
+      consumes:
+      - application/json
+      description: Get splits of user
+      parameters:
+      - description: get split transaction
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/requests.GetUnSettledSplitTransactionsReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/responses.SuccessRes'
+      summary: Get splits of user
+      tags:
+      - SplitTransaction
   /v2/trans-split-with-one:
     post:
       consumes:

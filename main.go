@@ -23,7 +23,7 @@ func init() {
 // @description     All APIs related to Karchu.
 
 // @host      karchu.onrender.com
-// @BasePath  /v1
+// @BasePath  /
 
 // @securityDefinitions.basic  BasicAuth
 func main() {

@@ -20,7 +20,7 @@ import (
 // @Produce      json
 // @Param        request body requests.CreateTransactionReq true "enter Email,Password"
 // @Success      200  {array} responses.SuccessRes
-// @Router       /transactions [post]
+// @Router       /v1/transactions [post]
 func NewTransaction(ctx *gin.Context) {
 	userIDUint, ok := getUserID(ctx)
 	if !ok {
@@ -78,7 +78,7 @@ func CreateTransactionAndSplitWithOne(ctx *gin.Context) {
 // @Produce      json
 // @Param        request body requests.DeleteTransactionFromTransStringReq true "enter Email,Password"
 // @Success      200  {object} responses.SuccessRes
-// @Router       /transactions/str [delete]
+// @Router       /v1/transactions/str [delete]
 func DeleteTransactionFromTransString(ctx *gin.Context) {
 	userIDUint, ok := getUserID(ctx)
 	if !ok {
@@ -107,7 +107,7 @@ func DeleteTransactionFromTransString(ctx *gin.Context) {
 // @Produce      json
 // @Param        request body requests.DeleteTransactionReq true "enter Email,Password"
 // @Success      200  {object} responses.SuccessRes
-// @Router       /transactions [delete]
+// @Router       /v1/transactions [delete]
 func DeleteTransaction(ctx *gin.Context) {
 	userIDUint, ok := getUserID(ctx)
 	if !ok {
@@ -136,7 +136,7 @@ func DeleteTransaction(ctx *gin.Context) {
 // @Produce      json
 // @Param        request body requests.GetLastNTransactionsReq true "enter Email,Password"
 // @Success      200  {array} string "last N transactions list"
-// @Router       /transactions/last-n [post]
+// @Router       /v1/transactions/last-n [post]
 func GetLastNTransactions(ctx *gin.Context) {
 	userIDUint, ok := getUserID(ctx)
 	if !ok {
@@ -165,7 +165,7 @@ func GetLastNTransactions(ctx *gin.Context) {
 // @Produce      json
 // @Param        request body requests.NetAmountByCategoryReq true "enter Email,Password"
 // @Success      200  {array} string "money spent on each category as list"
-// @Router       /net-amount/categories [post]
+// @Router       /v1/net-amount/categories [post]
 func GetNetMoneySpentByCategory(ctx *gin.Context) {
 	userIDUint, ok := getUserID(ctx)
 	if !ok {

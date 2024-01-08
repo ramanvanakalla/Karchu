@@ -18,7 +18,7 @@ import (
 // @Produce      json
 // @Param        request body requests.SplitWithOneFriendReq true "split with one"
 // @Success      200  {object} responses.SuccessRes
-// @Router       /split-transaction/one [post]
+// @Router       /v2/split-transaction/one [post]
 func SplitTransactionWithOneFriend(ctx *gin.Context) {
 	userIDUint, ok := getUserID(ctx)
 	if !ok {
@@ -47,7 +47,7 @@ func SplitTransactionWithOneFriend(ctx *gin.Context) {
 // @Produce      json
 // @Param        request body requests.GetUnSettledSplitTransactionsReq true "get split transaction"
 // @Success      200  {object} responses.SuccessRes
-// @Router       /split-transaction/unsettled-splits [post]
+// @Router       /v2/split-transaction/unsettled-splits [post]
 func GetUnSettledSplitTransactions(ctx *gin.Context) {
 	userIDUint, ok := getUserID(ctx)
 	if !ok {
@@ -76,7 +76,7 @@ func GetUnSettledSplitTransactions(ctx *gin.Context) {
 // @Produce      json
 // @Param        request body requests.GetSettledSplitTransactionsReq true "get split transaction"
 // @Success      200  {object} responses.SuccessRes
-// @Router       /split-transaction/settled-splits [post]
+// @Router       /v2/split-transaction/settled-splits [post]
 func GetSettledSplitTransactions(ctx *gin.Context) {
 	userIDUint, ok := getUserID(ctx)
 	if !ok {
@@ -105,7 +105,7 @@ func GetSettledSplitTransactions(ctx *gin.Context) {
 // @Produce      json
 // @Param        request body requests.GetSplitTransactionsReq true "get split transaction"
 // @Success      200  {object} responses.SuccessRes
-// @Router       /split-transaction/splits [post]
+// @Router       /v2/split-transaction/splits [post]
 func GetSplitTransactions(ctx *gin.Context) {
 	userIDUint, ok := getUserID(ctx)
 	if !ok {
@@ -134,7 +134,7 @@ func GetSplitTransactions(ctx *gin.Context) {
 // @Produce      json
 // @Param        request body requests.GetSplitTransactionsReq true "get split transaction"
 // @Success      200  {object} responses.SuccessRes
-// @Router       /split-transaction/splits [post]
+// @Router       /v2/split-transaction/splits [post]
 func GetSplitTransactionsString(ctx *gin.Context) {
 	userIDUint, ok := getUserID(ctx)
 	if !ok {
@@ -163,7 +163,7 @@ func GetSplitTransactionsString(ctx *gin.Context) {
 // @Produce      json
 // @Param        request body requests.SplitTransactionReq true "split transaction"
 // @Success      200  {object} responses.SuccessRes
-// @Router       /split-transaction [post]
+// @Router       /v2/split-transaction [post]
 func SplitTransaction(ctx *gin.Context) {
 	userIDUint, ok := getUserID(ctx)
 	if !ok {
@@ -192,7 +192,7 @@ func SplitTransaction(ctx *gin.Context) {
 // @Produce      json
 // @Param        request body requests.DeleteSplitTransactionReq true "delete split"
 // @Success      200  {object} responses.SuccessRes
-// @Router       /split-transaction [delete]
+// @Router       /v2/split-transaction [delete]
 func DeleteSplitTransaction(ctx *gin.Context) {
 	userIDUint, ok := getUserID(ctx)
 	if !ok {
@@ -221,7 +221,7 @@ func DeleteSplitTransaction(ctx *gin.Context) {
 // @Produce      json
 // @Param        request body requests.DeleteSplitTransactionStringReq true "delete split"
 // @Success      200  {object} responses.SuccessRes
-// @Router       /split-transaction/str [delete]
+// @Router       /v2/split-transaction/str [delete]
 func DeleteSplitTransactionString(ctx *gin.Context) {
 	userIDUint, ok := getUserID(ctx)
 	if !ok {
@@ -250,7 +250,7 @@ func DeleteSplitTransactionString(ctx *gin.Context) {
 // @Produce      json
 // @Param        request body requests.SettleTransactionReq true "enter Email, Password and friend Name"
 // @Success      200  {object} responses.SuccessRes
-// @Router       /settle-transaction [post]
+// @Router       /v2/settle-transaction [post]
 func SettleSplitTransaction(ctx *gin.Context) {
 	userIDUint, ok := getUserID(ctx)
 	if !ok {
@@ -279,7 +279,7 @@ func SettleSplitTransaction(ctx *gin.Context) {
 // @Produce      json
 // @Param        request body requests.SettleTransactionReq true "settle transaction"
 // @Success      200  {object} responses.SuccessRes
-// @Router       /settle-transaction/str [post]
+// @Router       /v2/settle-transaction/str [post]
 func SettleSplitTransactionString(ctx *gin.Context) {
 	userIDUint, ok := getUserID(ctx)
 	if !ok {
@@ -308,7 +308,7 @@ func SettleSplitTransactionString(ctx *gin.Context) {
 // @Produce      json
 // @Param        request body requests.UnSettleTransactionReq true "enter Email, Password and friend Name"
 // @Success      200  {object} responses.SuccessRes
-// @Router       /settle-transaction [delete]
+// @Router       /v2/settle-transaction [delete]
 func UnSettleSplitTransaction(ctx *gin.Context) {
 	userIDUint, ok := getUserID(ctx)
 	if !ok {
@@ -337,7 +337,7 @@ func UnSettleSplitTransaction(ctx *gin.Context) {
 // @Produce      json
 // @Param        request body requests.UnSettleTransactionReq true "enter Email, Password and friend Name"
 // @Success      200  {object} responses.SuccessRes
-// @Router       /settle-transaction [delete]
+// @Router       /v2/settle-transaction [delete]
 func UnSettleSplitTransactionString(ctx *gin.Context) {
 	userIDUint, ok := getUserID(ctx)
 	if !ok {
@@ -366,7 +366,7 @@ func UnSettleSplitTransactionString(ctx *gin.Context) {
 // @Produce      json
 // @Param        request body requests.SettleTransactionFriend true "enter Email, Password and friend Name"
 // @Success      200  {object} responses.SuccessRes
-// @Router       /settle-transaction/friend [post]
+// @Router       /v2/settle-transaction/friend [post]
 func SettleSplitsOfFriend(ctx *gin.Context) {
 	userIDUint, ok := getUserID(ctx)
 	if !ok {
@@ -395,7 +395,7 @@ func SettleSplitsOfFriend(ctx *gin.Context) {
 // @Produce      json
 // @Param        request body requests.MoneyLentFriend true "enter Email, Password and friend Name"
 // @Success      200  {object} responses.SuccessRes
-// @Router       /money-lent [POST]
+// @Router       /v2/money-lent [POST]
 func MoneyLentToFriend(ctx *gin.Context) {
 	userIDUint, ok := getUserID(ctx)
 	if !ok {

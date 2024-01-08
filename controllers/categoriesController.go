@@ -24,7 +24,7 @@ func addExtraCategoriesForUI(categoriesArr *[]string) {
 // @Param        request body requests.UserReq true "enter Email,Password"
 // @Success      200  {array} string "list of categories"
 // @Router       /categories/all [post]
-// @Router		 /categories/n [post]
+// @Router		 /v1/categories/n [post]
 func GetCategories(ctx *gin.Context) {
 	userIDUint, ok := getUserID(ctx)
 	if !ok {
@@ -53,7 +53,7 @@ func GetCategories(ctx *gin.Context) {
 // @Produce      json
 // @Param        request body requests.CreateCategoryReq true "enter credentials"
 // @Success      200  {object} responses.SuccessRes
-// @Router       /categories/ [post]
+// @Router       /v1/categories/ [post]
 func CreateCategory(ctx *gin.Context) {
 	userIDUint, ok := getUserID(ctx)
 	if !ok {
@@ -82,7 +82,7 @@ func CreateCategory(ctx *gin.Context) {
 // @Produce      json
 // @Param        request body requests.DeleteCategoryReq true "enter credentials"
 // @Success      200  {object} responses.SuccessRes
-// @Router       /categories/ [delete]
+// @Router       /v1/categories/ [delete]
 func DeleteCategory(ctx *gin.Context) {
 	userIDUint, ok := getUserID(ctx)
 	if !ok {
@@ -111,7 +111,7 @@ func DeleteCategory(ctx *gin.Context) {
 // @Produce      json
 // @Param        request body requests.TransactionsOfCategoryReq true "enter Email,Password"
 // @Success      200  {array} string
-// @Router       /transactions/category [post]
+// @Router       /v1/transactions/category [post]
 func GetTransactionStringsOfCategory(ctx *gin.Context) {
 	userIDUint, ok := getUserID(ctx)
 	if !ok {
@@ -140,7 +140,7 @@ func GetTransactionStringsOfCategory(ctx *gin.Context) {
 // @Produce      json
 // @Param        request body requests.TransactionsOfCategoryReq true "enter Email,Password"
 // @Success      200 array views.TransactionWithCategory
-// @Router       /transactions/categories [post]
+// @Router       /v1/transactions/categories [post]
 func GetTransactionsOfCategory(ctx *gin.Context) {
 	userIDUint, ok := getUserID(ctx)
 	if !ok {
@@ -169,7 +169,7 @@ func GetTransactionsOfCategory(ctx *gin.Context) {
 // @Produce      json
 // @Param        request body requests.RenameCategoryReq true "enter credentials"
 // @Success      200  {object} responses.SuccessRes
-// @Router       /categories/ [patch]
+// @Router       /v1/categories/ [patch]
 func RenameCategory(ctx *gin.Context) {
 	userIDUint, ok := getUserID(ctx)
 	if !ok {
@@ -198,7 +198,7 @@ func RenameCategory(ctx *gin.Context) {
 // @Produce      json
 // @Param        request body requests.MergeCategory true "enter credentials"
 // @Success      200  {object} responses.SuccessRes
-// @Router       /categories/merge [post]
+// @Router       /v1/categories/merge [post]
 func MergeCategory(ctx *gin.Context) {
 	userIDUint, ok := getUserID(ctx)
 	if !ok {
