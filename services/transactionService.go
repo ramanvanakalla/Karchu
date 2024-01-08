@@ -6,6 +6,7 @@ import (
 	"Karchu/models"
 	"Karchu/views"
 	"fmt"
+	"sort"
 	"strings"
 	"time"
 )
@@ -143,6 +144,7 @@ func GetNetMoneySpentByCategory(userId uint) ([]views.NetCategorySum, *exception
 		netCategorySum := views.NetCategorySum{Category: category, NetAmount: netAmount}
 		netCategorySumList = append(netCategorySumList, netCategorySum)
 	}
+	sort.Sort(views.ByNetAmountDesc(netCategorySumList))
 	return netCategorySumList, nil
 }
 
