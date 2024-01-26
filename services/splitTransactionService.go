@@ -54,6 +54,27 @@ func GetSplitTransactions(userId uint) ([]views.SplitView, *exceptions.GeneralEx
 	return splits, nil
 }
 
+func MoneyInvolvedWithFriends(userId uint) ([]views.MoneyFriends, *exceptions.GeneralException) {
+	splits, err := dao.GetSplitTransactions(userId, true, true)
+	MoneyFriends := make([]views.MoneyFriends, 0)
+	if err != nil {
+		return MoneyFriends, exceptions.InternalServerError(err.Error(), "FAIL_GETTING_SPLITS")
+	}
+	friendMap := make(map[string]map[string]int)
+	for _, split := range splits {
+		if split.SettledTransactionId == 0 {
+			friendMap[split.FriendName]["UnSettledAmount"] += split.Amount
+		} else {
+			friendMap[split.FriendName]["SettledAmount"] += split.Amount
+		}
+	}
+	for friend, friendAmount := range friendMap {
+		moneyFriend := views.MoneyFriends{FriendName: friend, UnSettledAmount: friendAmount["UnSettledAmount"], SettledAmount: friendAmount["SettledAmount"]}
+		MoneyFriends = append(MoneyFriends, moneyFriend)
+	}
+	return MoneyFriends, nil
+}
+
 func GetSplitTransactionsString(userId uint) ([]string, *exceptions.GeneralException) {
 	splits, err := dao.GetSplitTransactions(userId, true, true)
 	splitStrings := make([]string, 0)

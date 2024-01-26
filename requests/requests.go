@@ -182,3 +182,8 @@ type MoneyLentFriend struct {
 	Password   string
 	FriendName string
 }
+
+type MoneyFriends struct {
+	Email    string
+	Password string
+}
