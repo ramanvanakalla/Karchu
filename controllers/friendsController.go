@@ -78,7 +78,7 @@ func GetFriends(ctx *gin.Context) {
 // @Param        request body requests.MoneyFriends true "enter Email, Password"
 // @Success      200  {object} responses.SuccessRes
 // @Router       /v2/friends/money-friends [post]
-func moneyFriends(ctx *gin.Context) {
+func MoneyFriends(ctx *gin.Context) {
 	userIDUint, ok := getUserID(ctx)
 	if !ok {
 		ctx.JSON(http.StatusInternalServerError, responses.CreateErrorResponse("Error while getting userId", "USERID_NOT_SET_CTX"))

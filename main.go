@@ -74,7 +74,7 @@ func main() {
 		{
 			friends.POST("", controllers.CreateFriend)
 			friends.POST("/get", controllers.GetFriends)
-			friends.POST("/money-friends")
+			friends.POST("/money-friends", controllers.MoneyFriends)
 
 		}
 		SplitTransaction := v2.Group("/split-transaction")
