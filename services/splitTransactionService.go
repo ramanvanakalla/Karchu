@@ -60,18 +60,30 @@ func MoneyInvolvedWithFriends(userId uint) ([]views.MoneyFriends, *exceptions.Ge
 	if err != nil {
 		return MoneyFriends, exceptions.InternalServerError(err.Error(), "FAIL_GETTING_SPLITS")
 	}
+
 	friendMap := make(map[string]map[string]int)
+
 	for _, split := range splits {
+		if friendMap[split.FriendName] == nil {
+			friendMap[split.FriendName] = make(map[string]int)
+		}
+
 		if split.SettledTransactionId == 0 {
 			friendMap[split.FriendName]["UnSettledAmount"] += split.Amount
 		} else {
 			friendMap[split.FriendName]["SettledAmount"] += split.Amount
 		}
 	}
+
 	for friend, friendAmount := range friendMap {
-		moneyFriend := views.MoneyFriends{FriendName: friend, UnSettledAmount: friendAmount["UnSettledAmount"], SettledAmount: friendAmount["SettledAmount"]}
+		moneyFriend := views.MoneyFriends{
+			FriendName:      friend,
+			UnSettledAmount: friendAmount["UnSettledAmount"],
+			SettledAmount:   friendAmount["SettledAmount"],
+		}
 		MoneyFriends = append(MoneyFriends, moneyFriend)
 	}
+
 	return MoneyFriends, nil
 }
 
