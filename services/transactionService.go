@@ -144,6 +144,19 @@ func GetNetMoneySpentByCategory(userId uint) ([]views.NetCategorySum, *exception
 		netCategorySum := views.NetCategorySum{Category: category, NetAmount: netAmount}
 		netCategorySumList = append(netCategorySumList, netCategorySum)
 	}
+	allCategories, err := dao.GetCategoriesByUserID(userId)
+	if err != nil {
+		return netCategorySumList, exceptions.InternalServerError(err.Error(), "TRANSACTION_GET_FAIL")
+	}
+
+	for _, category := range allCategories {
+		_, exists := netCategorySumMap[category.CategoryName]
+		if !exists {
+			netCategorySum := views.NetCategorySum{Category: category.CategoryName, NetAmount: 0}
+			netCategorySumList = append(netCategorySumList, netCategorySum)
+		}
+	}
+
 	sort.Sort(views.ByNetAmountDesc(netCategorySumList))
 	return netCategorySumList, nil
 }
