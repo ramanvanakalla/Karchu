@@ -106,7 +106,7 @@ func MoneyFriends(ctx *gin.Context) {
 // @Produce      json
 // @Param        request body requests.FriendsMap true "enter Email, Password"
 // @Success      200  {object} responses.SuccessRes
-// @Router       /v2/friends/money-friends [post]
+// @Router       /v2/friends/friendsMap [post]
 func FriendsMap(ctx *gin.Context) {
 	userIDUint, ok := getUserID(ctx)
 	if !ok {

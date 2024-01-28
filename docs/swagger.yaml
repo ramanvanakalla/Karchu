@@ -735,6 +735,28 @@ paths:
       summary: create a friend
       tags:
       - Friends
+  /v2/friends/friendsMap:
+    post:
+      consumes:
+      - application/json
+      description: get friends with ids
+      parameters:
+      - description: enter Email, Password
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/requests.FriendsMap'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/responses.SuccessRes'
+      summary: get friends with ids
+      tags:
+      - Friends
   /v2/friends/get:
     post:
       consumes:
@@ -761,14 +783,14 @@ paths:
     post:
       consumes:
       - application/json
-      description: get friends with ids
+      description: get money friends
       parameters:
       - description: enter Email, Password
         in: body
         name: request
         required: true
         schema:
-          $ref: '#/definitions/requests.FriendsMap'
+          $ref: '#/definitions/requests.MoneyFriends'
       produces:
       - application/json
       responses:
@@ -776,7 +798,7 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/responses.SuccessRes'
-      summary: get friends with ids
+      summary: get money friends
       tags:
       - Friends
   /v2/money-lent:

@@ -671,6 +671,40 @@ const docTemplate = `{
                 }
             }
         },
+        "/v2/friends/friendsMap": {
+            "post": {
+                "description": "get friends with ids",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Friends"
+                ],
+                "summary": "get friends with ids",
+                "parameters": [
+                    {
+                        "description": "enter Email, Password",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/requests.FriendsMap"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/responses.SuccessRes"
+                        }
+                    }
+                }
+            }
+        },
         "/v2/friends/get": {
             "post": {
                 "description": "get friends",
@@ -707,7 +741,7 @@ const docTemplate = `{
         },
         "/v2/friends/money-friends": {
             "post": {
-                "description": "get friends with ids",
+                "description": "get money friends",
                 "consumes": [
                     "application/json"
                 ],
@@ -717,7 +751,7 @@ const docTemplate = `{
                 "tags": [
                     "Friends"
                 ],
-                "summary": "get friends with ids",
+                "summary": "get money friends",
                 "parameters": [
                     {
                         "description": "enter Email, Password",
@@ -725,7 +759,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/requests.FriendsMap"
+                            "$ref": "#/definitions/requests.MoneyFriends"
                         }
                     }
                 ],
