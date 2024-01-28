@@ -94,6 +94,13 @@ definitions:
       friendId:
         type: integer
     type: object
+  requests.FriendsMap:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+    type: object
   requests.GetFriendsReq:
     properties:
       email:
@@ -147,6 +154,13 @@ definitions:
       password:
         type: string
       sourceCategoryName:
+        type: string
+    type: object
+  requests.MoneyFriends:
+    properties:
+      email:
+        type: string
+      password:
         type: string
     type: object
   requests.MoneyLentFriend:
@@ -741,6 +755,28 @@ paths:
           schema:
             $ref: '#/definitions/responses.SuccessRes'
       summary: get friends
+      tags:
+      - Friends
+  /v2/friends/money-friends:
+    post:
+      consumes:
+      - application/json
+      description: get friends with ids
+      parameters:
+      - description: enter Email, Password
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/requests.FriendsMap'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/responses.SuccessRes'
+      summary: get friends with ids
       tags:
       - Friends
   /v2/money-lent:

@@ -97,3 +97,32 @@ func MoneyFriends(ctx *gin.Context) {
 	}
 	ctx.JSON(http.StatusOK, friends)
 }
+
+// GetFriendsMap godoc
+// @Summary      get friends with ids
+// @Description  get friends with ids
+// @Tags         Friends
+// @Accept       json
+// @Produce      json
+// @Param        request body requests.FriendsMap true "enter Email, Password"
+// @Success      200  {object} responses.SuccessRes
+// @Router       /v2/friends/money-friends [post]
+func FriendsMap(ctx *gin.Context) {
+	userIDUint, ok := getUserID(ctx)
+	if !ok {
+		ctx.JSON(http.StatusInternalServerError, responses.CreateErrorResponse("Error while getting userId", "USERID_NOT_SET_CTX"))
+		return
+	}
+	var req requests.CreateFriendReq
+	if err := ctx.ShouldBindBodyWith(&req, binding.JSON); err != nil {
+		ctx.JSON(http.StatusBadRequest, responses.CreateErrorResponse("CANT_PARSE_REQ", err.Error()))
+		ctx.Abort()
+		return
+	}
+	friends, ex := services.GetFriendsMap(userIDUint)
+	if ex != nil {
+		ctx.JSON(ex.StatusCode, responses.CreateErrorResponse(ex.Status, ex.Message))
+		return
+	}
+	ctx.JSON(http.StatusOK, friends)
+}

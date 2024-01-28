@@ -3,6 +3,7 @@ package services
 import (
 	"Karchu/dao"
 	"Karchu/exceptions"
+	"Karchu/views"
 	"fmt"
 	"strings"
 )
@@ -28,9 +29,28 @@ func CreateFriend(userId uint, friendName string) (uint, *exceptions.GeneralExce
 }
 
 func GetFriends(userId uint) ([]string, *exceptions.GeneralException) {
-	friends, err := dao.GetFriends(userId)
+	friendsMap, err := dao.GetFriends(userId)
+	friends := make([]string, 0)
 	if err != nil {
 		return friends, exceptions.InternalServerError(err.Error(), "GET_FRIENDS_FAIL")
+	}
+
+	for friendName := range friendsMap {
+		friends = append(friends, friendName)
+	}
+
+	return friends, nil
+}
+
+func GetFriendsMap(userId uint) ([]views.FriendsMap, *exceptions.GeneralException) {
+	friendsMap, err := dao.GetFriends(userId)
+	friends := make([]views.FriendsMap, 0)
+	if err != nil {
+		return friends, exceptions.InternalServerError(err.Error(), "GET_FRIENDS_FAIL")
+	}
+
+	for friendName, Id := range friendsMap {
+		friends = append(friends, views.FriendsMap{FriendId: Id, FriendName: friendName})
 	}
 	return friends, nil
 }

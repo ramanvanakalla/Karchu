@@ -187,3 +187,8 @@ type MoneyFriends struct {
 	Email    string
 	Password string
 }
+
+type FriendsMap struct {
+	Email    string
+	Password string
+}

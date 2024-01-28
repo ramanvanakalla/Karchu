@@ -25,9 +25,9 @@ func GetFriendNameFromId(friendId uint) (string, error) {
 	return friend.FriendName, err
 }
 
-func GetFriends(userId uint) ([]string, error) {
+func GetFriends(userId uint) (map[string]int, error) {
 	var user models.User
-	friends := make([]string, 0)
+	friends := make(map[string]int, 0)
 	err := initializers.DB.
 		Preload("Friends").
 		First(&user, userId).
@@ -35,8 +35,9 @@ func GetFriends(userId uint) ([]string, error) {
 	if err != nil {
 		return friends, err
 	}
+
 	for _, friend := range user.Friends {
-		friends = append(friends, friend.FriendName)
+		friends[friend.FriendName] = int(friend.ID)
 	}
 	return friends, nil
 }
