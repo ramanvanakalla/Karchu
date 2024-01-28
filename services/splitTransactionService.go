@@ -84,6 +84,22 @@ func MoneyInvolvedWithFriends(userId uint) ([]views.MoneyFriends, *exceptions.Ge
 		MoneyFriends = append(MoneyFriends, moneyFriend)
 	}
 
+	allFriends, err := dao.GetFriends(userId)
+	if err != nil {
+		return MoneyFriends, exceptions.InternalServerError(err.Error(), "FAIL_GETTING_SPLITS")
+	}
+	for friend := range allFriends {
+		_, exists := friendMap[friend]
+		if !exists {
+			moneyFriend := views.MoneyFriends{
+				FriendName:      friend,
+				UnSettledAmount: 0,
+				SettledAmount:   0,
+			}
+			MoneyFriends = append(MoneyFriends, moneyFriend)
+		}
+	}
+
 	return MoneyFriends, nil
 }
 
