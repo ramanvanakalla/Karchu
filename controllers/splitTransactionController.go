@@ -210,7 +210,7 @@ func DeleteSplitTransaction(ctx *gin.Context) {
 		ctx.JSON(ex.StatusCode, responses.CreateErrorResponse(ex.Status, ex.Message))
 		return
 	}
-	ctx.JSON(http.StatusOK, responses.CreateSuccessResponse("TRANSACTION_SPLIT_DELETE", "Transaction splits go deleted"))
+	ctx.JSON(http.StatusOK, responses.CreateSuccessResponse("TRANSACTION_SPLIT_DELETE", "Transaction splits got deleted"))
 }
 
 // DeleteSplitTransactionString godoc
@@ -239,7 +239,7 @@ func DeleteSplitTransactionString(ctx *gin.Context) {
 		ctx.JSON(ex.StatusCode, responses.CreateErrorResponse(ex.Status, ex.Message))
 		return
 	}
-	ctx.JSON(http.StatusOK, responses.CreateSuccessResponse("TRANSACTION_SPLIT_DELETE", "Transaction splits go deleted"))
+	ctx.JSON(http.StatusOK, responses.CreateSuccessResponse("TRANSACTION_SPLIT_DELETE", "Transaction splits got deleted"))
 }
 
 // settleSplitTransaction godoc
