@@ -127,6 +127,14 @@ func GetTransactionsV2(userId uint) ([]views.TransactionWithCategory, *exception
 	return transactionViewList, nil
 }
 
+func GetTransactionsFiltered(userId uint, startDate time.Time, endDate time.Time, category string, splitTag string) ([]views.TransactionWithCategory, *exceptions.GeneralException) {
+	transactionViewList, err := dao.GetTransactionsByUserIdFiltered(userId, startDate, endDate, category, splitTag)
+	if err != nil {
+		return transactionViewList, exceptions.InternalServerError(err.Error(), "TRANSACTION_GET_FAIL")
+	}
+	return transactionViewList, nil
+}
+
 func GetNetMoneySpentByCategory(userId uint) ([]views.NetCategorySum, *exceptions.GeneralException) {
 	allTransactions, err := dao.GetTransactionsByUserId(userId)
 	netCategorySumList := make([]views.NetCategorySum, 0)

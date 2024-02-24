@@ -47,6 +47,15 @@ type GetTransactionsReq struct {
 	Email    string
 	Password string
 }
+type GetFilteredTransactionsReq struct {
+	Email     string
+	Password  string
+	StartDate string
+	EndDate   string
+	Category  string
+	SplitTag  string
+}
+
 type DeleteTransactionReq struct {
 	Email         string
 	Password      string

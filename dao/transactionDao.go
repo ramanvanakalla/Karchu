@@ -178,6 +178,33 @@ func GetTransactionsByUserId(userId uint) ([]views.TransactionWithCategory, erro
 	return transactions, nil
 }
 
+func GetTransactionsByUserIdFiltered(userId uint, startDate time.Time, endDate time.Time, category string, splitTag string) ([]views.TransactionWithCategory, error) {
+	var transactions []views.TransactionWithCategory
+	query := initializers.DB.
+		Model(&models.Transaction{}).
+		Joins("JOIN category_transaction_mappings ON transactions.id = category_transaction_mappings.transaction_id").
+		Joins("JOIN categories ON category_transaction_mappings.category_id = categories.id AND categories.deleted_at IS NULL").
+		Where("transactions.user_id = ?", userId).
+		Select("transactions.*,categories.category_name").
+		Where("transactions.time >= ?", startDate).
+		Where("transactions.time <= ?", endDate)
+	if splitTag != "" {
+		query = query.Where("transactions.split_tag = ?", splitTag)
+	}
+	if category != "" {
+		query = query.Where("categories.category_name = ?", category)
+	}
+	err := query.
+		Order("transactions.id desc").
+		Find(&transactions).
+		Error
+
+	if err != nil {
+		return nil, err
+	}
+	return transactions, nil
+}
+
 func GetNetMoneySpentByCategory(userID uint) ([]views.NetCategorySum, error) {
 	var amountByCategory []views.NetCategorySum
 	err := initializers.DB.

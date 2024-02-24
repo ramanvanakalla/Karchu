@@ -6,6 +6,7 @@ import (
 	"Karchu/services"
 	"fmt"
 	"net/http"
+	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/gin-gonic/gin/binding"
@@ -88,7 +89,7 @@ func GetTransactionsListOfUser(ctx *gin.Context) {
 // @Tags         Transactions, V2
 // @Accept       json
 // @Produce      json
-// @Param        request body requests.CreateTransactionReq true "enter Email,Password"
+// @Param        request body requests.GetTransactionsReq true "enter Email,Password"
 // @Success      200
 // @Router       /v1/transactions/get [post]
 func GetTransactions(ctx *gin.Context) {
@@ -104,6 +105,48 @@ func GetTransactions(ctx *gin.Context) {
 		return
 	}
 	transactionList, ex := services.GetTransactionsV2(userIDUint)
+	if ex != nil {
+		ctx.JSON(ex.StatusCode, responses.CreateErrorResponse(ex.Status, ex.Message))
+		return
+	}
+	ctx.JSON(http.StatusOK, transactionList)
+}
+
+// GetTransactionsV2 godoc
+// @Summary      Get transactions of user
+// @Description  returns transactions
+// @Tags         Transactions, V2
+// @Accept       json
+// @Produce      json
+// @Param        request body requests.GetFilteredTransactionsReq true "enter Email,Password"
+// @Success      200
+// @Router       /v1/transactions/GetTransactionsFiltered [post]
+func GetTransactionsFiltered(ctx *gin.Context) {
+	userIDUint, ok := getUserID(ctx)
+	if !ok {
+		ctx.JSON(http.StatusInternalServerError, responses.CreateErrorResponse("Error while getting userId", "USERID_NOT_SET_CTX"))
+		return
+	}
+	var req requests.GetFilteredTransactionsReq
+	if err := ctx.ShouldBindBodyWith(&req, binding.JSON); err != nil {
+		ctx.JSON(http.StatusBadRequest, responses.CreateErrorResponse("CANT_PARSE_REQ", err.Error()))
+		ctx.Abort()
+		return
+	}
+	layout := "2006-01-02"
+	startDate, err := time.Parse(layout, req.StartDate)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, responses.CreateErrorResponse("CANT_PARSE_START_DATE", err.Error()))
+		ctx.Abort()
+		return
+	}
+	EndDate, err := time.Parse(layout, req.EndDate)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, responses.CreateErrorResponse("CANT_PARSE_END_DATE", err.Error()))
+		ctx.Abort()
+		return
+	}
+	transactionList, ex := services.GetTransactionsFiltered(userIDUint, startDate, EndDate, req.Category, req.SplitTag)
 	if ex != nil {
 		ctx.JSON(ex.StatusCode, responses.CreateErrorResponse(ex.Status, ex.Message))
 		return

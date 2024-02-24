@@ -51,6 +51,7 @@ func main() {
 			transactions.POST("", controllers.NewTransaction)
 			transactions.POST("/get", controllers.GetTransactions)
 			transactions.POST("/all", controllers.GetTransactionsListOfUser)
+			transactions.POST("/filtered", controllers.GetTransactionsFiltered)
 			transactions.POST("/last-n", controllers.GetLastNTransactions)
 			transactions.POST("/category", controllers.GetTransactionStringsOfCategory)
 			transactions.POST("/categories", controllers.GetTransactionsOfCategory)
