@@ -73,6 +73,13 @@ type NetAmountByCategoryReq struct {
 	Password string
 }
 
+type NetAmountByCategoryFilteredReq struct {
+	Email     string
+	Password  string
+	StartDate string
+	EndDate   string
+}
+
 type RenameCategoryReq struct {
 	Email           string
 	Password        string

@@ -186,6 +186,48 @@ func GetNetMoneySpentByCategoryString(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, netByCategoriesList)
 }
 
+// GetNetMoneySpentByCategoryFiltered godoc
+// @Summary      get money spent on each category
+// @Description  get money spent on each category
+// @Tags         Net-Amount
+// @Accept       json
+// @Produce      json
+// @Param        request body requests.NetAmountByCategoryReq true "enter Email,Password"
+// @Success      200  {array} string "money spent on each category as list"
+// @Router       /v1/net-amount/categories [post]
+func GetNetMoneySpentByCategoryFiltered(ctx *gin.Context) {
+	userIDUint, ok := getUserID(ctx)
+	if !ok {
+		ctx.JSON(http.StatusInternalServerError, responses.CreateErrorResponse("Error while getting userId", "USERID_NOT_SET_CTX"))
+		return
+	}
+	var req requests.NetAmountByCategoryFilteredReq
+	if err := ctx.ShouldBindBodyWith(&req, binding.JSON); err != nil {
+		ctx.JSON(http.StatusBadRequest, responses.CreateErrorResponse("CANT_PARSE_REQ", err.Error()))
+		ctx.Abort()
+		return
+	}
+	layout := "2006-01-02"
+	startDate, err := time.Parse(layout, req.StartDate)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, responses.CreateErrorResponse("CANT_PARSE_START_DATE", err.Error()))
+		ctx.Abort()
+		return
+	}
+	EndDate, err := time.Parse(layout, req.EndDate)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, responses.CreateErrorResponse("CANT_PARSE_END_DATE", err.Error()))
+		ctx.Abort()
+		return
+	}
+	netByCategoriesList, ex := services.GetNetMoneySpentByCategoryFiltered(userIDUint, startDate, EndDate)
+	if ex != nil {
+		ctx.JSON(ex.StatusCode, responses.CreateErrorResponse(ex.Status, ex.Message))
+		return
+	}
+	ctx.JSON(http.StatusOK, netByCategoriesList)
+}
+
 // GetNetMoneySpentByCategory godoc
 // @Summary      get money spent on each category
 // @Description  get money spent on each category

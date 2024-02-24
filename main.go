@@ -65,6 +65,7 @@ func main() {
 		netAmount := v1.Group("/net-amount")
 		{
 			netAmount.POST("/", controllers.GetNetMoneySpentByCategory)
+			netAmount.POST("/filtered", controllers.GetNetMoneySpentByCategoryFiltered)
 			netAmount.POST("/categories", controllers.GetNetMoneySpentByCategoryString)
 		}
 	}

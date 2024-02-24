@@ -169,6 +169,40 @@ func GetNetMoneySpentByCategory(userId uint) ([]views.NetCategorySum, *exception
 	return netCategorySumList, nil
 }
 
+func GetNetMoneySpentByCategoryFiltered(userId uint, startDate time.Time, endDate time.Time) ([]views.NetCategorySum, *exceptions.GeneralException) {
+	allTransactions, err := dao.GetTransactionsByUserIdFiltered(userId, startDate, endDate, "", "")
+	netCategorySumList := make([]views.NetCategorySum, 0)
+	if err != nil {
+		return netCategorySumList, exceptions.InternalServerError(err.Error(), "TRANSACTION_GET_FAIL")
+	}
+	netCategorySumMap := make(map[string]int)
+	for _, transactionView := range allTransactions {
+		if _, exists := netCategorySumMap[transactionView.CategoryName]; !exists {
+			netCategorySumMap[transactionView.CategoryName] = 0
+		}
+		netCategorySumMap[transactionView.CategoryName] += transactionView.Amount
+	}
+	for category, netAmount := range netCategorySumMap {
+		netCategorySum := views.NetCategorySum{Category: category, NetAmount: netAmount}
+		netCategorySumList = append(netCategorySumList, netCategorySum)
+	}
+	allCategories, err := dao.GetCategoriesByUserID(userId)
+	if err != nil {
+		return netCategorySumList, exceptions.InternalServerError(err.Error(), "TRANSACTION_GET_FAIL")
+	}
+
+	for _, category := range allCategories {
+		_, exists := netCategorySumMap[category.CategoryName]
+		if !exists {
+			netCategorySum := views.NetCategorySum{Category: category.CategoryName, NetAmount: 0}
+			netCategorySumList = append(netCategorySumList, netCategorySum)
+		}
+	}
+
+	sort.Sort(views.ByNetAmountDesc(netCategorySumList))
+	return netCategorySumList, nil
+}
+
 func GetNetMoneySpentByCategory2(userId uint) ([]string, *exceptions.GeneralException) {
 	allTransactions, err := dao.GetTransactionsByUserId(userId)
 	netCategorySumList := make([]string, 0)
