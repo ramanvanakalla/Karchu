@@ -146,7 +146,7 @@ func GetTransactionsFiltered(ctx *gin.Context) {
 		ctx.Abort()
 		return
 	}
-	transactionList, ex := services.GetTransactionsFiltered(userIDUint, startDate, EndDate, req.Category, req.SplitTag)
+	transactionList, ex := services.GetTransactionsFiltered(userIDUint, startDate, EndDate, req.Categories, req.SplitTag)
 	if ex != nil {
 		ctx.JSON(ex.StatusCode, responses.CreateErrorResponse(ex.Status, ex.Message))
 		return

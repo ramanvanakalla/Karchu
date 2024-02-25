@@ -178,7 +178,7 @@ func GetTransactionsByUserId(userId uint) ([]views.TransactionWithCategory, erro
 	return transactions, nil
 }
 
-func GetTransactionsByUserIdFiltered(userId uint, startDate time.Time, endDate time.Time, category string, splitTag string) ([]views.TransactionWithCategory, error) {
+func GetTransactionsByUserIdFiltered(userId uint, startDate time.Time, endDate time.Time, categories []string, splitTag string) ([]views.TransactionWithCategory, error) {
 	var transactions []views.TransactionWithCategory
 	query := initializers.DB.
 		Model(&models.Transaction{}).
@@ -191,8 +191,8 @@ func GetTransactionsByUserIdFiltered(userId uint, startDate time.Time, endDate t
 	if splitTag != "" {
 		query = query.Where("transactions.split_tag = ?", splitTag)
 	}
-	if category != "" {
-		query = query.Where("categories.category_name = ?", category)
+	if len(categories) > 0 {
+		query = query.Where("categories.category_name in ?", categories)
 	}
 	err := query.
 		Order("transactions.id desc").

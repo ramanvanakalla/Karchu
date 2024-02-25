@@ -127,8 +127,8 @@ func GetTransactionsV2(userId uint) ([]views.TransactionWithCategory, *exception
 	return transactionViewList, nil
 }
 
-func GetTransactionsFiltered(userId uint, startDate time.Time, endDate time.Time, category string, splitTag string) ([]views.TransactionWithCategory, *exceptions.GeneralException) {
-	transactionViewList, err := dao.GetTransactionsByUserIdFiltered(userId, startDate, endDate, category, splitTag)
+func GetTransactionsFiltered(userId uint, startDate time.Time, endDate time.Time, categories []string, splitTag string) ([]views.TransactionWithCategory, *exceptions.GeneralException) {
+	transactionViewList, err := dao.GetTransactionsByUserIdFiltered(userId, startDate, endDate, categories, splitTag)
 	if err != nil {
 		return transactionViewList, exceptions.InternalServerError(err.Error(), "TRANSACTION_GET_FAIL")
 	}
@@ -170,7 +170,8 @@ func GetNetMoneySpentByCategory(userId uint) ([]views.NetCategorySum, *exception
 }
 
 func GetNetMoneySpentByCategoryFiltered(userId uint, startDate time.Time, endDate time.Time) ([]views.NetCategorySum, *exceptions.GeneralException) {
-	allTransactions, err := dao.GetTransactionsByUserIdFiltered(userId, startDate, endDate, "", "")
+	categories := make([]string, 0)
+	allTransactions, err := dao.GetTransactionsByUserIdFiltered(userId, startDate, endDate, categories, "")
 	netCategorySumList := make([]views.NetCategorySum, 0)
 	if err != nil {
 		return netCategorySumList, exceptions.InternalServerError(err.Error(), "TRANSACTION_GET_FAIL")
