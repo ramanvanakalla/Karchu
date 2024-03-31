@@ -17,5 +17,7 @@ func main() {
 		&models.CategoryTransactionMapping{},
 		&models.Friend{},
 		&models.SplitTransaction{},
+		&models.ModelSplit{},
+		&models.ModelSplitMapping{},
 	)
 }
