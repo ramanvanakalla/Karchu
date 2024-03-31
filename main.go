@@ -107,6 +107,10 @@ func main() {
 		{
 			moneyLent.POST("", controllers.MoneyLentToFriend)
 		}
+		modelSplits := v2.Group("/model-split")
+		{
+			modelSplits.POST("", controllers.NewModelSplit)
+		}
 	}
 	router.GET("/", controllers.Home)
 	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
