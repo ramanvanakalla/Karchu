@@ -39,3 +39,32 @@ func NewModelSplit(ctx *gin.Context) {
 	}
 	ctx.JSON(http.StatusOK, responses.CreateSuccessResponse("MODEL_SPLIT_CREATED", fmt.Sprintf("model split %s created", req.ModelSplitName)))
 }
+
+// NewModelSplit godoc
+// @Summary      Get model splits
+// @Description  Get model splits
+// @Tags         Model split
+// @Accept       json
+// @Produce      json
+// @Param        request body requests.GetModelSplitReq true "get model split"
+// @Success      200  {object} responses.SuccessRes
+// @Router       /v2/model-split [get]
+func GetModelSplit(ctx *gin.Context) {
+	userIDUint, ok := getUserID(ctx)
+	if !ok {
+		ctx.JSON(http.StatusInternalServerError, responses.CreateErrorResponse("Error while getting userId", "USERID_NOT_SET_CTX"))
+		return
+	}
+	var req requests.GetModelSplitReq
+	if err := ctx.ShouldBindBodyWith(&req, binding.JSON); err != nil {
+		ctx.JSON(http.StatusBadRequest, responses.CreateErrorResponse("CANT_PARSE_REQ", err.Error()))
+		ctx.Abort()
+		return
+	}
+	modelSplits, ex := services.GetModelSplits(userIDUint)
+	if ex != nil {
+		ctx.JSON(ex.StatusCode, responses.CreateErrorResponse(ex.Status, ex.Message))
+		return
+	}
+	ctx.JSON(http.StatusOK, modelSplits)
+}

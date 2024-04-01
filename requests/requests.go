@@ -113,6 +113,10 @@ type ModelSplitTransactionReq struct {
 	ModelSplitName string
 	ModelSplits    []FriendSplitPercentage
 }
+type GetModelSplitReq struct {
+	Email    string
+	Password string
+}
 
 type FriendSplitPercentage struct {
 	FriendId        uint
