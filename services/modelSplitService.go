@@ -38,3 +38,11 @@ func CreateModelSplit(userId uint, modelSplitName string, friendSplits []request
 	}
 	return nil
 }
+
+func GetModelSplits(userId uint) ([]string, *exceptions.GeneralException) {
+	modelSplits, err := dao.GetModelSplits(userId)
+	if err != nil {
+		return modelSplits, exceptions.InternalServerError(err.Error(), "MODEL_SPLIT_GET_FAIL")
+	}
+	return modelSplits, nil
+}

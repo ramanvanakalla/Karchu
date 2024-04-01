@@ -110,6 +110,7 @@ func main() {
 		modelSplits := v2.Group("/model-split")
 		{
 			modelSplits.POST("", controllers.NewModelSplit)
+			modelSplits.POST("/get", controllers.GetModelSplit)
 		}
 	}
 	router.GET("/", controllers.Home)

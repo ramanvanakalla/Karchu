@@ -39,3 +39,16 @@ func CreateModelSplitForUser(userId uint, modelSplitName string, friendSplitPerc
 	}
 	return tx.Commit().Error
 }
+
+func GetModelSplits(userId uint) ([]string, error) {
+	modelSplitNames := make([]string, 0)
+	modelSplits := make([]models.ModelSplitMapping, 0)
+	err := initializers.DB.Where(models.ModelSplitMapping{UserId: userId}).Find(&modelSplits).Error
+	if err != nil {
+		return modelSplitNames, err
+	}
+	for _, modelSplit := range modelSplits {
+		modelSplitNames = append(modelSplitNames, modelSplit.ModelSplitName)
+	}
+	return modelSplitNames, nil
+}
