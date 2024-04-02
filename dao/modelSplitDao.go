@@ -40,7 +40,7 @@ func CreateModelSplitForUser(userId uint, modelSplitName string, friendSplitPerc
 	return tx.Commit().Error
 }
 
-func GetModelSplits(userId uint) ([]string, error) {
+func GetModelSplitNames(userId uint) ([]string, error) {
 	modelSplitNames := make([]string, 0)
 	modelSplits := make([]models.ModelSplitMapping, 0)
 	err := initializers.DB.Where(models.ModelSplitMapping{UserId: userId}).Find(&modelSplits).Error
@@ -51,4 +51,23 @@ func GetModelSplits(userId uint) ([]string, error) {
 		modelSplitNames = append(modelSplitNames, modelSplit.ModelSplitName)
 	}
 	return modelSplitNames, nil
+}
+
+func GetModelSplitMappingId(userId uint, modelSplitName string) (uint, error) {
+	modelSplitMap := models.ModelSplitMapping{}
+	err := initializers.DB.Where(models.ModelSplitMapping{UserId: userId, ModelSplitName: modelSplitName}).First(&modelSplitMap).Error
+	return modelSplitMap.ID, err
+}
+
+func GetModelSplitsOfId(modelSplitMapId uint) (map[uint]int, error) {
+	friendIdToShareMap := make(map[uint]int)
+	modelSplits := make([]models.ModelSplit, 0)
+	err := initializers.DB.Where(models.ModelSplit{ModelSplitId: modelSplitMapId}).Find(&modelSplits).Error
+	if err != nil {
+		return friendIdToShareMap, err
+	}
+	for _, modelSplit := range modelSplits {
+		friendIdToShareMap[modelSplit.FriendId] = modelSplit.SplitPercentage
+	}
+	return friendIdToShareMap, nil
 }

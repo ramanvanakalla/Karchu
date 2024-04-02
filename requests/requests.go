@@ -37,6 +37,15 @@ type CreateTransactionReq struct {
 	SplitTag    string
 }
 
+type CreateTransactionModelReq struct {
+	Email          string
+	Password       string
+	Amount         int
+	Category       string
+	Description    string
+	ModelSplitName string
+}
+
 type GetLastNTransactionsReq struct {
 	Email    string
 	Password string

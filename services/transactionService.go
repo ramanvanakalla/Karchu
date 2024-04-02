@@ -11,6 +11,26 @@ import (
 	"time"
 )
 
+func CreateTransactionAndModelSplit(userId uint, amount int, category string, description string, modelSplit string) (uint, *exceptions.GeneralException) {
+	if !validateAndNormalizeCategory(&category) {
+		return 0, exceptions.BadRequestError(fmt.Sprintf("invalid category format %s", category), "INVALID_CATEGORY_FORMAT")
+	}
+	categoryId, err := dao.GetCategoryIdByUserIdAndCategoryName(userId, category)
+	if err != nil {
+		return 0, exceptions.BadRequestError(err.Error(), "CANT_GET_CATEGORY")
+	}
+	modelSplitMapId, err := dao.GetModelSplitMappingId(userId, modelSplit)
+	if err != nil {
+		return 0, exceptions.BadRequestError(err.Error(), "CANT_GET_MODEL_SPLIT")
+	}
+	fmt.Printf("model split id %d", modelSplitMapId)
+	transactionId, err := dao.CreateTransactionAndModelSplit(userId, time.Now(), amount, categoryId, description, modelSplitMapId)
+	if err != nil {
+		return 0, exceptions.BadRequestError(err.Error(), "FAILED_TO_ADD_TRANSACTION")
+	}
+	return transactionId, nil
+}
+
 func CreateTransactionV2(userId uint, amount int, category string, description string, splitTag string) (uint, *exceptions.GeneralException) {
 	if !validateAndNormalizeCategory(&category) {
 		return 0, exceptions.BadRequestError(fmt.Sprintf("invalid category format %s", category), "INVALID_CATEGORY_FORMAT")
