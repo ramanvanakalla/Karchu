@@ -57,6 +57,7 @@ func main() {
 			transactions.POST("/categories", controllers.GetTransactionsOfCategory)
 			transactions.DELETE("", controllers.DeleteTransaction)
 			transactions.DELETE("/str", controllers.DeleteTransactionFromTransString)
+			transactions.POST("/model", controllers.NewTransactionAndModelSplit)
 		}
 		splitTags := v1.Group("/split-tags")
 		{
@@ -78,7 +79,6 @@ func main() {
 			friends.POST("/get", controllers.GetFriends)
 			friends.POST("/money-friends", controllers.MoneyFriends)
 			friends.POST("/friendsMap", controllers.FriendsMap)
-
 		}
 		SplitTransaction := v2.Group("/split-transaction")
 		{

@@ -13,6 +13,35 @@ import (
 )
 
 // CreateTransactionV2 godoc
+// @Summary      creates a transaction for a user and model split
+// @Description  create a transaction with category V2 and model split
+// @Tags         Transactions, model split
+// @Accept       json
+// @Produce      json
+// @Param        request body requests.CreateTransactionReq true "enter Email,Password"
+// @Success      200  {array} responses.SuccessRes
+// @Router       /v1/transactions/model [post]
+func NewTransactionAndModelSplit(ctx *gin.Context) {
+	userIDUint, ok := getUserID(ctx)
+	if !ok {
+		ctx.JSON(http.StatusInternalServerError, responses.CreateErrorResponse("Error while getting userId", "USERID_NOT_SET_CTX"))
+		return
+	}
+	var req requests.CreateTransactionModelReq
+	if err := ctx.ShouldBindBodyWith(&req, binding.JSON); err != nil {
+		ctx.JSON(http.StatusBadRequest, responses.CreateErrorResponse("CANT_PARSE_REQ", err.Error()))
+		ctx.Abort()
+		return
+	}
+	transactionId, ex := services.CreateTransactionAndModelSplit(userIDUint, req.Amount, req.Category, req.Description, req.ModelSplitName)
+	if ex != nil {
+		ctx.JSON(ex.StatusCode, responses.CreateErrorResponse(ex.Status, ex.Message))
+		return
+	}
+	ctx.JSON(http.StatusOK, responses.CreateSuccessResponse("TRANSACTION_CREATED", fmt.Sprintf("transaction Id %d created", transactionId)))
+}
+
+// CreateTransactionV2 godoc
 // @Summary      creates a transaction for a user V2
 // @Description  create a transaction with category V2
 // @Tags         Transactions, V2

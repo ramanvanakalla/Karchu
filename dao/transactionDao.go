@@ -3,10 +3,34 @@ package dao
 import (
 	"Karchu/initializers"
 	"Karchu/models"
+	"Karchu/requests"
 	"Karchu/views"
 	"errors"
+	"fmt"
 	"time"
 )
+
+func CreateTransactionAndModelSplit(userId uint, time time.Time, amount int, categoryId uint, description string, modelSplitMapId uint) (uint, error) {
+	transactionId, err := CreateTransactionV2(userId, time, amount, categoryId, description, "Model Split")
+	fmt.Printf("%d is created\n", transactionId)
+	if err != nil {
+		return transactionId, err
+	}
+	friendsToShareMap, err := GetModelSplitsOfId(modelSplitMapId)
+	fmt.Println(friendsToShareMap)
+	if err != nil {
+		return transactionId, err
+	}
+	splits := make([]requests.FriendSplit, 0)
+	for friendId, percentageShare := range friendsToShareMap {
+		splits = append(splits, requests.FriendSplit{FriendId: friendId, Amount: amount * percentageShare / 100})
+	}
+	err = AddSplitTransactions(userId, transactionId, splits)
+	if err != nil {
+		return transactionId, err
+	}
+	return transactionId, nil
+}
 
 func CreateTransactionV2(userId uint, time time.Time, amount int, categoryId uint, description string, splitTag string) (uint, error) {
 	tx := initializers.DB.Begin()
